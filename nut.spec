@@ -19,7 +19,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.15
 BuildRequires:	libpng-devel
-BuildRequires:	openssl-devel >= 0.9.7
+BuildRequires:	openssl-devel >= 0.9.7c
 PreReq:		rc-scripts
 Requires(pre):  /bin/id
 Requires(pre):  /usr/bin/getgid
@@ -142,7 +142,7 @@ UPS ÞÅÒÅÚ ×ÅÂ-¦ÎÔÅÒÆÅÊÓ.
 Summary:	Files for NUT clients development
 Summary(pl):	Pliki do tworzenia klientów NUT-a
 Group:		Development/Libraries
-Requires:	openssl-devel >= 0.9.7
+Requires:	openssl-devel >= 0.9.7c
 # it does NOT require nut
 
 %description devel
