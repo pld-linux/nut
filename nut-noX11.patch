@@ -1,0 +1,12 @@
+diff -uNr nut-1.4.0.old/configure.in nut-1.4.0/configure.in
+--- nut-1.4.0.old/configure.in	Mon Jun 30 10:11:05 2003
++++ nut-1.4.0/configure.in	Sat Oct  4 00:58:38 2003
+@@ -30,7 +30,7 @@
+ dnl fails to pass better values in --with arguments
+ 
+ GD_INCLUDES=""
+-GD_LIBS="-L/usr/X11R6/lib -lgd -lpng -lz -ljpeg -lfreetype -lm -lXpm -lX11"
++GD_LIBS="-lgd -lpng -lz -ljpeg -lfreetype -lm"
+ 
+ dnl +-------------------------------------------------------------------
+ 
