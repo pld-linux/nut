@@ -1,57 +1,75 @@
-diff -Naur nut-0.45.2/Makefile.in nut-0.45.2-p/Makefile.in
---- nut-0.45.2/Makefile.in	Thu Aug  9 18:52:31 2001
-+++ nut-0.45.2-p/Makefile.in	Thu Nov 22 12:29:40 2001
-@@ -2,11 +2,10 @@
+diff -Nru nut-0.45.5/Makefile.in nut-0.45.5.new/Makefile.in
+--- nut-0.45.5/Makefile.in	Fri Mar  8 13:21:11 2002
++++ nut-0.45.5.new/Makefile.in	Fri Apr 12 19:48:58 2002
+@@ -2,15 +2,8 @@
  
  # directory definitions
  prefix      = @prefix@
 -BASEPATH    = $(INSTALLROOT)@prefix@
 -CONFPATH    = $(INSTALLROOT)@sysconfdir@
 -CGIPATH     = $(INSTALLROOT)@CGIPATH@
--INSTALLDIRS = $(CONFPATH) $(CGIPATH) $(MODELPATH) $(BASEPATH)/@bindir@  $(BASEPATH)/@sbindir@ $(BASEPATH)/misc
+-MODELPATH   = $(INSTALLROOT)@MODELPATH@
+-INSTALLDIRS = $(CONFPATH) $(MODELPATH) $(BASEPATH)/@bindir@ $(BASEPATH)/@sbindir@
 -STATEPATH   = $(INSTALLROOT)@STATEPATH@
-+prefix      = @prefix@
-+sysconfdir  = @sysconfdir@
-+CGIPATH     = @CGIPATH@
-+STATEPATH   = @STATEPATH@
  
- SUBDIRS	= common models server clients man
- CFLAGS	= -I../include @CFLAGS@
-@@ -44,7 +43,7 @@
- 	@echo Installing in $(BASEPATH)...
+-SUBDIRS	= common models server clients
+-CFLAGS	= -I../include @CFLAGS@
++SUBDIRS	= clients common conf man models server
  
+ # these are here so they can be overridden during a make install
+ RUNUID=@RUN_AS_USER@
+@@ -41,46 +34,14 @@
+ 		rm $$i/Makefile; \
+ 	done
+ 
+-install: install-dirs install-man
+-	@echo Installing in $(BASEPATH)...
+-
++install:
  	@for i in $(SUBDIRS) conf; do \
 -		cd $$i; $(MAKE) install; cd ..; \
+-	done
+-
+-install-dirs:
+-	@for d in $(INSTALLDIRS); do \
+-		if (test ! -d $$d) then \
+-			./install-sh -d $$d || exit 1; \
+-		fi \
 +		cd $$i; $(MAKE) DESTDIR=$(DESTDIR) install; cd ..; \
  	done
  
- install-dirs:
-@@ -55,18 +54,18 @@
- 	done
- 
- 	@if (test ! -d $(STATEPATH)) then \
--		./install-sh -d -o $(RUNUID) -g $(RUNGID) $(STATEPATH) || exit 1; \
-+		./install-sh -d $(DESTDIR)$(STATEPATH) || exit 1; \
- 	fi
- 
+-	@if (test ! -d $(STATEPATH)) then \
+-		./install-sh -d $(STATEPATH) || exit 1 ; \
+-		./install-sh -d -o $(RUNUID) -g $(RUNGID) $(STATEPATH) \
+-		|| echo "Unable to set ownership of $(STATEPATH)"; \
+-	fi
+-
+-install-man:
+-	@cd man; $(MAKE) install; cd ..;
+-
  cgi:
  	@cd clients; $(MAKE) cgi; cd ..;
  
- install-cgi: install-dirs 
+-install-cgi: install-dirs 
+-	if (test ! -d $(CGIPATH)) then \
+-		./install-sh -d $(CGIPATH) || exit 1; \
+-	fi \
+-
 -	@cd conf; $(MAKE) install; cd ..;
 -	@cd clients; $(MAKE) install-cgi; cd ..;
-+	@cd conf; $(MAKE) DESTDIR=$(DESTDIR) install; cd ..;
-+	@cd clients; $(MAKE) DESTDIR=$(DESTDIR) install-cgi; cd ..;
- 
- install-misc: install-dirs
+-
+-install-cgi-man:
+-	@cd man; $(MAKE) install-cgi-man; cd ..;
+-
+-install-misc: install-dirs
 -	@cd clients; $(MAKE) install-misc; cd ..;
-+	@cd clients; $(MAKE) DESTDIR=$(DESTDIR) install-misc; cd ..;
- 
+-
  # This is only used to set the "official" version before it goes out the door.
  #
-diff -Naur nut-0.45.2/clients/Makefile.in nut-0.45.2-p/clients/Makefile.in
---- nut-0.45.2/clients/Makefile.in	Wed Jul  4 06:31:29 2001
-+++ nut-0.45.2-p/clients/Makefile.in	Thu Nov 22 12:29:40 2001
+ rhver = $(shell echo $(SETVER) | sed s/\-//g)
+diff -Nru nut-0.45.5/clients/Makefile.in nut-0.45.5.new/clients/Makefile.in
+--- nut-0.45.5/clients/Makefile.in	Fri Mar 15 07:00:32 2002
++++ nut-0.45.5.new/clients/Makefile.in	Fri Apr 12 19:48:22 2002
 @@ -1,11 +1,10 @@
  # Network UPS Tools: clients
  
@@ -68,34 +86,36 @@ diff -Naur nut-0.45.2/clients/Makefile.in nut-0.45.2-p/clients/Makefile.in
  
  # other definitions
  CC	 = @CC@
-@@ -67,18 +66,17 @@
+@@ -67,21 +66,8 @@
  distclean: clean
  
  install: all
-+	$(INSTALLCMD) -d $(DESTDIR)$(bindir)
-+	$(INSTALLCMD) -d $(DESTDIR)$(sbindir)
- 	@for f in $(PROGS) ; do \
+-	@for f in $(PROGS) ; do \
 -		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(BINPATH); \
-+		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(bindir); \
- 	done
- 	@for f in $(SPROGS) ; do \
+-	done
+-	@for f in $(SPROGS) ; do \
 -		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(SBINPATH); \
-+		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(sbindir); \
- 	done
- 
- install-cgi: cgi
-+	$(INSTALLCMD) -d $(DESTDIR)$(CGIPATH)
- 	@for f in $(CGIPROGS) ; do \
+-	done
+-
+-install-cgi: cgi
+-	@for f in $(CGIPROGS) ; do \
 -		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(CGIPATH); \
-+		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(CGIPATH); \
- 	done
+-	done
 -
 -install-misc: upsfetch.o
+-	@if (test ! -d $(BASEPATH)/misc) then \
+-		../install-sh -d $(BASEPATH)/misc || exit 1; \
+-	fi
 -	$(INSTALLCMD) upsfetch.h $(BASEPATH)/misc
 -	$(INSTALLCMD) upsfetch.o $(BASEPATH)/misc
-diff -Naur nut-0.45.2/conf/Makefile.in nut-0.45.2-p/conf/Makefile.in
---- nut-0.45.2/conf/Makefile.in	Mon Aug 13 19:12:18 2001
-+++ nut-0.45.2-p/conf/Makefile.in	Thu Nov 22 12:29:40 2001
++	$(INSTALLCMD) -d $(DESTDIR)$(bindir) $(DESTDIR)$(sbindir) \
++		$(DESTDIR)$(CGIPATH)
++	$(INSTALLCMD) -m $(INSTALLMODE) $(PROGS) $(DESTDIR)$(bindir)
++	$(INSTALLCMD) -m $(INSTALLMODE) $(SPROGS) $(DESTDIR)$(sbindir)
++	$(INSTALLCMD) -m $(INSTALLMODE) $(CGIPROGS) $(DESTDIR)$(CGIPATH)
+diff -Nru nut-0.45.5/conf/Makefile.in nut-0.45.5.new/conf/Makefile.in
+--- nut-0.45.5/conf/Makefile.in	Mon Aug 13 19:12:18 2001
++++ nut-0.45.5.new/conf/Makefile.in	Fri Apr 12 19:32:21 2002
 @@ -1,7 +1,7 @@
  # Network UPS Tools: conf
  
@@ -119,9 +139,9 @@ diff -Naur nut-0.45.2/conf/Makefile.in nut-0.45.2-p/conf/Makefile.in
 -		$(INSTALLCMD) -m 0644 $$f $(CONFPATH)/$$f.sample; \
 +		$(INSTALLCMD) -m 0644 $$f $(DESTDIR)$(sysconfdir)/$$f; \
  	done
-diff -Naur nut-0.45.2/man/Makefile.in nut-0.45.2-p/man/Makefile.in
---- nut-0.45.2/man/Makefile.in	Sat Oct 20 08:19:00 2001
-+++ nut-0.45.2-p/man/Makefile.in	Thu Nov 22 12:32:44 2001
+diff -Nru nut-0.45.5/man/Makefile.in nut-0.45.5.new/man/Makefile.in
+--- nut-0.45.5/man/Makefile.in	Sun Mar 17 00:50:40 2002
++++ nut-0.45.5.new/man/Makefile.in	Fri Apr 12 20:15:32 2002
 @@ -1,7 +1,7 @@
  # Network UPS Tools: man
  
@@ -131,60 +151,114 @@ diff -Naur nut-0.45.2/man/Makefile.in nut-0.45.2-p/man/Makefile.in
  INSTALLCMD  = @INSTALL@
  INSTALLMODE = 0644
  
-@@ -17,18 +17,10 @@
- distclean: clean
+@@ -27,57 +27,9 @@
+ # DRIVER_INSTALL_TARGET is usually "all-drivers" but changes into
+ # some-drivers when using 'configure --with-drivers=...'
  
- install: all
+-install: all install-man-dirs @DRIVER_INSTALL_TARGET@
+-	@for f in $(MAN5_PAGES) ; do \
+-		echo $(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man5; \
+-		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man5; \
+-	done
+-	@for f in $(MAN8_PAGES) ; do \
+-		echo $(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man8; \
+-		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man8; \
+-	done
+-
+-# make the directories for these things
+-
+-install-man-dirs:
 -	@if (test ! -d $(MANDIR)) then \
+-		echo ../install-sh -d $(MANDIR) || exit 1;\
 -		../install-sh -d $(MANDIR) || exit 1;\
 -	fi
 -	@if (test ! -d $(MANDIR)/man5) then \
+-		echo ../install-sh -d $(MANDIR)/man5 || exit 1;\
 -		../install-sh -d $(MANDIR)/man5 || exit 1;\
 -	fi
 -	@if (test ! -d $(MANDIR)/man8) then \
+-		echo ../install-sh -d $(MANDIR)/man8 || exit 1;\
 -		../install-sh -d $(MANDIR)/man8 || exit 1;\
 -	fi
-+	$(INSTALLCMD) -d $(DESTDIR)$(mandir)/{man5,man8}
- 	@for f in $(MAN5_PAGES) ; do \
--		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man5; \
-+		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(mandir)/man5; \
- 	done
- 	@for f in $(MAN8_PAGES) ; do \
+-
+-# install every driver man page
+-all-drivers:
+-	@for f in $(DRIVERPAGES) ; do \
+-		echo $(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man8; \
 -		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man8; \
-+		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(mandir)/man8; \
- 	done
-diff -Naur nut-0.45.2/models/Makefile.in nut-0.45.2-p/models/Makefile.in
---- nut-0.45.2/models/Makefile.in	Wed Aug 29 13:40:53 2001
-+++ nut-0.45.2-p/models/Makefile.in	Thu Nov 22 12:29:41 2001
-@@ -85,6 +85,7 @@
- distclean: clean
+-	done
+-
+-# install just the pages for the drivers that were built
+-some-drivers:
+-	@for f in $(DRIVER_BUILD_LIST) ; do \
+-		if (test -f $$f.8) \
+-		then \
+-			echo $(INSTALLCMD) -m $(INSTALLMODE) $$f.8 $(MANDIR)/man8; \
+-			$(INSTALLCMD) -m $(INSTALLMODE) $$f.8 $(MANDIR)/man8; \
+-		fi \
+-	done
+-
+-# just the man pages
+-install-cgi-man: install-man-dirs
+-	@for f in $(CGI_MAN5) ; do \
+-		echo $(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man5; \
+-		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man5; \
+-	done
+-
+-	@for f in $(CGI_MAN8) ; do \
+-		echo $(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man8; \
+-		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man8; \
+-	done
++install:
++	$(INSTALLCMD) -d $(DESTDIR)$(mandir)/man5 $(DESTDIR)$(mandir)/man8
++	$(INSTALLCMD) -m $(INSTALLMODE) $(MAN5_PAGES) $(CGI_MAN5) \
++		$(DESTDIR)$(mandir)/man5
++	$(INSTALLCMD) -m $(INSTALLMODE) $(MAN8_PAGES) $(CGI_MAN8) \
++		$(DRIVERPAGES) $(DESTDIR)$(mandir)/man8
+diff -Nru nut-0.45.5/models/Makefile.in nut-0.45.5.new/models/Makefile.in
+--- nut-0.45.5/models/Makefile.in	Tue Mar 26 00:30:31 2002
++++ nut-0.45.5.new/models/Makefile.in	Fri Apr 12 20:16:38 2002
+@@ -101,16 +101,6 @@
  
- install: all
-+	$(INSTALLCMD) -d $(DESTDIR)$(MODELPATH)
- 	@for f in $(PROGS) $(PROGS2) upsdrvctl ; do \
+ # Install every driver
+ 
+-install-all-drivers:
+-	@for f in $(PROGS) $(PROGS2) ; do \
+-		echo $(INSTALLCMD) -m $(INSTALLMODE) $$f $(MODELPATH); \
 -		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MODELPATH); \
-+		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(MODELPATH); \
- 	done
-diff -Naur nut-0.45.2/server/Makefile.in nut-0.45.2-p/server/Makefile.in
---- nut-0.45.2/server/Makefile.in	Sun Jul 22 01:07:55 2001
-+++ nut-0.45.2-p/server/Makefile.in	Thu Nov 22 12:29:41 2001
+-	done
+-
+-# Just install the drivers that were selected by the user
+-
+-install-some-drivers:
+-	@for f in $(DRIVER_BUILD_LIST) ; do \
+-		echo $(INSTALLCMD) -m $(INSTALLMODE) $$f $(MODELPATH); \
+-		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MODELPATH); \
+-	done
++install-all-drivers: $(PROGS2)
++	$(INSTALLCMD) -d $(DESTDIR)$(MODELPATH)
++	$(INSTALLCMD) -m $(INSTALLMODE) $(PROGS2) $(DESTDIR)$(MODELPATH)
+diff -Nru nut-0.45.5/server/Makefile.in nut-0.45.5.new/server/Makefile.in
+--- nut-0.45.5/server/Makefile.in	Mon Mar  4 19:41:47 2002
++++ nut-0.45.5.new/server/Makefile.in	Fri Apr 12 19:42:47 2002
 @@ -1,8 +1,8 @@
  # Network UPS Tools: server
  
  # directories
 -prefix   = $(INSTALLROOT)@prefix@
--SBINPATH = $(prefix)/@sbindir@
+-SBINPATH = $(prefix)@sbindir@
 +prefix   = @prefix@
 +sbindir  = @sbindir@
  
  # other definitions
  CC	= @CC@
-@@ -32,6 +32,7 @@
+@@ -32,7 +32,5 @@
  distclean: clean
  
  install: all
-+	$(INSTALLCMD) -d $(DESTDIR)$(sbindir)
- 	@for f in $(PROGS) ; do \
+-	@for f in $(PROGS) ; do \
+-		echo $(INSTALLCMD) $$f $(SBINPATH); \
 -		$(INSTALLCMD) $$f $(SBINPATH); \
-+		$(INSTALLCMD) $$f $(DESTDIR)$(sbindir); \
- 	done
+-	done
++	$(INSTALLCMD) -d $(DESTDIR)$(sbindir)
++	$(INSTALLCMD) $(PROGS) $(DESTDIR)$(sbindir)
