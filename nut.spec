@@ -2,7 +2,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	0.45.5
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
@@ -73,6 +73,18 @@ sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
 zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
 Ten pakiet zawiera narzêdzia CGI.
 
+%package devel
+Summary:	Files for NUT clients development
+Summary(pl):	Pliki do tworzenia klientów NUT-a
+Group:		Development/Libraries
+# it does NOT require nut
+
+%description devel
+Object file and header for developing NUT clients.
+
+%description devel -l pl
+Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -90,7 +102,8 @@ autoconf
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups,%{_libdir}/nut}
+install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
+	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -100,6 +113,9 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 install conf/ups.conf $RPM_BUILD_ROOT%{_sysconfdir}/ups.conf
+
+install clients/upsfetch.o $RPM_BUILD_ROOT%{_libdir}
+install clients/upsfetch.h $RPM_BUILD_ROOT%{_includedir}
 
 gzip -9nf CREDITS README docs/{FAQ,Changes*,*.txt,cables/*}
 
@@ -188,3 +204,8 @@ fi
 %config(noreplace) %{_sysconfdir}/hosts.conf
 %config(noreplace) %{_sysconfdir}/multimon.conf
 %config(noreplace) %{_sysconfdir}/upsset.conf
+
+%files devel
+%defattr(644,root,root,755)
+%{_libdir}/upsfetch.o
+%{_includedir}/upsfetch.h
