@@ -17,6 +17,7 @@ Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
+Patch2:		%{name}-config.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -163,6 +164,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
