@@ -1,8 +1,8 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	0.44.2
-Release:	2
+Version:	0.45.0
+Release:	0
 License:	GPL
 Group:		Applications/System
 Group(de):	Applikationen/System
@@ -10,6 +10,7 @@ Group(pl):	Aplikacje/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
 Source1:	ups.init
 Patch0:		%{name}-DESTDIR.patch
+Patch1:		%{name}-ever.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	gd-devel
 BuildRequires:	libpng-devel
@@ -52,14 +53,15 @@ for safe shutdowns, live status tracking on web pages, and more.
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
+%patch1 -p1
 
 %build
 %configure \
 	--with-statepath=/var/lib/ups \
 	--with-uid=99 \
 	--with-gid=99
-%{__make}
+%{__make} all cgi
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -72,7 +74,15 @@ install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups}
 install scripts/RedHat-6.0/ups-config $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 
-gzip -9nf CREDITS Changes QUICKSTART README docs/{FAQ,Changes*,*.txt,cables/*}
+(
+cd $RPM_BUILD_ROOT/etc/ups
+for i in `ls *`
+do
+  mv $i `basename $i .sample`
+done
+)
+
+gzip -9nf CREDITS README docs/{FAQ,Changes*,*.txt,cables/*}
 
 %post
 /sbin/chkconfig --add ups
@@ -102,12 +112,30 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/genericups
 %attr(755,root,root) %{_bindir}/optiups
 %attr(755,root,root) %{_bindir}/ups-trust425+625
+
+%attr(755,root,root) %{_bindir}/belkin
+%attr(755,root,root) %{_bindir}/bestfort
+%attr(755,root,root) %{_bindir}/bestuferrups
+%attr(755,root,root) %{_bindir}/engetron
+%attr(755,root,root) %{_bindir}/ipt-anzen
+%attr(755,root,root) %{_bindir}/mge-ellipse
+%attr(755,root,root) %{_bindir}/mgeups
+%attr(755,root,root) %{_bindir}/multilink
+%attr(755,root,root) %{_bindir}/mustekups
+%attr(755,root,root) %{_bindir}/powercom
+%attr(755,root,root) %{_bindir}/sec
+%attr(755,root,root) %{_bindir}/toshiba1500
+%attr(755,root,root) %{_bindir}/upseyeux
+%attr(755,root,root) %{_bindir}/victronups
+%attr(755,root,root) %{_bindir}/everups
+
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) %{_bindir}/upslog
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
 %{_mandir}/man8/*
+%dir %attr(775,root,nobody) /var/lib/ups
 
 %files client
 %defattr(644,root,root,755)
@@ -119,9 +147,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/hosts.conf
 %config(noreplace) %{_sysconfdir}/multimon.conf
 %attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsmon.conf
-%dir %attr(775,root,nobody) /var/lib/ups
 
 %files cgi
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/httpd/cgi-bin/*.cgi
-%attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsset.passwd
+#%attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsset.passwd
