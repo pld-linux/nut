@@ -23,15 +23,19 @@ BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.15
 BuildRequires:	libpng-devel
 BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	rpmbuild(macros) >= 1.159
 PreReq:		rc-scripts
 Requires(pre):  /bin/id
 Requires(pre):  /usr/bin/getgid
-Requires(pre):  /usr/sbin/useradd
 Requires(pre):  /usr/sbin/groupadd
+Requires(pre):	/usr/sbin/groupmod
+Requires(pre):  /usr/sbin/useradd
 Requires(post,preun):   /sbin/chkconfig
 Requires(postun):       /usr/sbin/groupdel
 Requires(postun):       /usr/sbin/userdel
 Requires:	%{name}-common = %{version}-%{release}
+Provides:	group(ups)
+Provides:	user(ups)
 Obsoletes:	smartupstools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -208,21 +212,27 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre
 if [ -n "`/usr/bin/getgid ups`" ]; then
-	if [ "`getgid ups`" != "121" ]; then
-		echo "Error: group ups doesn't have gid=121. Correct this before installing %{name}." 1>&2
-		exit 1
+	if [ "`/usr/bin/getgid ups`" != 76 ]; then
+		if [ "`/usr/bin/getgid ups`" = 121 ]; then
+			/usr/sbin/groupmod -g 76 ups
+			chgrp ups %{_sysconfdir}/{upsd.conf,ups.conf,upsd.users}
+		else
+			echo "Error: group ups doesn't have gid=76. Correct this before installing %{name}." 1>&2
+			exit 1
+		fi
 	fi
 else
-	/usr/sbin/groupadd -g 121 -r -f ups
+	/usr/sbin/groupadd -g 76 ups
 fi
-if [ -n "`id -u ups 2>/dev/null`" ]; then
-	if [ "`id -u ups`" != "70" ]; then
+if [ -n "`/bin/id -u ups 2>/dev/null`" ]; then
+	if [ "`/bin/id -u ups`" != 70 ]; then
 		echo "Error: user ups doesn't have uid=70. Correct this before installing %{name}." 1>&2
 		exit 1
 	fi
 else
 	echo "Adding user ups UID=70."
-	/usr/sbin/useradd -u 70 -r -d /no/home -s /bin/false -c "UPS Manager User" -g ups ups 1>&2
+	/usr/sbin/useradd -u 70 -d /usr/share/empty -s /bin/false \
+		-c "UPS Manager User" -g ups ups 1>&2
 fi
 
 
@@ -260,10 +270,8 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	echo "Removing user ups."
-	/usr/sbin/userdel ups
-	echo "Removing group ups."
-	/usr/sbin/groupdel ups
+	%userremove ups
+	%groupremove ups
 fi
 
 %files
