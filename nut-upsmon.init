@@ -5,7 +5,7 @@
 # chkconfig:	2345 10 90
 #
 # description:	upsmon talks to upsd and notifies of ups status changes,
-#               also shutting systems down if required.
+#		also shutting systems down if required.
 # processname:	upsmon
 # config:	/etc/ups/
 
@@ -27,24 +27,24 @@ case "$1" in
 		daemon upsmon
 		[ "$?" -eq 0 ] && touch /var/lock/subsys/upsmon
 	else
-		msg_Already_Running "UPSmon"
+		msg_already_running "UPSmon"
 	fi
 	;;
   stop)
-  	if [ -f /var/lock/subsys/upsmon ]; then
+	if [ -f /var/lock/subsys/upsmon ]; then
 		msg_stopping "UPSmon"
 		killproc upsmon
 		rm -f /var/lock/subsys/upsmon
 	else
-		msg_Not_Running "UPS daemon"
+		msg_not_running "UPSmon"
 	fi
 	;;
-  restart)
+  restart|reload)
 	$0 stop
 	$0 start
 	;;
   force-reload)
-	$0 restart
+	$0 stop && $0 start
 	exit $?
 	;;
   status)
@@ -52,7 +52,7 @@ case "$1" in
 	exit $?
 	;;
   *)
-	msg_Usage "$0 {start|stop|status|restart|reload|force-reload}"
+	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
 	exit 1
 	;;
 esac 
