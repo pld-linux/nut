@@ -6,16 +6,16 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	1.4.1
-Release:	3
+Version:	2.0.0
+Release:	1
 License:	GPL
 Group:		Applications/System
-Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
-# Source0-md5:	ae91ea3d643d7665bda0a95ce62957a0
+Source0:	http://eu1.networkupstools.org/source/2.0/%{name}-%{version}.tar.gz
+# Source0-md5:	84649ad95809737b5ffc19efdd9e9952
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
-Source4:	http://www.nixz.net/nut/everups.c
+# Source4:	http://www.nixz.net/nut/everups.c
 # NoSource4-md5:	526bd50f3f5cedf6d60b99998f866b0d
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
