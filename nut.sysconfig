@@ -1,0 +1,24 @@
+# port to listen at (both TCP and UDP), defaults to 3305
+PORT=""
+
+# if TCP port is different from UDP port
+TCP_PORT=""
+
+# bind to this address only
+BIND_ADDRESS=""
+
+# start UPS drivers
+ups_start() {
+	# apcsmart /dev/ttyS1
+}
+
+# stop ups drivers
+ups_stop() {
+	# killproc apcsmart
+}
+
+# display some status info
+ups_status() {
+	# status apcsmart
+	# upsc localhost
+}
