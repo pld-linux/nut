@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# chkconfig: 2345 10 90
+# description: The ups daemon automatically starts a shutdown
+# processname: upsd
+# config: /etc/ups/
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Get config.
+. /etc/sysconfig/ups
+
+# Check x is up.
+
+# See how we are called.
+case "$1" in
+  start)
+	if [ "$HOST" = "localhost" ]; then
+	    msg_starting "$MODEL"
+	    daemon /usr/bin/$MODEL $OPTIONS $DEVICE 
+
+	    msg_starting "UPS daemon"
+	    daemon /usr/bin/upsd
+
+	    msg_starting "UPS monitor (master)"
+	    daemon /usr/bin/upsmon $HOST master
+	else
+	    msg_starting "UPS monitor (slave)"
+	    daemon /usr/bin/upsmon $HOST slave
+	fi
+
+	touch /var/lock/subsys/ups
+	;;
+  stop)
+	msg_stopping "UPS monitor"
+	killproc upsmon
+
+	if [ "$HOST" = "localhost" ]; then
+	    msg_stopping "UPS daemon"
+	    killproc upsd
+
+	    msg_stopping "$MODEL"
+	    killproc $MODEL
+	fi
+	rm -f /var/lock/subsys/ups
+	;;
+  restart)
+	$0 stop
+	$0 start
+	;;
+  status)
+	if [ "$HOST" = "localhost" ]; then
+	    status upsd
+	    status $MODEL
+	fi
+	status upsmon
+	;;
+  *)
+	echo "Usage: ups {start|stop|restart|status}"
+	exit 1
+esac
+
