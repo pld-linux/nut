@@ -5,7 +5,7 @@ Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
 Version:	1.4.0
-Release:	1
+Release:	1.1
 License:	GPL
 Group:		Applications/System
 Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
@@ -14,6 +14,7 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Patch0:		%{name}-client.patch
+Patch1:		%{name}-datadir.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -143,6 +144,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__aclocal}
@@ -226,9 +228,9 @@ fi
 %attr(755,root,root) /sbin/poweroff-ups
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
+%attr(640,root,nobody) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
 %attr(640,root,nobody) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
+%attr(640,root,nobody) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
@@ -241,6 +243,7 @@ fi
 %dir %attr(750,nobody,root) /var/lib/ups
 %dir %{_libdir}/nut
 %attr(755,root,root) %{_libdir}/nut/*
+%{_datadir}/nut
 
 %files common
 %defattr(644,root,root,755)
