@@ -63,8 +63,8 @@ These programs are part of a developing project to monitor the
 assortment of UPSes that are found out there in the field. Many models
 have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
-for safe shutdowns, live status tracking on web pages, and more.
-This package contains CGI utils.
+for safe shutdowns, live status tracking on web pages, and more. This
+package contains CGI utils.
 
 %description cgi -l pl
 Te programy s± czê¶ci± projektu do monitorowania wielu UPS-ów w jakim¶
@@ -151,7 +151,7 @@ if [ "$1" = "0" ]; then
 	fi
 	/sbin/chkconfig --del upsmon
 fi
-	
+
 %files
 %defattr(644,root,root,755)
 %doc *.gz docs/{,cables}/*.gz
