@@ -1,26 +1,33 @@
-# TODO: /var/lib/ups dir ownership (shouldn't be nobody)
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
-Summary(ru):	NUT - Network UPS Tools
-Summary(uk):	NUT - Network UPS Tools
 Name:		nut
-Version:	1.2.2
-Release:	1
+Version:	1.4.0
+Release:	2
 License:	GPL
 Group:		Applications/System
-Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.2/%{name}-%{version}.tar.gz
+Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
+# Source0-md5:	1ddf547866db0f1eeb9c535ba0339906
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
+Source4:	http://www.nixz.net/nut/everups.c
+# NoSource4-md5:	526bd50f3f5cedf6d60b99998f866b0d
 Patch0:		%{name}-client.patch
+Patch1:		%{name}-datadir.patch
+Patch2:		%{name}-noX11.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.1
 BuildRequires:	libpng-devel
-BuildRequires:	openssl-devel >= 0.9.7
+BuildRequires:	openssl-devel >= 0.9.6k
 PreReq:		rc-scripts
-Requires(post,preun):	/sbin/chkconfig
+Requires(pre):  /bin/id
+Requires(pre):  /usr/bin/getgid
+Requires(pre):  /usr/sbin/useradd
+Requires(post,preun):   /sbin/chkconfig
+Requires(postun):       /usr/sbin/groupdel
+Requires(postun):       /usr/sbin/userdel
 Requires:	%{name}-common = %{version}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	smartupstools
@@ -34,11 +41,17 @@ have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
 
+This nut ships with modified everups.c - support for Ever UPS models
+(by Mikolaj Tutak <mtutak@eranet.pl>)
+
 %description -l pl
 Te programy s± czê¶ci± projektu do monitorowania wielu UPS-ów w jakim¶
 otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±¶ formê
 sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
 zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
+
+Ta wersja posiada zmieniony sterownik everups.c - obs³uguje zasilacze
+firmy Ever UPS models (autorstwa Miko³aja Tutaka <mtutak@eranet.pl>)
 
 %description -l ru
 üÔÉ ÐÒÏÇÒÁÍÍÙ - ÞÁÓÔØ ÐÒÏÅËÔÁ ÐÏ ÍÏÎÉÔÏÒÉÎÇÕ ÒÁÚÌÉÞÎÙÈ UPS. õ ÍÎÏÇÉÈ
@@ -130,7 +143,7 @@ UPS ÞÅÒÅÚ ×ÅÂ-¦ÎÔÅÒÆÅÊÓ.
 Summary:	Files for NUT clients development
 Summary(pl):	Pliki do tworzenia klientów NUT-a
 Group:		Development/Libraries
-Requires:	openssl-devel >= 0.9.7
+Requires:	openssl-devel >= 0.9.6k
 # it does NOT require nut
 
 %description devel
@@ -142,26 +155,28 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+#%{!?_without_new_everups_driver:install %{SOURCE4} drivers/everups.c }
 
 %build
 %{__aclocal}
 %{__autoconf}
-LDFLAGS="-L%{_prefix}/X11R6/lib"; export LDFLAGS
 %configure \
 	--with-ssl \
 	--with-cgi \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
 	--with-statepath=%{_var}/lib/ups \
 	--with-drvpath=%{_libdir}/nut \
-	--with-cgipath=/home/services/httpd/cgi-bin \
-	--with-user=nobody \
+	--with-cgipath=/home/httpd/cgi-bin \
+	--with-user=ups \
 	--with-group=ttyS
 %{__make} all cgi
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/sbin,/etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
-	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}}
+	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}/nut}
 
 %{__make} install install-cgi \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -173,8 +188,8 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
 install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
 
-install clients/upsclient.o $RPM_BUILD_ROOT%{_libdir}
-install clients/upsclient.h $RPM_BUILD_ROOT%{_includedir}
+install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
+install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
 
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
@@ -183,6 +198,17 @@ EOF
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%pre
+if [ -n "`id -u ups 2>/dev/null`" ]; then
+	if [ "`id -u ups`" != "70" ]; then
+		echo "Error: user ups doesn't have uid=70. Correct this before installing %{name}." 1>&2
+		exit 1
+	fi
+else
+	echo "Adding user ups UID=70."
+	/usr/sbin/useradd -u 70 -r -d /no/home -s /bin/false -c "UPS Manager User" -g nobody ups 1>&2
+fi
 
 %post
 /sbin/chkconfig --add ups
@@ -216,6 +242,12 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del upsmon
 fi
 
+%postun
+if [ "$1" = "0" ]; then
+	echo "Removing user ups."
+	/usr/sbin/userdel ups
+fi      
+
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/upscmd
@@ -225,9 +257,9 @@ fi
 %attr(755,root,root) /sbin/poweroff-ups
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
-%attr(640,root,nobody) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
+%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
+%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
+%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
@@ -237,9 +269,10 @@ fi
 %{_mandir}/man8/upsdrvctl.8*
 %{_mandir}/man8/upslog.8*
 %{_mandir}/man8/upsrw.8*
-%dir %attr(750,nobody,root) /var/lib/ups
+%dir %attr(750,ups,root) /var/lib/ups
 %dir %{_libdir}/nut
 %attr(755,root,root) %{_libdir}/nut/*
+%{_datadir}/nut
 
 %files common
 %defattr(644,root,root,755)
@@ -263,7 +296,7 @@ fi
 
 %files cgi
 %defattr(644,root,root,755)
-%attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
+%attr(755,root,root) /home/httpd/cgi-bin/*.cgi
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/hosts.conf
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsset.conf
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.html
@@ -277,4 +310,5 @@ fi
 %files devel
 %defattr(644,root,root,755)
 %{_libdir}/upsclient.o
-%{_includedir}/upsclient.h
+%{_libdir}/parseconf.o
+%{_includedir}/nut
