@@ -3,22 +3,22 @@ Summary(pl):	Sieciowe narzЙdzie do UPS-Сw
 Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
-Version:	1.0.0
-Release:	4
+Version:	1.2.0
+Release:	1
 License:	GPL
 Group:		Applications/System
-Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
+Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.2/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
-Patch0:		%{name}-DESTDIR.patch
-Patch1:		%{name}-client.patch
-Patch2:		%{name}-fideltronik.patch
+Patch0:		%{name}-client.patch
+Patch1:		%{name}-fideltronik.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.1
 BuildRequires:	libpng-devel
+BuildRequires:	openssl-devel
 Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -112,29 +112,16 @@ UPS через веб-интерфейс.
 Цей пакет включа╓ CGI програми для доступу до ╕нформац╕╖ про статус
 UPS через веб-╕нтерфейс.
 
-%package devel
-Summary:	Files for NUT clients development
-Summary(pl):	Pliki do tworzenia klientСw NUT-a
-Group:		Development/Libraries
-# it does NOT require nut
-
-%description devel
-Object file and header for developing NUT clients.
-
-%description devel -l pl
-Plik wynikowy oraz nagЁСwek sЁu©╠ce do tworzenia klientСw NUT-a.
-
 %prep
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
-install %{_datadir}/automake/config.* .
 %{__aclocal}
 %{__autoconf}
 %configure \
+	--with-ssl \
 	--with-cgi \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
 	--with-statepath=%{_var}/lib/ups \
@@ -158,9 +145,6 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
 install conf/*.users conf/*.conf $RPM_BUILD_ROOT%{_sysconfdir}
-
-install clients/upsfetch.o $RPM_BUILD_ROOT%{_libdir}
-install clients/upsfetch.h $RPM_BUILD_ROOT%{_includedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -199,9 +183,10 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS README CHANGES CREDITS docs/*
+%doc NEWS README CHANGES CREDITS docs
 %attr(755,root,root) %{_bindir}/upscmd
 %attr(755,root,root) %{_bindir}/upslog
+%attr(755,root,root) %{_bindir}/upsrw
 %attr(755,root,root) %{_sbindir}/upsd
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
@@ -217,8 +202,6 @@ fi
 %files client
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/upsc
-%attr(755,root,root) %{_bindir}/upsct
-%attr(755,root,root) %{_bindir}/upsct2
 %attr(755,root,root) %{_sbindir}/upsmon
 %attr(755,root,root) %{_sbindir}/upssched
 %attr(755,root,root) %{_sbindir}/upssched-cmd
@@ -230,10 +213,4 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
 %config(noreplace) %{_sysconfdir}/hosts.conf
-%config(noreplace) %{_sysconfdir}/multimon.conf
 %config(noreplace) %{_sysconfdir}/upsset.conf
-
-%files devel
-%defattr(644,root,root,755)
-%{_libdir}/upsfetch.o
-%{_includedir}/upsfetch.h
