@@ -1,8 +1,8 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	0.45.1
-Release:	4
+Version:	0.45.2
+Release:	1
 License:	GPL
 Group:		Applications/System
 Group(de):	Applikationen/System
@@ -173,6 +173,7 @@ fi
 %attr(755,root,root) %{_bindir}/ipt-anzen
 %attr(755,root,root) %{_bindir}/mge-ellipse
 %attr(755,root,root) %{_bindir}/mgeups
+%attr(755,root,root) %{_bindir}/masterguard
 %attr(755,root,root) %{_bindir}/multilink
 %attr(755,root,root) %{_bindir}/mustekups
 %attr(755,root,root) %{_bindir}/newapc
@@ -187,11 +188,13 @@ fi
 %attr(755,root,root) %{_bindir}/ups-trust425+625
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) %{_bindir}/upslog
+%attr(755,root,root) %{_bindir}/victronups
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/ups.conf
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.users
+%{_mandir}/man5/*
 %{_mandir}/man8/*
 %dir %attr(750,nobody,root) /var/lib/ups
 
