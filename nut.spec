@@ -21,6 +21,7 @@ BuildRequires:	libpng-devel
 Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Obsoletes:	smartupstools
 
 %define		_sysconfdir	/etc/ups
 
