@@ -1,19 +1,19 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	0.45.5
-Release:	3
+Version:	0.99.1
+Release:	1
 License:	GPL
 Group:		Applications/System
-Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
+Source0:	http://www.exploits.org/nut/testing/0.99/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-client.patch
-Patch2:		%{name}-lookup_for_libgd_ac_fix.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.1
 BuildRequires:	libpng-devel
 Prereq:		rc-scripts
@@ -89,15 +89,19 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
+install /usr/share/automake/config.* .
+%{__aclocal}
 %{__autoconf}
 %configure \
-	--with-statepath=/var/lib/ups \
-	--with-uid=nobody \
-	--with-group=ttyS \
-	--with-modelpath=%{_libdir}/nut
+	--with-cgi \
+	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
+	--with-statepath=%{_var}/lib/ups \
+	--with-drvpath=%{_libdir}/nut \
+	--with-cgipath=/home/services/httpd/cgi-bin \
+	--with-user=nobody \
+	--with-group=ttyS
 %{__make} all cgi
 
 %install
@@ -105,32 +109,23 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
 	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}}
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	CGIPATH=/home/httpd/cgi-bin
+%{__make} install install-cgi \
+	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
-install conf/ups.conf $RPM_BUILD_ROOT%{_sysconfdir}/ups.conf
 
-install clients/upsfetch.o $RPM_BUILD_ROOT%{_libdir}
-install clients/upsfetch.h $RPM_BUILD_ROOT%{_includedir}
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
+install -m644 conf/*.users conf/*.conf $RPM_BUILD_ROOT%{_sysconfdir}
 
-gzip -9nf CREDITS README docs/{FAQ,Changes*,*.txt,cables/*}
+install -m644 clients/upsfetch.o $RPM_BUILD_ROOT%{_libdir}
+install -m644 clients/upsfetch.h $RPM_BUILD_ROOT%{_includedir}
+
+ln -s %{_libdir}/nut/upsdrvctl $RPM_BUILD_ROOT%{_sbindir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-#%pre
-#if [ -n "`id -u ups 2>/dev/null`" ]; then
-#	if [ "`id -u ups`" != "68" ]; then
-#		echo "Warning: user ups does not have uid=68. Correct this before installing NUT" 1>&2
-#		exit 1
-#	fi
-#else
-#       /usr/sbin/useradd -u 68 -r -d /var/lib/ups -s /bin/sh -c "Network UPS Tools User" -g ttyS ups 1>&2
-#fi
 
 %post
 /sbin/chkconfig --add ups
@@ -156,11 +151,6 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del ups
 fi
 
-#%postun
-#if [ "$1" = "0" ]; then
-#	userdel ups 2>&1
-#fi
-
 %preun client
 if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/upsmon ]; then
@@ -171,10 +161,11 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz docs/{,cables}/*.gz
+%doc NEWS README CHANGES CREDITS docs/*
 %attr(755,root,root) %{_bindir}/upscmd
-%attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) %{_bindir}/upslog
+%attr(755,root,root) %{_sbindir}/upsdrvctl
+%attr(755,root,root) %{_sbindir}/upsd
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
@@ -200,7 +191,7 @@ fi
 
 %files cgi
 %defattr(644,root,root,755)
-%attr(755,root,root) /home/httpd/cgi-bin/*.cgi
+%attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
 %config(noreplace) %{_sysconfdir}/hosts.conf
 %config(noreplace) %{_sysconfdir}/multimon.conf
 %config(noreplace) %{_sysconfdir}/upsset.conf
