@@ -120,12 +120,12 @@ diff -uNdr nut-0.45.0.old/conf/Makefile.in nut-0.45.0/conf/Makefile.in
 +	$(INSTALLCMD) -d $(DESTDIR)$(sysconfdir)
  	@for f in $(SECFILES) ; do \
 -		$(INSTALLCMD) -m 0600 $$f $(CONFPATH)/$$f.sample; \
-+		$(INSTALLCMD) -m 0600 $$f $(DESTDIR)$(sysconfdir)/$$f.sample; \
++		$(INSTALLCMD) -m 0600 $$f $(DESTDIR)$(sysconfdir)/$$f; \
  	done
  
  	@for f in $(PUBFILES) ; do \
 -		$(INSTALLCMD) -m 0644 $$f $(CONFPATH)/$$f.sample; \
-+		$(INSTALLCMD) -m 0644 $$f $(DESTDIR)$(sysconfdir)/$$f.sample; \
++		$(INSTALLCMD) -m 0644 $$f $(DESTDIR)$(sysconfdir)/$$f; \
  	done
 diff -uNdr nut-0.45.0.old/man/Makefile.in nut-0.45.0/man/Makefile.in
 --- nut-0.45.0.old/man/Makefile.in	Tue Jan 23 22:01:15 2001
