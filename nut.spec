@@ -1,7 +1,7 @@
 Summary:	Network UPS Tools
 Name:		nut
-Version:	0.43.0
-Release:	2
+Version:	0.43.2
+Release:	1
 License:	GPL
 Group:		Utilities/System
 Group(pl):	Narzêdzia/System
