@@ -1,16 +1,15 @@
 #
 # Conditional build:
 %bcond_with	hidups			# experimental hidups driver
-%bcond_with	new_everups_driver	# support for Ever UPS models (broken)
-
+#
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:    2.0.1
-Release:    1
-License:    GPL
-Group:      Applications/System
-Source0:    http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pre1.tar.gz
+Version:	2.0.1
+Release:	1
+License:	GPL
+Group:		Applications/System
+Source0:	http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pre1.tar.gz
 # Source0-md5:  5f33212f0fdd37bc6ac30a07b7d2e54c
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
@@ -33,8 +32,8 @@ Requires(post,preun):   /sbin/chkconfig
 Requires(postun):       /usr/sbin/groupdel
 Requires(postun):       /usr/sbin/userdel
 Requires:	%{name}-common = %{version}-%{release}
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	smartupstools
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ups
 
