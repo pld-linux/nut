@@ -4,7 +4,7 @@ Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
 Version:	1.0.0
-Release:	1.1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
