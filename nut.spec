@@ -2,7 +2,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	0.45.0
-Release:	0
+Release:	1
 License:	GPL
 Group:		Applications/System
 Group(de):	Applikationen/System
@@ -14,7 +14,7 @@ Patch1:		%{name}-ever.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	gd-devel
 BuildRequires:	libpng-devel
-Prereq:		chkconfig
+Prereq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ups
@@ -75,10 +75,10 @@ install scripts/RedHat-6.0/ups-config $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 
 (
-cd $RPM_BUILD_ROOT/etc/ups
+cd $RPM_BUILD_ROOT%{_sysconfdir}
 for i in `ls *`
 do
-  mv $i `basename $i .sample`
+	mv $i `basename $i .sample`
 done
 )
 
