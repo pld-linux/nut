@@ -27,34 +27,25 @@ case "$1" in
   start)
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/ups ]; then
-		show "Starting UPS drivers"
-		busy
-		ups_start >/dev/null 2>&1
+	    	show "Starting UPS drivers"
+		daemon upsdrvctl start
 		if [ $? -eq 0 ]; then
-			ok
-			msg_starting "UPS daemon"
-			daemon "upsd $OPTIONS\""
+			msg_starting "UPS network daemon"
+			daemon "upsd $OPTIONS"
+			RETVAL=$?
 			touch /var/lock/subsys/ups
-		else
-			fail
 		fi
 	else
-		msg_Already_Running "UPS daemon"
+		msg_Already_Running "UPS drivers and network daemon"
 	fi
 	;;
   stop)
   	if [ -f /var/lock/subsys/ups ]; then
 		msg_stopping "UPS daemon"
 		killproc upsd
-		
 		show "Stopping UPS drivers"
-		busy
-		ups_stop >/dev/null 2>&1
-		if [ $? -eq 0 ]; then
-			ok
-		else
-			fail
-		fi
+		daemon upsdrvctl stop
+		RETVAL=$?
 		rm -f /var/lock/subsys/ups
 	else
 		msg_Not_Running "UPS daemon"
@@ -64,13 +55,19 @@ case "$1" in
 	$0 stop
 	$0 start
 	;;
+  reload)
+  	msg_reloading "UPS drivers"
+	daemon upsdrvctl reload
+	msg_reloading "UPS network daemon"
+	daemon upsd -c reload
+  	;;
   force-reload)
 	$0 restart
 	exit $?
 	;;
   status)
 	status upsd
-	ups_status
+	upsdrvctl status
 	;;
   *)
 	msg_Usage "$0 {start|stop|status|restart|reload|force-reload}"
