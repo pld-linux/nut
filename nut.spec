@@ -10,7 +10,7 @@ Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pre1.tar.gz
-# Source0-md5:  5f33212f0fdd37bc6ac30a07b7d2e54c
+# Source0-md5:	5f33212f0fdd37bc6ac30a07b7d2e54c
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
