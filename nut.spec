@@ -3,7 +3,7 @@ Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
-Version:	1.2.0
+Version:	1.2.1
 Release:	1
 License:	GPL
 Group:		Applications/System
@@ -12,7 +12,6 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Patch0:		%{name}-client.patch
-Patch1:		%{name}-fideltronik.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -128,7 +127,6 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__aclocal}
@@ -206,6 +204,7 @@ fi
 %attr(755,root,root) %{_sbindir}/upsd
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
+%dir %{_sysconfdir}
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
 %attr(640,root,nobody) %config(noreplace) %{_sysconfdir}/ups.conf
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.users
@@ -222,12 +221,14 @@ fi
 %attr(755,root,root) %{_sbindir}/upssched
 %attr(755,root,root) %{_sbindir}/upssched-cmd
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
+%dir %{_sysconfdir}
 %attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsmon.conf
 %attr(600,root,root) %config(noreplace) %{_sysconfdir}/upssched.conf
 
 %files cgi
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
+%dir %{_sysconfdir}
 %config(noreplace) %{_sysconfdir}/hosts.conf
 %config(noreplace) %{_sysconfdir}/upsset.conf
 %config(noreplace) %{_sysconfdir}/*.html
