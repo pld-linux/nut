@@ -8,7 +8,7 @@ Version:	1.2.2
 Release:	1
 License:	GPL
 Group:		Applications/System
-# Source0-md5:	77523931f32fc1dffcfbe2f8de37df16
+# Source0-md5:	77523931f32fc1dffcfbe2f8de37df15
 Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.2/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
