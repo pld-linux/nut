@@ -4,7 +4,7 @@ Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
 Version:	1.0.0
-Release:	1
+Release:	1.1
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
@@ -13,6 +13,7 @@ Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-client.patch
+Patch2:		%{name}-fideltronik.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -127,9 +128,10 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
-install /usr/share/automake/config.* .
+install %{_datadir}/automake/config.* .
 %{__aclocal}
 %{__autoconf}
 %configure \
