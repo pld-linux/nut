@@ -18,6 +18,7 @@
 # Get config.
 [ -f /etc/sysconfig/upsmon ] && . /etc/sysconfig/upsmon
 
+
 # See how we are called.
 case "$1" in
   start)
@@ -25,9 +26,11 @@ case "$1" in
 	if [ ! -f /var/lock/subsys/upsmon ]; then
 		msg_starting "UPSmon"
 		daemon upsmon
-		[ "$?" -eq 0 ] && touch /var/lock/subsys/upsmon
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/upsmon
 	else
 		msg_already_running "UPSmon"
+		exit 1
 	fi
 	;;
   stop)
@@ -37,6 +40,7 @@ case "$1" in
 		rm -f /var/lock/subsys/upsmon
 	else
 		msg_not_running "UPSmon"
+		exit 1
 	fi
 	;;
   restart|reload)
@@ -56,3 +60,5 @@ case "$1" in
 	exit 1
 	;;
 esac 
+
+exit $RETVAL

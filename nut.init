@@ -22,6 +22,19 @@
 [ -n "$TCP_PORT" ] && OPTIONS="-t $TCP_PORT"
 [ -n "$BIND_ADDRESS" ] && OPTIONS="$OPTIONS -i $BIND_ADDRESS"
 
+if [ -n "$BIND_ADDRESS" ] || [ -n "$TCP_PORT" ]; then
+	# Check that networking is up.
+	if is_yes "${NETWORKING}"; then
+		if [ ! -f /var/lock/subsys/network ]; then
+			msg_network_down ntp
+			exit 1
+		fi
+	else
+		exit 0
+	fi
+fi
+
+
 # See how we are called.
 case "$1" in
   start)
@@ -51,6 +64,7 @@ case "$1" in
 		rm -f /var/lock/subsys/ups
 	else
 		msg_not_running "UPS daemon"
+		exit 1
 	fi
 	;;
   restart)
@@ -58,10 +72,15 @@ case "$1" in
 	$0 start
 	;;
   reload)
-	show "Reloading UPS drivers"
-	daemon /usr/lib/nut/upsdrvctl reload
-	msg_reloading "UPS network daemon"
-	daemon upsd -c reload
+	if [ -f /var/lock/subsys/ups ]; then
+		show "Reloading UPS drivers"
+		daemon /usr/lib/nut/upsdrvctl reload
+		msg_reloading "UPS network daemon"
+		daemon upsd -c reload
+	else
+		msg_not_running "UPS daemon"
+		exit 1
+	fi
 	;;
   force-reload)
 	$0 reload
