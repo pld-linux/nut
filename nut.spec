@@ -1,8 +1,8 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	0.45.0
-Release:	3
+Version:	0.45.1
+Release:	1
 License:	GPL
 Group:		Applications/System
 Group(de):	Applikationen/System
@@ -10,11 +10,8 @@ Group(pl):	Aplikacje/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
 Source1:	ups.init
 Patch0:		%{name}-DESTDIR.patch
-Patch1:		%{name}-ever.patch
-Patch2:		%{name}-nonblock.patch
-Patch3:		%{name}-config.patch
-Patch4:		%{name}-client.patch
-Patch5:		%{name}-lookup_for_libgd_ac_fix.patch
+Patch1:		%{name}-client.patch
+Patch2:		%{name}-lookup_for_libgd_ac_fix.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	gd-devel >= 2.0.1
@@ -61,9 +58,6 @@ for safe shutdowns, live status tracking on web pages, and more.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 %build
 autoconf
@@ -108,28 +102,35 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc *.gz docs/{,cables}/*.gz
-%attr(755,root,root) %{_bindir}/apcsmart
-%attr(755,root,root) %{_bindir}/bestups
-%attr(755,root,root) %{_bindir}/fentonups
-%attr(755,root,root) %{_bindir}/genericups
-%attr(755,root,root) %{_bindir}/optiups
-%attr(755,root,root) %{_bindir}/ups-trust425+625
 
+%attr(755,root,root) %{_bindir}/aeg
+%attr(755,root,root) %{_bindir}/apcsmart
 %attr(755,root,root) %{_bindir}/belkin
 %attr(755,root,root) %{_bindir}/bestfort
 %attr(755,root,root) %{_bindir}/bestuferrups
+%attr(755,root,root) %{_bindir}/bestups
 %attr(755,root,root) %{_bindir}/engetron
+%attr(755,root,root) %{_bindir}/everups
+%attr(755,root,root) %{_bindir}/fentonups
+%attr(755,root,root) %{_bindir}/genericups
 %attr(755,root,root) %{_bindir}/ipt-anzen
 %attr(755,root,root) %{_bindir}/mge-ellipse
 %attr(755,root,root) %{_bindir}/mgeups
 %attr(755,root,root) %{_bindir}/multilink
 %attr(755,root,root) %{_bindir}/mustekups
+%attr(755,root,root) %{_bindir}/newapc
+%attr(755,root,root) %{_bindir}/optiups
 %attr(755,root,root) %{_bindir}/powercom
 %attr(755,root,root) %{_bindir}/sec
+%attr(755,root,root) %{_bindir}/sms
 %attr(755,root,root) %{_bindir}/toshiba1500
+%attr(755,root,root) %{_bindir}/upsc
+%attr(755,root,root) %{_bindir}/upscmd
+%attr(755,root,root) %{_bindir}/upsct
+%attr(755,root,root) %{_bindir}/upsct2
+%attr(755,root,root) %{_bindir}/upsdrvctl
 %attr(755,root,root) %{_bindir}/upseyeux
-%attr(755,root,root) %{_bindir}/victronups
-%attr(755,root,root) %{_bindir}/everups
+%attr(755,root,root) %{_bindir}/ups-trust425+625
 
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) %{_bindir}/upslog
