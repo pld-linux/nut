@@ -1,30 +1,20 @@
---- ../BUILD/nut-1.4.1/drivers/everups.c	2003-06-11 10:56:46.000000000 +0200
-+++ nut-1.4.1/drivers/everups.c			2004-06-17 20:32:18.000000000 +0200
-@@ -55,11 +55,15 @@
- {
-         switch(upstype)
-         {
--	        case 67: return "NET 500-DPC";
--		case 68: return "NET 700-DPC";
--		case 69: return "NET 1000-DPC";
--		case 70: return "NET 1400-DPC";
--		case 71: return "NET 2200-DPC";
-+	        case 67: return "NET 500-DPC (old)";
-+		case 68: return "NET 700-DPC (old)";
-+		case 69: return "NET 1000-DPC (old)";
-+		case 70: return "NET 1400-DPC (old)";
-+		case 71: return "NET 2200-DPC (old)";
-+ 		case 73: return "NET 700-DPC (new)";
+--- everups.c	2004-06-20 13:44:39.000000000 +0200
++++ drivers/everups.c	2004-06-20 13:46:33.000000000 +0200
+@@ -63,6 +63,10 @@
+ 		case 69: return "NET 1000-DPC";
+ 		case 70: return "NET 1400-DPC";
+ 		case 71: return "NET 2200-DPC";
++		case 73: return "NET 700-DPC (new)";
 +		case 74: return "NET 1000-DPC (new)";
 +		case 75: return "NET 1400-DPC (new)";
 +		case 76: return "NET 500-DPC (new)";
  		case 81: return "AP 450-PRO";
  		case 82: return "AP 650-PRO";
  		default:
-@@ -106,7 +110,10 @@
+@@ -109,7 +113,10 @@
  	if (Code(1)) {  /*Line voltage*/
- 		upssendchar(245);
- 		upsrecvchars((char*) recBuf,2);
+ 		ser_send_char(upsfd, 245);
+ 		ser_get_buf_len(upsfd, recBuf, 2, 3, 0);
 -		lineV=(recBuf[0]*100+recBuf[1]*25600)/372;
 +		if ( upstype > 72 && upstype < 77)
 +			lineV=(recBuf[0]*100+recBuf[1]*25600)/352;
