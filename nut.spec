@@ -1,16 +1,15 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	1.0.0
+Version:	1.1.0
 Release:	1
 License:	GPL
 Group:		Applications/System
-Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
+Source0:	http://www.exploits.org/nut/testing/1.1/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
-Patch0:		%{name}-DESTDIR.patch
-Patch1:		%{name}-client.patch
+Patch0:		%{name}-client.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -88,10 +87,8 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
-install /usr/share/automake/config.* .
 %{__aclocal}
 %{__autoconf}
 %configure \
