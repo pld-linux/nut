@@ -2,7 +2,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	0.45.1
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Group(de):	Applikationen/System
@@ -79,6 +79,7 @@ install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups}
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
+install conf/ups.conf $RPM_BUILD_ROOT%{_sysconfdir}/ups.conf
 
 gzip -9nf CREDITS README docs/{FAQ,Changes*,*.txt,cables/*}
 
@@ -165,6 +166,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
+%attr(640,root,root) %config(noreplace) %{_sysconfdir}/ups.conf
+%attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.users
 %{_mandir}/man8/*
 %dir %attr(750,nobody,root) /var/lib/ups
 
@@ -176,12 +179,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/upsmon
 %attr(755,root,root) %{_sbindir}/upssched
 %attr(755,root,root) %{_sbindir}/upssched-cmd
-%config(noreplace) %{_sysconfdir}/hosts.conf
-%config(noreplace) %{_sysconfdir}/multimon.conf
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
 %attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsmon.conf
+%attr(600,root,root) %config(noreplace) %{_sysconfdir}/upssched.conf
 
 %files cgi
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/httpd/cgi-bin/*.cgi
-#%attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsset.passwd
+%config(noreplace) %{_sysconfdir}/hosts.conf
+%config(noreplace) %{_sysconfdir}/multimon.conf
+%config(noreplace) %{_sysconfdir}/upsset.conf
