@@ -269,7 +269,7 @@ if [ "$1" = "0" ]; then
 	/usr/sbin/userdel ups
 	echo "Removing group ups."
 	/usr/sbin/groupdel ups
-fi      
+fi
 
 %files
 %defattr(644,root,root,755)
