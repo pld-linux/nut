@@ -1,6 +1,6 @@
---- ../BUILD/nut-2.0.0/drivers/everups.c	2004-02-19 02:05:08.000000000 +0100
-+++ nut-2.0.0/drivers/everups.c	2004-06-17 01:10:55.000000000 +0200
-@@ -58,11 +58,15 @@
+--- ../BUILD/nut-1.4.1/drivers/everups.c	2003-06-11 10:56:46.000000000 +0200
++++ nut-1.4.1/drivers/everups.c			2004-06-17 20:32:18.000000000 +0200
+@@ -55,11 +55,15 @@
  {
          switch(upstype)
          {
@@ -21,17 +21,15 @@
  		case 81: return "AP 450-PRO";
  		case 82: return "AP 650-PRO";
  		default:
-@@ -109,7 +113,13 @@
+@@ -106,7 +110,10 @@
  	if (Code(1)) {  /*Line voltage*/
- 		ser_send_char(upsfd, 245);
- 		ser_get_buf_len(upsfd, recBuf, 2, 3, 0);
-+		
-+	if ( upstype > 72 && upstype < 77)
-+		lineV=(recBuf[0]*100+recBuf[1]*25600)/352;
-+	else
- 		lineV=(recBuf[0]*100+recBuf[1]*25600)/372;
-+	
-+		
+ 		upssendchar(245);
+ 		upsrecvchars((char*) recBuf,2);
+-		lineV=(recBuf[0]*100+recBuf[1]*25600)/372;
++		if ( upstype > 72 && upstype < 77)
++			lineV=(recBuf[0]*100+recBuf[1]*25600)/352;
++		else
++			lineV=(recBuf[0]*100+recBuf[1]*25600)/372;
  	} else {
  		upslog(LOG_INFO, "Code failed");
  		dstate_datastale();
