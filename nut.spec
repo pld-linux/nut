@@ -6,7 +6,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	2.0.1
-Release:	6
+Release:	7
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pre4.tar.gz
@@ -15,6 +15,7 @@ Source0:	http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pr
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
+Source4:	%{name}.sysconfig.upsmon
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
 Patch2:		%{name}-config.patch
@@ -195,6 +196,7 @@ install -d $RPM_BUILD_ROOT{/sbin,/etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/upsmon
 
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
 install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
@@ -317,6 +319,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
 %attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsmon.conf
 %attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upssched.conf
+%config(noreplace) %verify(not size mtime md5) /etc/sysconfig/upsmon
 %{_mandir}/man5/upsmon.conf.5*
 %{_mandir}/man5/upssched.conf.5*
 %{_mandir}/man8/upsc.8*
