@@ -1,0 +1,384 @@
+diff -uNdr nut-0.45.0.old/README nut-0.45.0/README
+--- nut-0.45.0.old/README	Mon May 28 12:59:17 2001
++++ nut-0.45.0/README	Mon Jul  2 12:39:04 2001
+@@ -139,6 +139,10 @@
+                            - Match Lite
+                            - NetPro
+ 
++	everups          - EVER Sp. z o.o models
++                           - NET *-DPC
++                           - AP *-PRO 
++
+ Generic UPS driver
+ ==================
+ 
+diff -uNdr nut-0.45.0.old/include/upscommon.h nut-0.45.0/include/upscommon.h
+--- nut-0.45.0.old/include/upscommon.h	Mon May 28 12:13:24 2001
++++ nut-0.45.0/include/upscommon.h	Mon Jul  2 12:37:44 2001
+@@ -42,6 +42,9 @@
+ /* any characters received that match members of ignchars are discarded */
+ int upsrecv (char *buf, int buflen, char endchar, const char *ignchars);
+ 
++/* read buflen chars and store in buf */
++int upsrecvchars (char *buf, int buflen);
++
+ /* send a byte to the ups */
+ int upssendchar (char data);
+ /* send a string to the ups */
+diff -uNdr nut-0.45.0.old/models/Makefile.in nut-0.45.0/models/Makefile.in
+--- nut-0.45.0.old/models/Makefile.in	Mon Jul  2 12:37:01 2001
++++ nut-0.45.0/models/Makefile.in	Mon Jul  2 12:40:50 2001
+@@ -9,7 +9,7 @@
+ PROGS	= ups-trust425+625 apcsmart genericups optiups \
+ 	  victronups ipt-anzen bestfort mustekups engetron belkin powercom \
+ 	  bestuferrups toshiba1500 newapc mge-ellipse mgeups upseyeux \
+-	  multilink
++	  multilink everups
+ PROGS2	= bestups fentonups sec
+ LIBOBJ	= @LIBOBJ@ @NETLIBS@ @SERLIBS@
+ 
+diff -uNdr nut-0.45.0.old/models/everups.c nut-0.45.0/models/everups.c
+--- nut-0.45.0.old/models/everups.c	Thu Jan  1 01:00:00 1970
++++ nut-0.45.0/models/everups.c	Mon Jul  2 12:37:44 2001
+@@ -0,0 +1,297 @@
++/* everups.c - support for Ever UPS models
++
++   Copyright (C) 2001  Bartek Szady <bszx@bszxdomain.edu.eu.org>
++
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 2 of the License, or
++   (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.              
++*/
++
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <signal.h>
++#include <stdlib.h>
++#include <string.h>
++#include <syslog.h>
++#include <unistd.h>
++#include <sys/file.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/ioctl.h>
++#include <sys/termios.h>
++
++#include "config.h"
++#include "proto.h"
++#include "shared.h"
++#include "version.h"
++#include "upscommon.h"
++#include "common.h"
++
++	int	shmok = 1;
++	char	statefn[256];
++	itype	*info;
++
++	unsigned char	upstype = 0;
++	int	_infomax = 8;
++	int	sddelay = 90;	/* wait 90 seconds for shutdown */
++extern	int	upsfd;	
++
++void init_serial(void)
++{
++        int     clr_bit = TIOCM_DTR | TIOCM_RTS;
++        ioctl(upsfd, TIOCMBIC, &clr_bit);
++}
++
++int Code(int tries)
++{
++	unsigned char cRecv;
++	do {
++		upssendchar(208);
++		upsrecvchars(&cRecv,1);
++		if (cRecv==208)
++			return 1;
++	} while (--tries>0);
++	return 0;
++}
++
++int InitUpsType()
++{
++	if (Code(1)) {
++		upssendchar(173);
++		upsrecvchars(&upstype,1);
++		return 1;
++	} else
++		return 0;
++}
++
++char *GetTypeUpsName()
++{
++        switch(upstype)
++        {
++	        case 67: return "NET 500-DPC";
++		case 68: return "NET 700-DPC";
++		case 69: return "NET 1000-DPC";
++		case 70: return "NET 1400-DPC";
++		case 71: return "NET 2200-DPC";
++		case 81: return "AP 450-PRO";
++		case 82: return "AP 650-PRO";
++		default:
++			return "Unknown";
++	}
++}
++
++void initinfo (void)
++{
++	create_info (_infomax, shmok);
++
++	/* setup the basics */
++
++	addinfo (INFO_MFR, "Ever", 0, 0);
++	addinfo (INFO_MODEL, GetTypeUpsName(), 0, 0);
++	addinfo (INFO_STATUS, "", 0, 0);
++	addinfo (INFO_UTILITY, "",0,0);
++	addinfo (INFO_BATTPCT,"",0,0);
++//	addinfo (INFO_LOWXFER,"",0,0);
++//	addinfo (INFO_HIGHXFER,"",0,0);
++	addinfo (INFO_BATTVOLT,"",0,0);
++	
++}
++
++/* normal idle loop - keep up with the current state of the UPS */
++void updateinfo (void)
++{
++	char	temp[VALSIZE];
++	int	battery=0,standby=0;
++	unsigned char recBuf[2];
++	unsigned long acuV;
++	unsigned long lineV;
++	double	fVal;
++	
++	if (!Code(2)) {
++		syslog (LOG_INFO, "Code failed: %m\n");
++		return;
++	}
++	//Line status
++	upssendchar(175);
++	upsrecvchars(recBuf,1);
++	if ((recBuf[0] & 1) !=0)
++		standby=1;
++	else 
++		battery=(recBuf[0] &4) !=0;
++	if (Code(1)) {  //Accumulator voltage value
++		upssendchar(189);
++		upsrecvchars(recBuf,1);
++		acuV=((unsigned long)recBuf[0])*150;
++		acuV/=255;
++	} else {
++		syslog (LOG_INFO, "Code failed: %m\n");
++		return;
++	}
++	if (Code(1)) {  //Line voltage
++		upssendchar(245);
++		upsrecvchars(recBuf,2);
++		lineV=(recBuf[0]*100+recBuf[1]*25600)/372;
++	} else {
++		syslog (LOG_INFO, "Code failed: %m\n");
++		return;
++	}
++
++	strcpy (temp, "");
++
++	if (battery && acuV<105)
++		strcat (temp, "LB ");	/* low battery */
++
++	if (battery)
++		strcat (temp, "OB");	/* on battery */
++	else
++		strcat (temp, "OL");	/* on line */
++
++	setinfo (INFO_STATUS, temp);
++	snprintf(temp,VALSIZE,"%03ld",lineV);
++	setinfo (INFO_UTILITY,temp);
++	snprintf(temp,VALSIZE,"%03.2f",(double)acuV /10.0);
++	setinfo (INFO_BATTVOLT,temp);
++	fVal=((double)acuV-95.0)*100.0;
++	if (standby)
++	  fVal/=(135.5-95.0);
++	else
++	  fVal/=(124.5-95.0);
++	if (fVal>100)
++		fVal=100;
++	else if (fVal<0)
++		fVal=0;
++	snprintf(temp,VALSIZE,"%03.1f",fVal);
++	setinfo (INFO_BATTPCT,temp);
++
++	writeinfo();
++}
++
++/* power down the attached load immediately */
++void forceshutdown(char *port)
++{
++	int	flags, ret;
++
++	open_serial(port,B300);
++	init_serial();
++	InitUpsType();
++
++	syslog (LOG_INFO, "Initiating UPS shutdown\n");
++	printf ("Initiating forced UPS shutdown!\n");
++	printf ("Not implemented yet\n");
++
++	exit(0);
++}
++
++/* install pointers to functions for msg handlers called from msgparse */
++void setuphandlers(void)
++{
++	/* TODO: future */
++}
++
++void usage(char *prog)
++{
++	printf ("usage: %s [-h] [-d <num>] [-l] -t <num> [-k] <device>\n", prog);
++	printf ("Example: %s -t 1 /dev/ttyS0\n", prog);
++}
++
++void help(char *prog)
++{
++	printf ("usage: %s [-h] [-d <num>] [-k] <device>\n", prog);
++	printf ("\n");
++	printf ("-d <num>   - wait <num> seconds after sending shutdown command\n");
++	printf ("-h         - display this help\n");
++	printf ("-k         - force shutdown\n");
++	printf ("-m         - show model name\n");
++	printf ("<device>   - /dev entry corresponding to UPS port\n");
++}
++
++int main (int argc, char **argv)
++{
++	char	*portname, *prog;
++	int	i;
++	int	showmodel=0;
++
++	printf ("Network UPS Tools - Ever UPS driver 0.1 (%s)\n", UPS_VERSION);
++	openlog ("everups", LOG_PID, LOG_FACILITY);
++	prog = argv[0];
++	
++	while ((i = getopt(argc, argv, "+d:k:hm")) != EOF) {
++		switch (i) {
++			case 'd':
++				sddelay = atoi(optarg);
++				break;
++			case 'k':
++				forceshutdown (optarg);
++				break;
++			case 'h':
++				help (prog);
++				exit (1);
++				break;
++			case 'm':
++				showmodel=1;
++				break;
++			default:
++				usage (prog);
++				break;
++		}
++	}
++
++	argc -= optind;
++	argv += optind;
++
++	if (argc != 1) {
++		help (prog);
++		exit (1);
++	}
++
++	droproot();
++
++	portname = NULL;
++	for (i = strlen(argv[0]); i >= 0; i--)
++		if (argv[0][i] == '/') {
++			portname = &argv[0][i+1];
++			break;
++		}
++
++	if (portname == NULL) {
++		printf ("Unable to abbreviate %s\n", argv[0]);
++		exit (1);
++	}
++
++	snprintf (statefn, sizeof(statefn), "%s/everups-%s", STATEPATH,
++	          portname);
++	open_serial (argv[0],B300);
++	init_serial();
++	InitUpsType();
++	printf ("Ups type: %s\n",GetTypeUpsName());
++	if (showmodel)
++		return 0;
++
++	initinfo();
++
++	createmsgq();   /* try to create IPC message queue */
++
++	setuphandlers();
++
++	background();
++
++	for (;;) {
++		updateinfo();
++
++		/* wait up to 2 seconds for a message from the upsd */
++
++		if (getupsmsg(2))
++			syslog (LOG_INFO, "Received a message from upsd\n");
++	}
++}
+diff -uNdr nut-0.45.0.old/models/upscommon.c nut-0.45.0/models/upscommon.c
+--- nut-0.45.0.old/models/upscommon.c	Mon May 28 12:13:24 2001
++++ nut-0.45.0/models/upscommon.c	Mon Jul  2 12:37:44 2001
+@@ -361,6 +361,40 @@
+ 	return (-1);	/* not reached */
+ }
+ 
++/* read buflen chars and store in buf */
++int upsrecvchars (char *buf, int buflen)
++{
++	int ret,count;
++	char* bufptr;
++	struct 	sigaction sa;
++	sigset_t sigmask;
++
++	sa.sa_handler = timeout;
++	sigemptyset (&sigmask);
++	sa.sa_mask = sigmask;
++	sa.sa_flags = 0;
++	sigaction (SIGALRM, &sa, NULL);
++
++	alarm (3);
++	
++	bufptr=buf;
++	count=buflen;
++	while (count>0) {
++		ret=read(upsfd,bufptr,count);
++		if (ret>0) {
++			bufptr+=ret;
++			count-=ret;
++		} else {
++			alarm (0);
++			signal (SIGALRM, SIG_IGN);
++			return (-1);
++		}
++	}
++	alarm (0);
++	signal (SIGALRM, SIG_IGN);
++	return buflen;
++}
++
+ /* send a single byte to the UPS */
+ int upssendchar (char data)
+ {
