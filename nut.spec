@@ -52,7 +52,7 @@ LDFLAGS="-s"; export LDFLAGS
 	--with-statepath=/var/lib/ups \
 	--with-uid=99 \
 	--with-gid=99
-make
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
