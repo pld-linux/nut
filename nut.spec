@@ -6,7 +6,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	2.0.1
-Release:	3
+Release:	4
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pre4.tar.gz
@@ -218,6 +218,7 @@ if [ -n "`/usr/bin/getgid ups`" ]; then
 		if [ "`/usr/bin/getgid ups`" = 121 ]; then
 			/usr/sbin/groupmod -g 76 ups
 			chgrp ups %{_sysconfdir}/{upsd.conf,ups.conf,upsd.users}
+			/usr/sbin/usermod -g 76 ups
 		else
 			echo "Error: group ups doesn't have gid=76. Correct this before installing %{name}." 1>&2
 			exit 1
