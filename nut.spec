@@ -13,8 +13,8 @@ Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{ver
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
-Source4:	www.nixz.net/nut/everups.c}
-# Source4-md5:	526bd50f3f5cedf6d60b99998f866b0d
+Source4:	www.nixz.net/nut/everups.c
+# NoSource4-md5:	526bd50f3f5cedf6d60b99998f866b0d
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
 URL:		http://www.exploits.org/nut/
