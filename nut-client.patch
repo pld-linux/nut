@@ -1,0 +1,11 @@
+--- nut-0.45.0/clients/Makefile.in.orig	Wed Jun 13 11:37:04 2001
++++ nut-0.45.0/clients/Makefile.in	Wed Jun 13 11:37:21 2001
+@@ -11,7 +11,7 @@
+ CC	 = @CC@
+ CFLAGS	 = -I../include @CFLAGS@
+ PROGS	 = upsc upslog upsct upsct2 upscmd 
+-SPROGS	 = upsmon upssched
++SPROGS	 = upsmon upssched upssched-cmd
+ CGIPROGS = upsstats.cgi upsimage.cgi multimon.cgi upsset.cgi
+ LIBOBJ	 = @LIBOBJ@ @NETLIBS@
+ 
