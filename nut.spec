@@ -48,7 +48,6 @@ live status tracking on web pages, and more.
 %setup -q
 
 %build
-LDFLAGS="-s"; export LDFLAGS
 %configure \
 	--with-statepath=/var/lib/ups \
 	--with-uid=99 \
