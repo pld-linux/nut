@@ -1,8 +1,8 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	0.45.2
-Release:	3
+Version:	0.45.5
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
@@ -92,7 +92,7 @@ autoconf
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups,%{_libdir}/nut}
 
-%{__make} install install-cgi \
+%{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	CGIPATH=/home/httpd/cgi-bin
 
