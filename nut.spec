@@ -19,7 +19,7 @@ Source4:	http://www.nixz.net/nut/everups.c
 # NoSource4-md5:	526bd50f3f5cedf6d60b99998f866b0d
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
-URL:		http://www.exploits.org/nut/
+URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.15
@@ -33,7 +33,7 @@ Requires(pre):  /usr/sbin/groupadd
 Requires(post,preun):   /sbin/chkconfig
 Requires(postun):       /usr/sbin/groupdel
 Requires(postun):       /usr/sbin/userdel
-Requires:	%{name}-common = %{version}
+Requires:	%{name}-common = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	smartupstools
 
@@ -91,7 +91,7 @@ Summary(ru):	Network UPS Tools - клиентские утилиты мониторинга
 Group:		Applications/System
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
-Requires:	%{name}-common = %{version}
+Requires:	%{name}-common = %{version}-%{release}
 
 %description client
 This package includes the client utilities that are required to
@@ -119,7 +119,7 @@ Summary(pl):	NarzЙdzia CGI do monitorowania UPS-Сw
 Summary(ru):	Network UPS Tools - CGI утилиты
 Summary(uk):	Network UPS Tools - CGI утил╕ти
 Group:		Applications/System
-Requires:	%{name}-common = %{version}
+Requires:	%{name}-common = %{version}-%{release}
 
 %description cgi
 These programs are part of a developing project to monitor the
