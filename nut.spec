@@ -144,7 +144,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
+install -d $RPM_BUILD_ROOT/{sbin,etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
 	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}}
 
 %{__make} install install-cgi \
@@ -159,6 +159,11 @@ install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
 
 install clients/upsclient.o $RPM_BUILD_ROOT%{_libdir}
 install clients/upsclient.h $RPM_BUILD_ROOT%{_includedir}
+
+cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
+#!/bin/sh
+/etc/rc.d/init.d/ups powerdown
+EOF
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -202,6 +207,7 @@ fi
 %attr(755,root,root) %{_bindir}/upslog
 %attr(755,root,root) %{_bindir}/upsrw
 %attr(755,root,root) %{_sbindir}/upsd
+%attr(755,root,root) /sbin/poweroff-ups
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %dir %{_sysconfdir}
