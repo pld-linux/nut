@@ -31,6 +31,12 @@ have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
 
+%description -l pl
+Te programy s± czê¶ci± projektu do monitorowania wielu UPS-ów w jakim¶
+otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±¶ formê
+sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
+zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
+
 %package client
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
 Summary(pl):	Narzêdzia klienckie do monitorowania UPS-ów
@@ -63,12 +69,14 @@ assortment of UPSes that are found out there in the field. Many models
 have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
+This package contains CGI utils.
 
 %description cgi -l pl
 Te programy s± czê¶ci± projektu do monitorowania wielu UPS-ów w jakim¶
 otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±¶ formê
 sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
 zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
+Ten pakiet zawiera narzêdzia CGI.
 
 %prep
 %setup -q
