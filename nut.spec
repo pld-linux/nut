@@ -1,10 +1,12 @@
 Summary:	Network UPS Tools
+Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	0.44.2
-Release:	1
+Release:	2
 License:	GPL
-Group:		Utilities/System
-Group(pl):	Narzêdzia/System
+Group:		Applications/System
+Group(de):	Applikationen/System
+Group(pl):	Aplikacje/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
 Source1:	ups.init
 Patch0:		%{name}-DESTDIR.patch
@@ -17,34 +19,36 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysconfdir	/etc/ups
 
 %description
-These programs are part of a developing project to monitor the assortment
-of UPSes that are found out there in the field. Many models have serial
-serial ports of some kind that allow some form of state checking. This
-capability has been harnessed where possible to allow for safe shutdowns,
-live status tracking on web pages, and more.
+These programs are part of a developing project to monitor the
+assortment of UPSes that are found out there in the field. Many models
+have serial serial ports of some kind that allow some form of state
+checking. This capability has been harnessed where possible to allow
+for safe shutdowns, live status tracking on web pages, and more.
 
 %package client
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
-Group:		Utilities/System
-Group(pl):	Narzêdzia/System
+Group:		Applications/System
+Group(de):	Applikationen/System
+Group(pl):	Aplikacje/System
 
 %description client
-This package includes the client utilities that are required to monitor a
-ups that the client host is plugged into but monitored via serial cable by
-another host on the network....
+This package includes the client utilities that are required to
+monitor a ups that the client host is plugged into but monitored via
+serial cable by another host on the network....
 
 %package cgi
 Summary:	Multi-vendor UPS Monitoring Project Server - CGI utils
-Group:		Utilities/System
-Group(pl):	Narzêdzia/System
+Group:		Applications/System
+Group(de):	Applikationen/System
+Group(pl):	Aplikacje/System
 Requires:	%{name} = %{version}
 
 %description cgi
-These programs are part of a developing project to monitor the assortment
-of UPSes that are found out there in the field. Many models have serial
-serial ports of some kind that allow some form of state checking. This
-capability has been harnessed where possible to allow for safe shutdowns,
-live status tracking on web pages, and more.
+These programs are part of a developing project to monitor the
+assortment of UPSes that are found out there in the field. Many models
+have serial serial ports of some kind that allow some form of state
+checking. This capability has been harnessed where possible to allow
+for safe shutdowns, live status tracking on web pages, and more.
 
 %prep
 %setup -q
