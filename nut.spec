@@ -5,8 +5,6 @@ Version:	0.45.2
 Release:	2
 License:	GPL
 Group:		Applications/System
-Group(de):	Applikationen/System
-Group(pl):	Aplikacje/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
@@ -42,8 +40,6 @@ zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
 Summary(pl):	Narzêdzia klienckie do monitorowania UPS-ów
 Group:		Applications/System
-Group(de):	Applikationen/System
-Group(pl):	Aplikacje/System
 Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
 
@@ -61,8 +57,6 @@ UPS-a jest pod³±czony do innego komputera w sieci.
 Summary:	Multi-vendor UPS Monitoring Project Server - CGI utils
 Summary(pl):	Narzêdzia CGI do monitorowania UPS-ów
 Group:		Applications/System
-Group(de):	Applikationen/System
-Group(pl):	Aplikacje/System
 
 %description cgi
 These programs are part of a developing project to monitor the
