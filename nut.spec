@@ -15,7 +15,7 @@ Source0:	http://eu1.networkupstools.org/source/2.0/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
-# Source4:	http://www.nixz.net/nut/everups.c
+Source4:	http://www.nixz.net/nut/everups.c
 # NoSource4-md5:	526bd50f3f5cedf6d60b99998f866b0d
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
