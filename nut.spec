@@ -4,12 +4,12 @@ Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
-Version:	1.2.3
+Version:	1.4.0
 Release:	1
 License:	GPL
 Group:		Applications/System
-Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.2/%{name}-%{version}.tar.gz
-# Source0-md5:	87dd831a819d06904cbe06e70dcf3c2f
+Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
+# Source0-md5:	1ddf547866db0f1eeb9c535ba0339906
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -17,7 +17,7 @@ Patch0:		%{name}-client.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	gd-devel >= 2.0.1
+BuildRequires:	gd-devel >= 2.0.15
 BuildRequires:	libpng-devel
 BuildRequires:	openssl-devel >= 0.9.7
 PreReq:		rc-scripts
