@@ -1,7 +1,7 @@
 Summary:	Network UPS Tools
 Name:		nut
-Version:	0.44.1
-Release:	2
+Version:	0.44.2
+Release:	1
 License:	GPL
 Group:		Utilities/System
 Group(pl):	Narzêdzia/System
@@ -59,7 +59,7 @@ live status tracking on web pages, and more.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},%{_mandir}/man8,/var/lib/ups}
+install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups}
 
 %{__make} install install-cgi \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -67,8 +67,6 @@ install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},%{_mandir}/man8,/var/lib
 
 install scripts/RedHat-6.0/ups-config $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
-
-install man/powercom.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
 gzip -9nf CREDITS Changes QUICKSTART README docs/{FAQ,Changes*,*.txt,cables/*}
 
