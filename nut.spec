@@ -11,7 +11,6 @@ License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pre4.tar.gz
 # Source0-md5:	399f79406e07aa2a689bc6a119b0fcad
-# Source0-size:	563526
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
