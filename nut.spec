@@ -4,7 +4,7 @@ Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
-Version:	1.2.1
+Version:	1.2.2
 Release:	1
 License:	GPL
 Group:		Applications/System
@@ -146,6 +146,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %build
 %{__aclocal}
 %{__autoconf}
+LDFLAGS="-L%{_prefix}/X11R6/lib"; export LDFLAGS
 %configure \
 	--with-ssl \
 	--with-cgi \
