@@ -45,6 +45,7 @@ case "$1" in
 			RETVAL=$?
 		fi
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/ups
+	fi
 	;;
   stop)
 	msg_stopping "UPS monitor"
@@ -93,4 +94,7 @@ case "$1" in
   *)
 	msg_Usage "$0 {start|stop|status|restart|reload|force-reload}"
 	exit 1
-esac $RETVAL
+	;;
+esac 
+exit $RETVAL
+
