@@ -57,8 +57,8 @@ LDFLAGS="-s"; export LDFLAGS
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},var/lib/ups}
-%{__make} CONFPATH=$RPM_BUILD_ROOT%{_sysconfdir}/ups BASEPATH=$RPM_BUILD_ROOT%{_prefix} STATEPATH=$RPM_BUILD_ROOT/var/lib/ups install
-%{__make} CONFPATH=$RPM_BUILD_ROOT%{_sysconfdir}/ups BASEPATH=$RPM_BUILD_ROOT%{_prefix} STATEPATH=$RPM_BUILD_ROOT/var/lib/ups install-cgi
+%{__make} CONFPATH=$RPM_BUILD_ROOT%{_sysconfdir} BASEPATH=$RPM_BUILD_ROOT%{_prefix} STATEPATH=$RPM_BUILD_ROOT/var/lib/ups install
+%{__make} CONFPATH=$RPM_BUILD_ROOT%{_sysconfdir} BASEPATH=$RPM_BUILD_ROOT%{_prefix} STATEPATH=$RPM_BUILD_ROOT/var/lib/ups install-cgi
 
 install scripts/RedHat-6.0/ups-config $RPM_BUILD_ROOT/etc/sysconfig/ups
 install scripts/RedHat-6.0/ups $RPM_BUILD_ROOT/etc/rc.d/init.d
@@ -93,8 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files client
 %defattr(644,root,root,755)
-%config(noreplace) %{_sysconfdir}/ups/hosts.conf
-%config(noreplace) %{_sysconfdir}/ups/multimon.conf
+%config(noreplace) %{_sysconfdir}/hosts.conf
+%config(noreplace) %{_sysconfdir}/multimon.conf
 %attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
 %attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsmon.conf
 %attr(644,root,root) %config(noreplace) /etc/sysconfig/ups
@@ -108,7 +108,8 @@ rm -rf $RPM_BUILD_ROOT
 %files cgi
 %defattr(644,root,root,755)
 %doc CREDITS Changes QUICKSTART README docs
-%{_prefix}/cgi-bin/multimon.cgi
-%{_prefix}/cgi-bin/upsimage.cgi
-%{_prefix}/cgi-bin/upsset.cgi
-%{_prefix}/cgi-bin/upsstats.cgi
+/home/httpd/cgi-bin/cgi-bin/multimon.cgi
+/home/httpd/cgi-bin/upsimage.cgi
+/home/httpd/cgi-bin/upsset.cgi
+/home/httpd/cgi-bin/upsstats.cgi
+%attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsset.passwd
