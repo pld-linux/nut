@@ -1,12 +1,18 @@
 #!/bin/sh
 #
-# chkconfig: 2345 10 90
-# description: The ups daemon automatically starts a shutdown
-# processname: upsd
-# config: /etc/ups/
+# ups		NUT - Network UPS Tools daemon
+#
+# chkconfig:	2345 10 90
+#
+# description:	The ups daemon automatically starts a shutdown
+# processname:	upsd
+# config:	/etc/ups/
 
 # Source function library.
 . /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
 
 # Get config.
 . /etc/sysconfig/ups
@@ -16,32 +22,40 @@
 # See how we are called.
 case "$1" in
   start)
-	if [ "$HOST" = "localhost" ]; then
-	    msg_starting "$MODEL"
-	    daemon /usr/bin/$MODEL $OPTIONS $DEVICE 
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/ups ]; then
+		if [ "$HOST" = "localhost" ]; then
+			msg_starting "UPS: $MODEL"
+			daemon $MODEL $OPTIONS $DEVICE 
+			RETVAL=$?
 
-	    msg_starting "UPS daemon"
-	    daemon /usr/bin/upsd
-
-	    msg_starting "UPS monitor (master)"
-	    daemon /usr/bin/upsmon $HOST master
-	else
-	    msg_starting "UPS monitor (slave)"
-	    daemon /usr/bin/upsmon $HOST slave
-	fi
-
-	touch /var/lock/subsys/ups
+			if [ $RETVAL -eq 0 ]; then
+				msg_starting "UPS daemon"
+				daemon upsd
+				RETVAL=$?
+				if [ $RETVAL -eq 0 ]; then
+					msg_starting "UPS monitor (master)"
+					daemon upsmon $HOST master
+					RETVAL=$?
+				fi
+			fi
+		else
+			msg_starting "UPS monitor (slave)"
+			daemon upsmon $HOST slave
+			RETVAL=$?
+		fi
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/ups
 	;;
   stop)
 	msg_stopping "UPS monitor"
 	killproc upsmon
 
 	if [ "$HOST" = "localhost" ]; then
-	    msg_stopping "UPS daemon"
-	    killproc upsd
+		msg_stopping "UPS daemon"
+		killproc upsd
 
-	    msg_stopping "$MODEL"
-	    killproc $MODEL
+		msg_stopping "$MODEL"
+		killproc $MODEL
 	fi
 	rm -f /var/lock/subsys/ups
 	;;
@@ -49,15 +63,34 @@ case "$1" in
 	$0 stop
 	$0 start
 	;;
+  reload)
+	if [ -f /var/lock/subsys/ups ]; then
+		msg_reload "UPS daemon"
+		busy
+		killproc upsd -HUP
+		deltext
+		ok
+	else
+		msg_Not_Running "UPS daemon"
+		exit 1
+	fi
+	;;
+  force-reload)
+	$0 reload
+	exit $?
+
+	# or if it doesn't
+	$0 stop && $0 start
+	exit $?
+	;;
   status)
 	if [ "$HOST" = "localhost" ]; then
-	    status upsd
-	    status $MODEL
+		status upsd
+		status $MODEL
 	fi
 	status upsmon
 	;;
   *)
-	echo "Usage: ups {start|stop|restart|status}"
+	msg_Usage "$0 {start|stop|status|restart|reload|force-reload}"
 	exit 1
-esac
-
+esac $RETVAL
