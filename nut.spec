@@ -1,3 +1,4 @@
+# TODO: /var/lib/ups dir ownership (shouldn't be nobody)
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzЙdzie do UPS-Сw
 Summary(ru):	NUT - Network UPS Tools
@@ -18,8 +19,9 @@ BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.1
 BuildRequires:	libpng-devel
 BuildRequires:	openssl-devel
-Prereq:		rc-scripts
-Prereq:		/sbin/chkconfig
+PreReq:		rc-scripts
+Requires(post,preun):	/sbin/chkconfig
+Requires:	%{name}-common = %{version}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	smartupstools
 
@@ -52,14 +54,26 @@ UPS. Ця можлив╕сть була використана, де це можливо, для виконання
 безпечних зупинок комп'ютер╕в, в╕дсл╕дковування статусу через веб,
 тощо.
 
+%package common
+Summary:	Package with common files for nut daemon and its clients
+Summary(pl):	Pakiet z plikami wspСlnymi dla demona nut i jego klientСw
+Group:		Applications/System
+
+%description common
+Package with common files for nut daemon and its clients.
+
+%description common -l pl
+Pakiet z plikami wspСlnymi dla demona nut i jego klientСw.
+
 %package client
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
 Summary(pl):	NarzЙdzia klienckie do monitorowania UPS-Сw
 Summary(uk):	Network UPS Tools - кл╕╓нтськ╕ утил╕ти мон╕торингу
 Summary(ru):	Network UPS Tools - клиентские утилиты мониторинга
 Group:		Applications/System
-Prereq:		rc-scripts
-Prereq:		/sbin/chkconfig
+PreReq:		rc-scripts
+Requires(post,preun):	/sbin/chkconfig
+Requires:	%{name}-common = %{version}
 
 %description client
 This package includes the client utilities that are required to
@@ -87,6 +101,7 @@ Summary(pl):	NarzЙdzia CGI do monitorowania UPS-Сw
 Summary(ru):	Network UPS Tools - CGI утилиты
 Summary(uk):	Network UPS Tools - CGI утил╕ти
 Group:		Applications/System
+Requires:	%{name}-common = %{version}
 
 %description cgi
 These programs are part of a developing project to monitor the
@@ -144,7 +159,7 @@ Plik wynikowy oraz nagЁСwek sЁu©╠ce do tworzenia klientСw NUT-a.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/{sbin,etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
+install -d $RPM_BUILD_ROOT{/sbin,/etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
 	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}}
 
 %{__make} install install-cgi \
@@ -202,23 +217,33 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS README CHANGES CREDITS docs
 %attr(755,root,root) %{_bindir}/upscmd
 %attr(755,root,root) %{_bindir}/upslog
 %attr(755,root,root) %{_bindir}/upsrw
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) /sbin/poweroff-ups
-%config(noreplace) /etc/sysconfig/ups
+%config(noreplace) %verify(not size mtime md5) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
-%dir %{_sysconfdir}
-%attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
-%attr(640,root,nobody) %config(noreplace) %{_sysconfdir}/ups.conf
-%attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.users
-%{_mandir}/man5/*
-%{_mandir}/man8/*
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
+%attr(640,root,nobody) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
+%{_mandir}/man5/ups.conf.5*
+%{_mandir}/man5/upsd.conf.5*
+%{_mandir}/man5/upsd.users.5*
+%{_mandir}/man8/[!u]*.8*
+%{_mandir}/man8/upscmd.8*
+%{_mandir}/man8/upsd.8*
+%{_mandir}/man8/upsdrvctl.8*
+%{_mandir}/man8/upslog.8*
+%{_mandir}/man8/upsrw.8*
 %dir %attr(750,nobody,root) /var/lib/ups
-%dir %attr(755,root,root) %{_libdir}/nut
+%dir %{_libdir}/nut
 %attr(755,root,root) %{_libdir}/nut/*
+
+%files common
+%defattr(644,root,root,755)
+%doc NEWS README CHANGES CREDITS docs
+%dir %{_sysconfdir}
 
 %files client
 %defattr(644,root,root,755)
@@ -227,17 +252,26 @@ fi
 %attr(755,root,root) %{_sbindir}/upssched
 %attr(755,root,root) %{_sbindir}/upssched-cmd
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
-%dir %{_sysconfdir}
-%attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsmon.conf
-%attr(600,root,root) %config(noreplace) %{_sysconfdir}/upssched.conf
+%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsmon.conf
+%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upssched.conf
+%{_mandir}/man5/upsmon.conf.5*
+%{_mandir}/man5/upssched.conf.5*
+%{_mandir}/man8/upsc.8*
+%{_mandir}/man8/upsmon.8*
+%{_mandir}/man8/upssched.8*
 
 %files cgi
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
-%dir %{_sysconfdir}
-%config(noreplace) %{_sysconfdir}/hosts.conf
-%config(noreplace) %{_sysconfdir}/upsset.conf
-%config(noreplace) %{_sysconfdir}/*.html
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/hosts.conf
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsset.conf
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.html
+%{_mandir}/man5/hosts.conf.5*
+%{_mandir}/man5/upsset.conf.5*
+%{_mandir}/man5/upsstats.html.5*
+%{_mandir}/man8/upsimage.cgi.8*
+%{_mandir}/man8/upsset.cgi.8*
+%{_mandir}/man8/upsstats.cgi.8*
 
 %files devel
 %defattr(644,root,root,755)
