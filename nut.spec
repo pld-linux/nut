@@ -1,5 +1,7 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzЙdzie do UPS-Сw
+Summary(ru):	NUT - Network UPS Tools
+Summary(uk):	NUT - Network UPS Tools
 Name:		nut
 Version:	1.0.0
 Release:	1
@@ -36,9 +38,25 @@ otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak╠╤ formЙ
 sprawdzania stanu. Ta funkcjonalno╤Ф pozwala na bezpieczne
 zatrzymywanie systemСw, sprawdzanie stanu zasilania przez WWW i inne.
 
+%description -l ru
+Эти программы - часть проекта по мониторингу различных UPS. У многих
+моделей есть сериальные порты, позволяющие проверять состояние этих
+UPS. Эта возможность была использована, где это возможно, для
+выполнения безопасных остановов компьютеров, отслеживания статуса
+через веб и т.п.
+
+%description -l uk
+Ц╕ програми ╓ частиною проекту по мон╕торингу р╕зноман╕тних UPS.
+Багато моделей мають сер╕альн╕ порти, що дозволять перев╕ряти стан цих
+UPS. Ця можлив╕сть була використана, де це можливо, для виконання
+безпечних зупинок комп'ютер╕в, в╕дсл╕дковування статусу через веб,
+тощо.
+
 %package client
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
 Summary(pl):	NarzЙdzia klienckie do monitorowania UPS-Сw
+Summary(uk):	Network UPS Tools - кл╕╓нтськ╕ утил╕ти мон╕торингу
+Summary(ru):	Network UPS Tools - клиентские утилиты мониторинга
 Group:		Applications/System
 Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
@@ -53,9 +71,21 @@ Ten pakiet zawiera narzЙdzia kliencie potrzebne do monitorowania UPS-a
 do ktСrego podЁ╠czony jest komputer kliencki, kiedy kabel szeregowy
 UPS-a jest podЁ╠czony do innego komputera w sieci.
 
+%description client -l ru
+Этот пакет включает клиентские утилиты, необходимые для мониторинга
+UPS, к которому клиентский хост имеет доступ, но UPS физически
+подключен к другому компьютеру в сети.
+
+%description client -l uk
+Цей пакет включа╓ кл╕╓нтськ╕ утил╕ти, потр╕бн╕ для мон╕торингу UPS, до
+якого кл╕╓нтський хост ма╓ доступ, але UPS ф╕зично п╕дключений до
+╕ншого комп'ютеру в мереж╕.
+
 %package cgi
 Summary:	Multi-vendor UPS Monitoring Project Server - CGI utils
 Summary(pl):	NarzЙdzia CGI do monitorowania UPS-Сw
+Summary(ru):	Network UPS Tools - CGI утилиты
+Summary(uk):	Network UPS Tools - CGI утил╕ти
 Group:		Applications/System
 
 %description cgi
@@ -72,6 +102,14 @@ otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak╠╤ formЙ
 sprawdzania stanu. Ta funkcjonalno╤Ф pozwala na bezpieczne
 zatrzymywanie systemСw, sprawdzanie stanu zasilania przez WWW i inne.
 Ten pakiet zawiera narzЙdzia CGI.
+
+%description cgi -l ru
+Этот пакет включает CGI программы для доступа к информации о статусе
+UPS через веб-интерфейс.
+
+%description cgi -l uk
+Цей пакет включа╓ CGI програми для доступу до ╕нформац╕╖ про статус
+UPS через веб-╕нтерфейс.
 
 %package devel
 Summary:	Files for NUT clients development
@@ -117,10 +155,10 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
-install -m644 conf/*.users conf/*.conf $RPM_BUILD_ROOT%{_sysconfdir}
+install conf/*.users conf/*.conf $RPM_BUILD_ROOT%{_sysconfdir}
 
-install -m644 clients/upsfetch.o $RPM_BUILD_ROOT%{_libdir}
-install -m644 clients/upsfetch.h $RPM_BUILD_ROOT%{_includedir}
+install clients/upsfetch.o $RPM_BUILD_ROOT%{_libdir}
+install clients/upsfetch.h $RPM_BUILD_ROOT%{_includedir}
 
 ln -s %{_libdir}/nut/upsdrvctl $RPM_BUILD_ROOT%{_sbindir}
 
