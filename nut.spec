@@ -1,11 +1,11 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	0.99.2
+Version:	1.0.0
 Release:	1
 License:	GPL
 Group:		Applications/System
-Source0:	http://www.exploits.org/nut/testing/0.99/%{name}-%{version}.tar.gz
+Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
