@@ -103,7 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/upsct
 %attr(755,root,root) %{_bindir}/upsct2
 %attr(755,root,root) %{_bindir}/upsmon
-%dir %attr(755,nobody,nobody) /var/lib/ups
+%dir %attr(775,root,nobody) /var/lib/ups
 
 %files cgi
 %defattr(644,root,root,755)
