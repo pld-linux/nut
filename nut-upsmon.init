@@ -25,7 +25,7 @@ case "$1" in
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/upsmon ]; then
 		msg_starting "UPSmon"
-		daemon upsmon
+		daemon upsmon $PROGRAM_ARGS
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/upsmon
 	else
