@@ -2,7 +2,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	0.45.2
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
@@ -84,12 +84,13 @@ autoconf
 %configure \
 	--with-statepath=/var/lib/ups \
 	--with-uid=nobody \
-	--with-group=ttyS
+	--with-group=ttyS \
+	--with-modelpath=%{_libdir}/nut
 %{__make} all cgi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups}
+install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},/var/lib/ups,%{_libdir}/nut}
 
 %{__make} install install-cgi \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -155,35 +156,9 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc *.gz docs/{,cables}/*.gz
-%attr(755,root,root) %{_bindir}/aeg
-%attr(755,root,root) %{_bindir}/apcsmart
-%attr(755,root,root) %{_bindir}/belkin
-%attr(755,root,root) %{_bindir}/bestfort
-%attr(755,root,root) %{_bindir}/bestuferrups
-%attr(755,root,root) %{_bindir}/bestups
-%attr(755,root,root) %{_bindir}/engetron
-%attr(755,root,root) %{_bindir}/everups
-%attr(755,root,root) %{_bindir}/fentonups
-%attr(755,root,root) %{_bindir}/genericups
-%attr(755,root,root) %{_bindir}/ipt-anzen
-%attr(755,root,root) %{_bindir}/mge-ellipse
-%attr(755,root,root) %{_bindir}/mgeups
-%attr(755,root,root) %{_bindir}/masterguard
-%attr(755,root,root) %{_bindir}/multilink
-%attr(755,root,root) %{_bindir}/mustekups
-%attr(755,root,root) %{_bindir}/newapc
-%attr(755,root,root) %{_bindir}/optiups
-%attr(755,root,root) %{_bindir}/powercom
-%attr(755,root,root) %{_bindir}/sec
-%attr(755,root,root) %{_bindir}/sms
-%attr(755,root,root) %{_bindir}/toshiba1500
 %attr(755,root,root) %{_bindir}/upscmd
-%attr(755,root,root) %{_bindir}/upsdrvctl
-%attr(755,root,root) %{_bindir}/upseyeux
-%attr(755,root,root) %{_bindir}/ups-trust425+625
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) %{_bindir}/upslog
-%attr(755,root,root) %{_bindir}/victronups
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
@@ -192,6 +167,8 @@ fi
 %{_mandir}/man5/*
 %{_mandir}/man8/*
 %dir %attr(750,nobody,root) /var/lib/ups
+%dir %attr(755,root,root) %{_libdir}/nut
+%attr(755,root,root) %{_libdir}/nut/*
 
 %files client
 %defattr(644,root,root,755)
