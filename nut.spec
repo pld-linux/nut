@@ -144,7 +144,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
-install conf/*.users conf/*.conf $RPM_BUILD_ROOT%{_sysconfdir}
+install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -214,3 +214,4 @@ fi
 %attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
 %config(noreplace) %{_sysconfdir}/hosts.conf
 %config(noreplace) %{_sysconfdir}/upsset.conf
+%config(noreplace) %{_sysconfdir}/*.html
