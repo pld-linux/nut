@@ -2,7 +2,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	1.4.0
-Release:	1.3
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
@@ -24,6 +24,7 @@ PreReq:		rc-scripts
 Requires(pre):  /bin/id
 Requires(pre):  /usr/bin/getgid
 Requires(pre):  /usr/sbin/useradd
+Requires(pre):  /usr/sbin/groupadd
 Requires(post,preun):   /sbin/chkconfig
 Requires(postun):       /usr/sbin/groupdel
 Requires(postun):       /usr/sbin/userdel
@@ -155,7 +156,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%{!?_without_new_everups_driver:install %{SOURCE4} drivers/everups.c }
+%{?_with_new_everups_driver:install %{SOURCE4} drivers/everups.c }
 
 %build
 %{__aclocal}
@@ -166,17 +167,19 @@ LDFLAGS="-L%{_prefix}/X11R6/lib"; export LDFLAGS
 	--with-cgi \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
 	--with-statepath=%{_var}/lib/ups \
-	--with-drvpath=%{_libdir}/nut \
+	--with-drvpath=/lib/nut \
 	--with-cgipath=/home/services/httpd/cgi-bin \
 	--with-user=ups \
-	--with-group=ttyS
+	--with-group=ups
 %{__make} all cgi
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/sbin,/etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
-	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}/nut}
+	$RPM_BUILD_ROOT{/lib/nut,%{_libdir},%{_includedir}/nut}
 
+%{__make} install DESTDIR=$RPM_BUILD_ROOT
+	
 %{__make} install install-cgi \
 	DESTDIR=$RPM_BUILD_ROOT
 
@@ -199,6 +202,14 @@ EOF
 rm -rf $RPM_BUILD_ROOT
 
 %pre
+if [ -n "`/usr/bin/getgid ups`" ]; then
+	if [ "`getgid ups`" != "121" ]; then
+		echo "Error: group ups doesn't have gid=121. Correct this before installing %{name}." 1>&2
+		exit 1
+	fi
+else
+	/usr/sbin/groupadd -g 121 -r -f ups
+fi
 if [ -n "`id -u ups 2>/dev/null`" ]; then
 	if [ "`id -u ups`" != "70" ]; then
 		echo "Error: user ups doesn't have uid=70. Correct this before installing %{name}." 1>&2
@@ -206,8 +217,9 @@ if [ -n "`id -u ups 2>/dev/null`" ]; then
 	fi
 else
 	echo "Adding user ups UID=70."
-	/usr/sbin/useradd -u 70 -r -d /no/home -s /bin/false -c "UPS Manager User" -g nobody ups 1>&2
+	/usr/sbin/useradd -u 70 -r -d /no/home -s /bin/false -c "UPS Manager User" -g ups ups 1>&2
 fi
+
 
 %post
 /sbin/chkconfig --add ups
@@ -245,6 +257,8 @@ fi
 if [ "$1" = "0" ]; then
 	echo "Removing user ups."
 	/usr/sbin/userdel ups
+	echo "Removing group ups."
+	/usr/sbin/groupdel ups
 fi      
 
 %files
@@ -256,9 +270,9 @@ fi
 %attr(755,root,root) /sbin/poweroff-ups
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
-%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
-%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
-%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
+%attr(640,root,ups) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
+%attr(640,root,ups) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
+%attr(640,root,ups) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
@@ -268,9 +282,9 @@ fi
 %{_mandir}/man8/upsdrvctl.8*
 %{_mandir}/man8/upslog.8*
 %{_mandir}/man8/upsrw.8*
-%dir %attr(750,ups,root) /var/lib/ups
-%dir %{_libdir}/nut
-%attr(755,root,root) %{_libdir}/nut/*
+%dir %attr(770,root,ups) /var/lib/ups
+%dir /lib/nut
+%attr(755,root,root) /lib/nut/*
 %{_datadir}/nut
 
 %files common
