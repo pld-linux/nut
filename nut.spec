@@ -13,8 +13,6 @@ Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.2/%{name}-%{ver
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
-Source10:	otak-1.3.0.tar.gz
-# Source10-md5:	90e4ab002055e2c2b9f5c523dd682e4b
 Patch0:		%{name}-client.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
