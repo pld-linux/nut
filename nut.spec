@@ -1,9 +1,8 @@
-# TODO: /var/lib/ups dir ownership (shouldn't be nobody)
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	1.4.0
-Release:	1.2
+Release:	1.3
 License:	GPL
 Group:		Applications/System
 Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
@@ -22,7 +21,12 @@ BuildRequires:	gd-devel >= 2.0.15
 BuildRequires:	libpng-devel
 BuildRequires:	openssl-devel >= 0.9.7
 PreReq:		rc-scripts
-Requires(post,preun):	/sbin/chkconfig
+Requires(pre):  /bin/id
+Requires(pre):  /usr/bin/getgid
+Requires(pre):  /usr/sbin/useradd
+Requires(post,preun):   /sbin/chkconfig
+Requires(postun):       /usr/sbin/groupdel
+Requires(postun):       /usr/sbin/userdel
 Requires:	%{name}-common = %{version}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	smartupstools
@@ -164,7 +168,7 @@ LDFLAGS="-L%{_prefix}/X11R6/lib"; export LDFLAGS
 	--with-statepath=%{_var}/lib/ups \
 	--with-drvpath=%{_libdir}/nut \
 	--with-cgipath=/home/services/httpd/cgi-bin \
-	--with-user=nobody \
+	--with-user=ups \
 	--with-group=ttyS
 %{__make} all cgi
 
@@ -193,6 +197,17 @@ EOF
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%pre
+if [ -n "`id -u ups 2>/dev/null`" ]; then
+	if [ "`id -u ups`" != "70" ]; then
+		echo "Error: user ups doesn't have uid=70. Correct this before installing %{name}." 1>&2
+		exit 1
+	fi
+else
+	echo "Adding user ups UID=70."
+	/usr/sbin/useradd -u 70 -r -d /no/home -s /bin/false -c "UPS Manager User" -g nobody ups 1>&2
+fi
 
 %post
 /sbin/chkconfig --add ups
@@ -226,6 +241,12 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del upsmon
 fi
 
+%postun
+if [ "$1" = "0" ]; then
+	echo "Removing user ups."
+	/usr/sbin/userdel ups
+fi      
+
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/upscmd
@@ -235,9 +256,9 @@ fi
 %attr(755,root,root) /sbin/poweroff-ups
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
-%attr(640,root,nobody) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
-%attr(640,root,nobody) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
-%attr(640,root,nobody) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
+%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
+%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
+%attr(640,root,ttyS) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
@@ -247,7 +268,7 @@ fi
 %{_mandir}/man8/upsdrvctl.8*
 %{_mandir}/man8/upslog.8*
 %{_mandir}/man8/upsrw.8*
-%dir %attr(750,nobody,root) /var/lib/ups
+%dir %attr(750,ups,root) /var/lib/ups
 %dir %{_libdir}/nut
 %attr(755,root,root) %{_libdir}/nut/*
 %{_datadir}/nut
