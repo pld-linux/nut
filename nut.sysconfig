@@ -9,7 +9,7 @@ BIND_ADDRESS=""
 
 # start UPS drivers
 ups_start() {
-	# apcsmart /dev/ttyS1
+	# /usr/lib/nut/apcsmart /dev/ttyS1
 }
 
 # stop ups drivers
