@@ -13,6 +13,8 @@ Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{ver
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
+%{!?_without_new_everups_driver:Source4:	www.nixz.net/nut/everups.c}
+%{!?_without_new_everups_driver:#Source4-md5:	526bd50f3f5cedf6d60b99998f866b0d}
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
 URL:		http://www.exploits.org/nut/
@@ -35,12 +37,16 @@ assortment of UPSes that are found out there in the field. Many models
 have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
+This nut ships with modified everups.c - support for Ever UPS models
+Copyright (C) 2003 Mikolaj Tutak <mtutak@eranet.pl>
 
 %description -l pl
 Te programy s± czÍ∂ci± projektu do monitorowania wielu UPS-Ûw w jakim∂
 otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±∂ formÍ
 sprawdzania stanu. Ta funkcjonalno∂Ê pozwala na bezpieczne
 zatrzymywanie systemÛw, sprawdzanie stanu zasilania przez WWW i inne.
+Ten Nut posiada zmieniony sterownik everups.c - support for Ever UPS models
+Copyright (C) 2003 Mikolaj Tutak <mtutak@eranet.pl>
 
 %description -l ru
 ¸‘… –“œ«“¡ÕÕŸ - ﬁ¡”‘ÿ –“œ≈À‘¡ –œ ÕœŒ…‘œ“…Œ«’ “¡⁄Ã…ﬁŒŸ» UPS. ı ÕŒœ«…»
@@ -145,6 +151,7 @@ Plik wynikowy oraz nag≥Ûwek s≥uø±ce do tworzenia klientÛw NUT-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%{!?_without_new_everups_driver:install %{SOURCE4} drivers/everups.c }
 
 %build
 %{__aclocal}
