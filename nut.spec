@@ -1,7 +1,7 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	1.1.0
+Version:	1.1.14
 Release:	1
 License:	GPL
 Group:		Applications/System
@@ -10,6 +10,7 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Patch0:		%{name}-client.patch
+Patch1:		%{name}-fideltronik.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -72,21 +73,10 @@ sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
 zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
 Ten pakiet zawiera narzêdzia CGI.
 
-%package devel
-Summary:	Files for NUT clients development
-Summary(pl):	Pliki do tworzenia klientów NUT-a
-Group:		Development/Libraries
-# it does NOT require nut
-
-%description devel
-Object file and header for developing NUT clients.
-
-%description devel -l pl
-Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
-
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__aclocal}
@@ -115,9 +105,6 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
 install -m644 conf/*.users conf/*.conf $RPM_BUILD_ROOT%{_sysconfdir}
-
-install -m644 clients/upsfetch.o $RPM_BUILD_ROOT%{_libdir}
-install -m644 clients/upsfetch.h $RPM_BUILD_ROOT%{_includedir}
 
 ln -s %{_libdir}/nut/upsdrvctl $RPM_BUILD_ROOT%{_sbindir}
 
@@ -158,9 +145,10 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS README CHANGES CREDITS docs/*
+%doc NEWS README CHANGES CREDITS docs
 %attr(755,root,root) %{_bindir}/upscmd
 %attr(755,root,root) %{_bindir}/upslog
+attr(755,root,root) %{_bindir}/upsrw
 %attr(755,root,root) %{_sbindir}/upsdrvctl
 %attr(755,root,root) %{_sbindir}/upsd
 %config(noreplace) /etc/sysconfig/ups
@@ -177,8 +165,6 @@ fi
 %files client
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/upsc
-%attr(755,root,root) %{_bindir}/upsct
-%attr(755,root,root) %{_bindir}/upsct2
 %attr(755,root,root) %{_sbindir}/upsmon
 %attr(755,root,root) %{_sbindir}/upssched
 %attr(755,root,root) %{_sbindir}/upssched-cmd
@@ -190,10 +176,4 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
 %config(noreplace) %{_sysconfdir}/hosts.conf
-%config(noreplace) %{_sysconfdir}/multimon.conf
 %config(noreplace) %{_sysconfdir}/upsset.conf
-
-%files devel
-%defattr(644,root,root,755)
-%{_libdir}/upsfetch.o
-%{_includedir}/upsfetch.h
