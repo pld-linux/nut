@@ -1,28 +1,29 @@
-diff -Nru nut-0.44.1/Makefile.in nut-0.44.1.new/Makefile.in
---- nut-0.44.1/Makefile.in	Sun Jul 30 05:10:14 2000
-+++ nut-0.44.1.new/Makefile.in	Fri Dec 22 06:03:57 2000
-@@ -2,10 +2,9 @@
+diff -Nru nut-0.44.2/Makefile.in nut-0.44.2.new/Makefile.in
+--- nut-0.44.2/Makefile.in	Wed Jan 17 12:06:19 2001
++++ nut-0.44.2.new/Makefile.in	Wed Jan 17 12:06:07 2001
+@@ -2,11 +2,10 @@
  
  # directory definitions
- prefix=@prefix@
--BASEPATH = $(INSTALLROOT)@prefix@
--CONFPATH = $(INSTALLROOT)@sysconfdir@
--CGIPATH = $(INSTALLROOT)@CGIPATH@
--INSTALLDIRS=$(CONFPATH) $(CGIPATH) $(MODELPATH) $(BASEPATH)/bin $(BASEPATH)/misc
-+BASEPATH = @prefix@
-+CONFPATH = @sysconfdir@
-+CGIPATH = @CGIPATH@
+ prefix      = @prefix@
+-BASEPATH    = $(INSTALLROOT)@prefix@
+-CONFPATH    = $(INSTALLROOT)@sysconfdir@
+-CGIPATH     = $(INSTALLROOT)@CGIPATH@
+-INSTALLDIRS = $(CONFPATH) $(CGIPATH) $(MODELPATH) $(BASEPATH)/@bindir@  $(BASEPATH)/@sbindir@ $(BASEPATH)/misc
+-STATEPATH   = $(INSTALLROOT)@STATEPATH@
++prefix      = @prefix@
++sysconfdir  = @sysconfdir@
++CGIPATH     = @CGIPATH@
++STATEPATH   = @STATEPATH@
  
- STATEPATH = $(INSTALLROOT)@STATEPATH@
- SUBDIRS = common models server clients
+ SUBDIRS	= common models server clients man
+ CFLAGS	= -I../include @CFLAGS@
 @@ -40,33 +39,22 @@
  		rm $$i/Makefile; \
  	done
  
 -install: install-dirs
--	@echo Installing in $(BASEPATH)...
 +install:
-+	@echo Installing in $(DESTDIR)$(BASEPATH)...
+ 	@echo Installing in $(BASEPATH)...
  
  	@for i in $(SUBDIRS) conf; do \
 -		cd $$i; $(MAKE) install; cd ..; \
@@ -37,7 +38,7 @@ diff -Nru nut-0.44.1/Makefile.in nut-0.44.1.new/Makefile.in
 -	done
 -
 -	@if (test ! -d $(STATEPATH)) then \
--		$(INSTALLCMD) -d $(STATEPATH) -o $(RUNUID) -g $(RUNGID) || exit 1; \
+-		$(INSTALLCMD) -d -o $(RUNUID) -g $(RUNGID) $(STATEPATH) || exit 1; \
 -	fi
 -
  cgi:
@@ -56,29 +57,38 @@ diff -Nru nut-0.44.1/Makefile.in nut-0.44.1.new/Makefile.in
  
  # This is only used to set the "official" version before it goes out the door.
  #
-diff -Nru nut-0.44.1/clients/Makefile.in nut-0.44.1.new/clients/Makefile.in
---- nut-0.44.1/clients/Makefile.in	Fri Jul 14 00:55:41 2000
-+++ nut-0.44.1.new/clients/Makefile.in	Fri Dec 22 05:58:58 2000
-@@ -4,9 +4,9 @@
- CFLAGS = -I../include @CFLAGS@
- PROGS = upsc upslog upsct upsct2 upscmd upsmon
- CGIPROGS = upsstats.cgi upsimage.cgi multimon.cgi upsset.cgi
--prefix = $(INSTALLROOT)@prefix@
-+prefix = @prefix@
- BASEPATH = $(prefix)
--CGIPATH = $(INSTALLROOT)@CGIPATH@
-+CGIPATH = @CGIPATH@
- NETLIBS = @NETLIBS@
- INSTALLCMD = @INSTALL@
- INSTALLMODE = 0755
-@@ -56,15 +56,17 @@
+diff -Nru nut-0.44.2/clients/Makefile.in nut-0.44.2.new/clients/Makefile.in
+--- nut-0.44.2/clients/Makefile.in	Wed Jan 17 12:06:19 2001
++++ nut-0.44.2.new/clients/Makefile.in	Wed Jan 17 11:57:35 2001
+@@ -1,11 +1,10 @@
+ # Network UPS Tools: clients
+ 
+ # directories
+-prefix	 = $(INSTALLROOT)@prefix@
+-BASEPATH = $(prefix)
+-CGIPATH	 = $(INSTALLROOT)@CGIPATH@
+-BINPATH	 = $(prefix)/@bindir@
+-SBINPATH = $(prefix)/@sbindir@
++prefix	 = @prefix@
++CGIPATH	 = @CGIPATH@
++bindir	 = @bindir@
++sbindir  = @sbindir@
+ 
+ # other definitions
+ CC	 = @CC@
+@@ -66,18 +65,17 @@
  distclean: clean
  
  install: all
-+	$(INSTALLCMD) -d $(DESTDIR)$(BASEPATH)/bin
++	$(INSTALLCMD) -d $(DESTDIR)$(bindir)
++	$(INSTALLCMD) -d $(DESTDIR)$(sbindir)
  	@for f in $(PROGS) ; do \
--		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(BASEPATH)/bin; \
-+		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(BASEPATH)/bin; \
+-		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(BINPATH); \
++		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(bindir); \
+ 	done
+ 	@for f in $(SPROGS) ; do \
+-		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(SBINPATH); \
++		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(sbindir); \
  	done
  
  install-cgi: cgi
@@ -87,55 +97,86 @@ diff -Nru nut-0.44.1/clients/Makefile.in nut-0.44.1.new/clients/Makefile.in
 -		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(CGIPATH); \
 +		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(CGIPATH); \
  	done
- 
- install-misc: upsfetch.o
+-
+-install-misc: upsfetch.o
 -	$(INSTALLCMD) upsfetch.h $(BASEPATH)/misc
 -	$(INSTALLCMD) upsfetch.o $(BASEPATH)/misc
-+	$(INSTALLCMD) upsfetch.h $(DESTDIR)$(BASEPATH)/misc
-+	$(INSTALLCMD) upsfetch.o $(DESTDIR)$(BASEPATH)/misc
-diff -Nru nut-0.44.1/conf/Makefile.in nut-0.44.1.new/conf/Makefile.in
---- nut-0.44.1/conf/Makefile.in	Sun May  7 23:17:20 2000
-+++ nut-0.44.1.new/conf/Makefile.in	Fri Dec 22 05:59:45 2000
-@@ -1,8 +1,8 @@
+diff -Nru nut-0.44.2/conf/Makefile.in nut-0.44.2.new/conf/Makefile.in
+--- nut-0.44.2/conf/Makefile.in	Wed Jan 17 12:06:19 2001
++++ nut-0.44.2.new/conf/Makefile.in	Wed Jan 17 11:53:11 2001
+@@ -1,8 +1,7 @@
  # Network UPS Tools: conf
   
  prefix = @prefix@
 -BASEPATH = $(INSTALLROOT)@prefix@
 -CONFPATH = $(INSTALLROOT)@sysconfdir@
-+BASEPATH = @prefix@
-+CONFPATH = @sysconfdir@
++sysconfdir = @sysconfdir@
  INSTALLCMD = @INSTALL@
  
  SECFILES = upsmon.conf upsd.conf upsset.passwd
-@@ -12,11 +12,12 @@
+@@ -12,18 +11,19 @@
  clean:
  
  install:
-+	$(INSTALLCMD) -d $(DESTDIR)$(CONFPATH)
++	$(INSTALLCMD) -d $(DESTDIR)$(sysconfdir)
  	@for f in $(SECFILES) ; do \
- 		if [ -f $(CONFPATH)/$$f ]; then \
+-		if [ -f $(CONFPATH)/$$f ]; then \
++		if [ -f $(sysconfdir)/$$f ]; then \
  			echo "Preserving existing config file: $$f"; \
  		else \
 -			$(INSTALLCMD) -m 0600 $$f $(CONFPATH); \
-+			$(INSTALLCMD) -m 0600 $$f $(DESTDIR)$(CONFPATH); \
++			$(INSTALLCMD) -m 0600 $$f $(DESTDIR)$(sysconfdir); \
  		fi; \
  	done
  
-@@ -24,6 +25,6 @@
- 		if [ -f $(CONFPATH)/$$f ]; then \
+ 	@for f in $(PUBFILES) ; do \
+-		if [ -f $(CONFPATH)/$$f ]; then \
++		if [ -f $(sysconfdir)/$$f ]; then \
  			echo "Preserving existing config file: $$f"; \
  		else \
 -			$(INSTALLCMD) -m 0644 $$f $(CONFPATH); \
-+			$(INSTALLCMD) -m 0644 $$f $(DESTDIR)$(CONFPATH); \
++			$(INSTALLCMD) -m 0644 $$f $(DESTDIR)$(sysconfdir); \
  		fi; \
  	done
-diff -Nru nut-0.44.1/models/Makefile.in nut-0.44.1.new/models/Makefile.in
---- nut-0.44.1/models/Makefile.in	Sun Aug 20 00:39:02 2000
-+++ nut-0.44.1.new/models/Makefile.in	Fri Dec 22 06:00:40 2000
-@@ -4,11 +4,11 @@
- CFLAGS	= -I../include @CFLAGS@
+diff -Nru nut-0.44.2/man/Makefile.in nut-0.44.2.new/man/Makefile.in
+--- nut-0.44.2/man/Makefile.in	Wed Jan 17 12:06:19 2001
++++ nut-0.44.2.new/man/Makefile.in	Wed Jan 17 11:54:48 2001
+@@ -2,8 +2,8 @@
+ 
+ MAN8_PAGES  = powercom.8 apcsmart.8
+ 
+-prefix      = $(INSTALLROOT)@prefix@
+-MANDIR      = $(INSTALLROOT)@mandir@
++prefix      = @prefix@
++mandir      = @mandir@
+ INSTALLCMD  = @INSTALL@
+ INSTALLMODE = 0644
+ 
+@@ -14,15 +14,7 @@
+ distclean: clean
+ 
+ install: all
+-
+-	@if (test ! -d $(MANDIR)) then \
+-		$(INSTALLCMD) -d $(MANDIR) || exit 1;\
+-	fi
+-
+-	@if (test ! -d $(MANDIR)/man8) then \
+-		$(INSTALLCMD) -d $(MANDIR)/man8 || exit 1;\
+-	fi
+-
++	$(INSTALLCMD) -d $(DESTDIR)$(mandir)/man8
+ 	@for f in $(MAN8_PAGES) ; do \
+-		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MANDIR)/man8; \
++		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(mandir)/man8; \
+ 	done
+diff -Nru nut-0.44.2/models/Makefile.in nut-0.44.2.new/models/Makefile.in
+--- nut-0.44.2/models/Makefile.in	Wed Jan 17 12:06:19 2001
++++ nut-0.44.2.new/models/Makefile.in	Wed Jan 17 10:41:09 2001
+@@ -5,11 +5,11 @@
  PROGS	= ups-trust425+625 apcsmart fentonups genericups optiups bestups \
- 	  victronups ipt-anzen bestfort mustekups engetron belkin powercom
+ 	  victronups ipt-anzen bestfort mustekups engetron belkin powercom \
+ 	  bestuferrups toshiba1500 newapc
 -prefix	= $(INSTALLROOT)@prefix@
 +prefix	= @prefix@
  BASEPATH = $(prefix)
@@ -143,10 +184,10 @@ diff -Nru nut-0.44.1/models/Makefile.in nut-0.44.1.new/models/Makefile.in
  INSTALLMODE = 0755
 -MODELPATH = $(INSTALLROOT)@MODELPATH@
 +MODELPATH = @MODELPATH@
+ LIBOBJ = @LIBOBJ@ ../common/common.o @NETLIBS@
  
  all: $(PROGS)
- 
-@@ -37,10 +37,7 @@
+@@ -39,10 +39,7 @@
  distclean: clean
  
  install: all
@@ -159,24 +200,27 @@ diff -Nru nut-0.44.1/models/Makefile.in nut-0.44.1.new/models/Makefile.in
 -		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(MODELPATH); \
 +		$(INSTALLCMD) -m $(INSTALLMODE) $$f $(DESTDIR)$(MODELPATH); \
  	done
-diff -Nru nut-0.44.1/server/Makefile.in nut-0.44.1.new/server/Makefile.in
---- nut-0.44.1/server/Makefile.in	Fri Jul 14 00:30:40 2000
-+++ nut-0.44.1.new/server/Makefile.in	Fri Dec 22 06:01:40 2000
-@@ -3,7 +3,7 @@
+diff -Nru nut-0.44.2/server/Makefile.in nut-0.44.2.new/server/Makefile.in
+--- nut-0.44.2/server/Makefile.in	Wed Jan 17 12:06:19 2001
++++ nut-0.44.2.new/server/Makefile.in	Wed Jan 17 11:55:23 2001
+@@ -3,9 +3,8 @@
  CC = @CC@
  CFLAGS = -I../include @CFLAGS@
  PROGS = upsd
 -prefix = $(INSTALLROOT)@prefix@
+-BASEPATH = $(prefix)
+-SBINPATH = $(prefix)/@sbindir@
 +prefix = @prefix@
- BASEPATH = $(prefix)
++sbindir = @sbindir@
  NETLIBS = @NETLIBS@
  INSTALLCMD = @INSTALL@
-@@ -23,6 +23,7 @@
+ INSTALLMODE = 0755
+@@ -25,6 +24,7 @@
  distclean: clean
  
  install: all
-+	$(INSTALLCMD) -d $(DESTDIR)$(BASEPATH)
++	$(INSTALLCMD) -d $(DESTDIR)$(sbindir)
  	@for f in $(PROGS) ; do \
--		$(INSTALLCMD) $$f $(BASEPATH)/bin; \
-+		$(INSTALLCMD) $$f $(DESTDIR)$(BASEPATH)/bin; \
+-		$(INSTALLCMD) $$f $(SBINPATH); \
++		$(INSTALLCMD) $$f $(DESTDIR)$(sbindir); \
  	done
