@@ -2,7 +2,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzÍdzie do UPS-Ûw
 Name:		nut
 Version:	1.4.1
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
@@ -14,6 +14,7 @@ Source4:	http://www.nixz.net/nut/everups.c
 # NoSource4-md5:	526bd50f3f5cedf6d60b99998f866b0d
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
+Patch2:		%{name}-everups_newtypes.patch
 URL:		http://www.exploits.org/nut/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -41,17 +42,11 @@ have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
 
-This nut ships with modified everups.c - support for Ever UPS models
-(by Mikolaj Tutak <mtutak@eranet.pl>)
-
 %description -l pl
 Te programy s± czÍ∂ci± projektu do monitorowania wielu UPS-Ûw w jakim∂
 otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±∂ formÍ
 sprawdzania stanu. Ta funkcjonalno∂Ê pozwala na bezpieczne
 zatrzymywanie systemÛw, sprawdzanie stanu zasilania przez WWW i inne.
-
-Ta wersja posiada zmieniony sterownik everups.c - obs≥uguje zasilacze
-firmy Ever UPS models (autorstwa Miko≥aja Tutaka <mtutak@eranet.pl>)
 
 %description -l ru
 ¸‘… –“œ«“¡ÕÕŸ - ﬁ¡”‘ÿ –“œ≈À‘¡ –œ ÕœŒ…‘œ“…Œ«’ “¡⁄Ã…ﬁŒŸ» UPS. ı ÕŒœ«…»
@@ -156,6 +151,7 @@ Plik wynikowy oraz nag≥Ûwek s≥uø±ce do tworzenia klientÛw NUT-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 %{?_with_new_everups_driver:install %{SOURCE4} drivers/everups.c }
 
 %build
