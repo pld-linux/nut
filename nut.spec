@@ -98,7 +98,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/genericups
 %attr(755,root,root) %{_bindir}/optiups
 %attr(755,root,root) %{_bindir}/ups-trust425+625
-%attr(755,root,root) %{_bindir}/upsd
+%attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) %{_bindir}/upslog
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
@@ -110,7 +110,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/upsc
 %attr(755,root,root) %{_bindir}/upsct
 %attr(755,root,root) %{_bindir}/upsct2
-%attr(755,root,root) %{_bindir}/upsmon
+%attr(755,root,root) %{_sbindir}/upsmon
+%attr(755,root,root) %{_sbindir}/upssched
 %config(noreplace) %{_sysconfdir}/hosts.conf
 %config(noreplace) %{_sysconfdir}/multimon.conf
 %attr(600,root,root) %config(noreplace) %{_sysconfdir}/upsmon.conf
