@@ -87,10 +87,20 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 gzip -9nf CREDITS README docs/{FAQ,Changes*,*.txt,cables/*}
 
 %post
-NAME=ups; DESC="NUT ups daemon"; %chkconfig_add
+/sbin/chkconfig --add ups
+if [ -f /var/lock/subsys/ups ]; then
+	/etc/rc.d/init.d/ups restart >&2
+else
+	echo "Run \"/etc/rc.d/init.d/ups start\" to start NUT ups daemon."
+fi
 
 %preun
-NAME=ups; %chkconfig_del
+if [ "$1" = "0" ]; then
+	if [ -f /var/lock/subsys/ups ]; then
+		/etc/rc.d/init.d/ups stop >&2
+	fi
+	/sbin/chkconfig --del ups
+fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
