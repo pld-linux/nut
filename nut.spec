@@ -4,7 +4,7 @@ Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
 Version:	1.0.0
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.exploits.org/nut/release/%{name}-%{version}.tar.gz
@@ -162,8 +162,6 @@ install conf/*.users conf/*.conf $RPM_BUILD_ROOT%{_sysconfdir}
 install clients/upsfetch.o $RPM_BUILD_ROOT%{_libdir}
 install clients/upsfetch.h $RPM_BUILD_ROOT%{_includedir}
 
-ln -s %{_libdir}/nut/upsdrvctl $RPM_BUILD_ROOT%{_sbindir}
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -204,7 +202,6 @@ fi
 %doc NEWS README CHANGES CREDITS docs/*
 %attr(755,root,root) %{_bindir}/upscmd
 %attr(755,root,root) %{_bindir}/upslog
-%attr(755,root,root) %{_sbindir}/upsdrvctl
 %attr(755,root,root) %{_sbindir}/upsd
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
