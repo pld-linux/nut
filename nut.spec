@@ -1,8 +1,13 @@
+#
+# Conditional build:
+%bcond_with	hidups			# experimental hidups driver
+%bcond_with	new_everups_driver	# support for Ever UPS models (broken)
+
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	1.4.1
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
@@ -156,7 +161,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%{?_with_new_everups_driver:install %{SOURCE4} drivers/everups.c }
+%{?with_new_everups_driver:install %{SOURCE4} drivers/everups.c }
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -164,6 +169,7 @@ cp -f /usr/share/automake/config.sub .
 %{__autoconf}
 LDFLAGS="-L%{_prefix}/X11R6/%{_lib}"; export LDFLAGS
 %configure \
+	%{?with_hidups:--with-linux-hiddev} \
 	--with-ssl \
 	--with-cgi \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
@@ -173,6 +179,7 @@ LDFLAGS="-L%{_prefix}/X11R6/%{_lib}"; export LDFLAGS
 	--with-user=ups \
 	--with-group=ups
 %{__make} all cgi
+%{?with_hidups:%{__make} hidups}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -193,6 +200,8 @@ install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
 
 install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
 install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
+
+%{?with_hidups:install drivers/hidups $RPM_BUILD_ROOT/lib/nut}
 
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
