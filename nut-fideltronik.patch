@@ -1,0 +1,19 @@
+diff -ruN nut-1.0.0/drivers/genericups.h nut-1.0.0.my/drivers/genericups.h
+--- nut-1.0.0/drivers/genericups.h	Mon Jul  8 04:21:25 2002
++++ nut-1.0.0.my/drivers/genericups.h	Mon Sep 16 12:36:23 2002
+@@ -191,6 +191,15 @@
+ 	  -1				/* shutdown: unknown		*/
+ 	},
+ 
++	{ "Fideltronik",
++	  "Ares Series",
++	  "Fideltronik Ares Series",
++	  TIOCM_DTR,			/* cable power: DTR		*/
++	  TIOCM_CTS, TIOCM_CTS,		/* online: CTS on		*/
++	  TIOCM_CD, 0,			/* low battery: DCD off		*/
++	  TIOCM_RTS			/* shutdown: set RTS		*/
++	},
++
+ 	/* add any new entries directly above this line */
+ 
+ 	{ NULL,
