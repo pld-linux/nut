@@ -1,0 +1,52 @@
+--- nut-0.45.0/configure.in~	Fri Jun  1 11:27:19 2001
++++ nut-0.45.0/configure.in	Thu Jul 19 03:18:51 2001
+@@ -157,48 +157,7 @@
+ 	[ -lXpm ],
+ )
+ 
+-AC_CHECK_LIB(gd, gdImagePng,
+-[
+-	GFXLIBS="-lgd -lpng -lz"
+-],
+-[
+-	echo "Trying again - using -L/usr/local/lib -I/usr/local/include..."
+-	unset ac_cv_lib_gd_gdImagePng
+-	CPPFLAGS="$CPPFLAGS -L/usr/local/lib -I/usr/local/include"
+-	AC_CHECK_LIB(gd, gdImagePng,
+-	[
+-		GFXLIBS="-lgd -lpng -lz -L/usr/local/lib -I/usr/local/include"
+-	],
+-	[
+-	],
+-	[-lm -lpng -lz])
+-],
+-[-lm -lpng -lz],
+-)
+-
+-if test "$GFXLIBS" = "" ; then
+-        echo "Trying again - using $LIBTTF"
+-        unset ac_cv_lib_gd_gdImagePng
+-        AC_CHECK_LIB(gd, gdImagePng,
+-        [
+-                GFXLIBS="-lgd -lpng -lz $LIBTTF"
+-        ],
+-        [
+-        ],
+-        [-lm -lpng -lz $LIBTTF])
+-fi
+-
+-if test "$GFXLIBS" = "" ; then
+-        echo "Trying again - using $LIBTTF $LIBXPM"
+-        unset ac_cv_lib_gd_gdImagePng
+-        AC_CHECK_LIB(gd, gdImagePng,
+-        [
+-                GFXLIBS="-lgd -lpng -lz $LIBTTF $LIBXPM"
+-        ],
+-        [
+-        ],
+-        [-lm -lpng -lz $LIBTTF $LIBXPM])
+-fi
++AC_CHECK_LIB(gd, gdImagePng, GFXLIBS="-lgd")
+ 
+ test "$GFXLIBS" = ""  && echo "** You will not be able to build the CGI programs without gd."
+ test "$GFXLIBS" = ""  && echo "** "
