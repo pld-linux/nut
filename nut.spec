@@ -1,8 +1,6 @@
 # TODO: /var/lib/ups dir ownership (shouldn't be nobody)
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzÍdzie do UPS-Ûw
-Summary(ru):	NUT - Network UPS Tools
-Summary(uk):	NUT - Network UPS Tools
 Name:		nut
 Version:	1.4.0
 Release:	1.2
@@ -37,16 +35,18 @@ assortment of UPSes that are found out there in the field. Many models
 have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
+
 This nut ships with modified everups.c - support for Ever UPS models
-Copyright (C) 2003 Mikolaj Tutak <mtutak@eranet.pl>
+(by Mikolaj Tutak <mtutak@eranet.pl>)
 
 %description -l pl
 Te programy s± czÍ∂ci± projektu do monitorowania wielu UPS-Ûw w jakim∂
 otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±∂ formÍ
 sprawdzania stanu. Ta funkcjonalno∂Ê pozwala na bezpieczne
 zatrzymywanie systemÛw, sprawdzanie stanu zasilania przez WWW i inne.
-Ten Nut posiada zmieniony sterownik everups.c - support for Ever UPS models
-Copyright (C) 2003 Mikolaj Tutak <mtutak@eranet.pl>
+
+Ta wersja posiada zmieniony sterownik everups.c - obs≥uguje zasilacze
+firmy Ever UPS models (autorstwa Miko≥aja Tutaka <mtutak@eranet.pl>)
 
 %description -l ru
 ¸‘… –“œ«“¡ÕÕŸ - ﬁ¡”‘ÿ –“œ≈À‘¡ –œ ÕœŒ…‘œ“…Œ«’ “¡⁄Ã…ﬁŒŸ» UPS. ı ÕŒœ«…»
