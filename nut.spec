@@ -1,7 +1,7 @@
 Summary:	Network UPS Tools
 Name:		nut
 Version:	0.43.0
-Release:	1
+Release:	2
 License:	GPL
 Group:		Utilities/System
 Group(pl):	Narzêdzia/System
@@ -49,16 +49,16 @@ live status tracking on web pages, and more.
 %build
 LDFLAGS="-s"; export LDFLAGS
 %configure \
-	--with-statepath=/var/state/ups \
+	--with-statepath=/var/lib/ups \
 	--with-uid=99 \
 	--with-gid=99
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},var/state/ups}
-make CONFPATH=$RPM_BUILD_ROOT%{_sysconfdir}/ups BASEPATH=$RPM_BUILD_ROOT%{_prefix} STATEPATH=$RPM_BUILD_ROOT/var/state/ups install
-make CONFPATH=$RPM_BUILD_ROOT%{_sysconfdir}/ups BASEPATH=$RPM_BUILD_ROOT%{_prefix} STATEPATH=$RPM_BUILD_ROOT/var/state/ups install-cgi
+install -d $RPM_BUILD_ROOT/{etc/{sysconfig,rc.d/init.d},var/lib/ups}
+make CONFPATH=$RPM_BUILD_ROOT%{_sysconfdir}/ups BASEPATH=$RPM_BUILD_ROOT%{_prefix} STATEPATH=$RPM_BUILD_ROOT/var/lib/ups install
+make CONFPATH=$RPM_BUILD_ROOT%{_sysconfdir}/ups BASEPATH=$RPM_BUILD_ROOT%{_prefix} STATEPATH=$RPM_BUILD_ROOT/var/lib/ups install-cgi
 
 install scripts/RedHat-6.0/ups-config $RPM_BUILD_ROOT/etc/sysconfig/ups
 install scripts/RedHat-6.0/ups $RPM_BUILD_ROOT/etc/rc.d/init.d
@@ -103,7 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/upsct
 %attr(755,root,root) %{_bindir}/upsct2
 %attr(755,root,root) %{_bindir}/upsmon
-%dir %attr(755,nobody,nobody) /var/state/ups
+%dir %attr(755,nobody,nobody) /var/lib/ups
 
 %files cgi
 %defattr(644,root,root,755)
