@@ -2,7 +2,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	1.4.1
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
@@ -159,9 +159,10 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %{?_with_new_everups_driver:install %{SOURCE4} drivers/everups.c }
 
 %build
+cp -f /usr/share/automake/config.sub .
 %{__aclocal}
 %{__autoconf}
-LDFLAGS="-L%{_prefix}/X11R6/lib"; export LDFLAGS
+LDFLAGS="-L%{_prefix}/X11R6/%{_lib}"; export LDFLAGS
 %configure \
 	--with-ssl \
 	--with-cgi \
