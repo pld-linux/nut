@@ -7,3 +7,5 @@ TCP_PORT=""
 # bind to this address only
 BIND_ADDRESS=""
 
+# poweroff UPS when halting?
+POWEROFF_UPS=no
