@@ -8,8 +8,8 @@ diff -ruN nut-1.0.0/drivers/genericups.h nut-1.0.0.my/drivers/genericups.h
 +	{ "Fideltronik",
 +	  "Ares Series",
 +	  "Fideltronik Ares Series",
-+	  TIOCM_CD | TIOCM_CTS,		/* cable power: DCD + CTS	*/
-+	  TIOCM_CTS, 0,			/* online: CTS off		*/
++	  TIOCM_DTR,			/* cable power: DTR		*/
++	  TIOCM_CTS, TIOCM_CTS,		/* online: CTS on		*/
 +	  TIOCM_CD, 0,			/* low battery: DCD off		*/
 +	  TIOCM_RTS			/* shutdown: set RTS		*/
 +	},
