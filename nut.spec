@@ -5,7 +5,7 @@ Summary(ru):	NUT - Network UPS Tools
 Summary(uk):	NUT - Network UPS Tools
 Name:		nut
 Version:	1.4.0
-Release:	1.1
+Release:	1.2
 License:	GPL
 Group:		Applications/System
 Source0:	http://penguin.harrison.k12.co.us/mirrors/nut/release/1.4/%{name}-%{version}.tar.gz
@@ -164,7 +164,7 @@ LDFLAGS="-L%{_prefix}/X11R6/lib"; export LDFLAGS
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/sbin,/etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
-	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}}
+	$RPM_BUILD_ROOT{%{_libdir}/nut,%{_includedir}/nut}
 
 %{__make} install install-cgi \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -176,8 +176,8 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
 install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
 
-install clients/upsclient.o $RPM_BUILD_ROOT%{_libdir}
-install clients/upsclient.h $RPM_BUILD_ROOT%{_includedir}
+install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
+install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
 
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
@@ -281,4 +281,5 @@ fi
 %files devel
 %defattr(644,root,root,755)
 %{_libdir}/upsclient.o
-%{_includedir}/upsclient.h
+%{_libdir}/parseconf.o
+%{_includedir}/nut
