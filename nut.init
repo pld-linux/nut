@@ -4,7 +4,7 @@
 #
 # chkconfig:	2345 10 90
 #
-# description:	The ups daemon monitors an UPS and makes information about
+# description:	The ups daemon monitors an UPS and makes information about \
 #		it's status available to other programs
 # processname:	upsd
 # config:	/etc/ups/

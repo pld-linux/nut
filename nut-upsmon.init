@@ -4,7 +4,7 @@
 #
 # chkconfig:	2345 10 90
 #
-# description:	upsmon talks to upsd and notifies of ups status changes,
+# description:	upsmon talks to upsd and notifies of ups status changes, \
 #		also shutting systems down if required.
 # processname:	upsmon
 # config:	/etc/ups/
