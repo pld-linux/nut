@@ -112,6 +112,19 @@ UPS через веб-интерфейс.
 Цей пакет включа╓ CGI програми для доступу до ╕нформац╕╖ про статус
 UPS через веб-╕нтерфейс.
 
+%package devel
+Summary:	Files for NUT clients development
+Summary(pl):	Pliki do tworzenia klientСw NUT-a
+Group:		Development/Libraries
+Requires:	openssl-devel
+# it does NOT require nut
+
+%description devel
+Object file and header for developing NUT clients.
+
+%description devel -l pl
+Plik wynikowy oraz nagЁСwek sЁu©╠ce do tworzenia klientСw NUT-a.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -145,6 +158,9 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
 install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
+
+install clients/upsclient.o $RPM_BUILD_ROOT%{_libdir}
+install clients/upsclient.h $RPM_BUILD_ROOT%{_includedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -215,3 +231,8 @@ fi
 %config(noreplace) %{_sysconfdir}/hosts.conf
 %config(noreplace) %{_sysconfdir}/upsset.conf
 %config(noreplace) %{_sysconfdir}/*.html
+
+%files devel
+%defattr(644,root,root,755)
+%{_libdir}/upsclient.o
+%{_includedir}/upsclient.h
