@@ -169,7 +169,7 @@ fi
 %config(noreplace) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.conf
-%attr(640,root,root) %config(noreplace) %{_sysconfdir}/ups.conf
+%attr(640,root,nobody) %config(noreplace) %{_sysconfdir}/ups.conf
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/upsd.users
 %{_mandir}/man5/*
 %{_mandir}/man8/*
