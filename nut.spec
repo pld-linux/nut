@@ -182,7 +182,7 @@ LDFLAGS="-L%{_prefix}/X11R6/%{_lib}"; export LDFLAGS
 	--with-user=ups \
 	--with-group=ups
 %{__make} all cgi
-%{?with_hidups:%{__make} hidups}
+%{?with_hidups:%{__make} build-usb}
 
 %install
 rm -rf $RPM_BUILD_ROOT
