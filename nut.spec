@@ -10,7 +10,7 @@ URL:		http://www.exploits.org/nut/
 Prereq:		chkconfig
 Prereq:		fileutils
 Requires:	nut-client
-BuildRoot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ups
 
