@@ -19,7 +19,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.15
 BuildRequires:	libpng-devel
-BuildRequires:	openssl-devel >= 0.9.7c
+BuildRequires:	openssl-devel >= 0.9.7d
 PreReq:		rc-scripts
 Requires(pre):  /bin/id
 Requires(pre):  /usr/bin/getgid
