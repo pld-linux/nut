@@ -92,7 +92,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %patch2 -p1
 
 %build
-autoconf
+%{__autoconf}
 %configure \
 	--with-statepath=/var/lib/ups \
 	--with-uid=nobody \
