@@ -6,19 +6,18 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
-Version:	2.0.0
-Release:	1
-License:	GPL
-Group:		Applications/System
-Source0:	http://eu1.networkupstools.org/source/2.0/%{name}-%{version}.tar.gz
-# Source0-md5:	84649ad95809737b5ffc19efdd9e9952
+Version:    2.0.1
+Release:    1
+License:    GPL
+Group:      Applications/System
+Source0:    http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pre1.tar.gz
+# Source0-md5:  5f33212f0fdd37bc6ac30a07b7d2e54c
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
-Source4:	http://www.nixz.net/nut/everups.c
-# NoSource4-md5:	526bd50f3f5cedf6d60b99998f866b0d
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
+Patch2:		%{name}-everups_newtypes.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -161,7 +160,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%{?with_new_everups_driver:install %{SOURCE4} drivers/everups.c }
+%patch2 -p0
 
 %build
 cp -f /usr/share/automake/config.sub .
