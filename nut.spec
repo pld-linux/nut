@@ -2,7 +2,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	0.45.1
-Release:	3
+Release:	4
 License:	GPL
 Group:		Applications/System
 Group(de):	Applikationen/System
@@ -19,6 +19,7 @@ BuildRequires:	autoconf
 BuildRequires:	gd-devel >= 2.0.1
 BuildRequires:	libpng-devel
 Prereq:		rc-scripts
+Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ups
@@ -32,17 +33,26 @@ for safe shutdowns, live status tracking on web pages, and more.
 
 %package client
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
+Summary(pl):	Narzêdzia klienckie do monitorowania UPS-ów
 Group:		Applications/System
 Group(de):	Applikationen/System
 Group(pl):	Aplikacje/System
+Prereq:		rc-scripts
+Prereq:		/sbin/chkconfig
 
 %description client
 This package includes the client utilities that are required to
-monitor a ups that the client host is plugged into but monitored via
+monitor a UPS that the client host is plugged into but monitored via
 serial cable by another host on the network....
+
+%description client -l pl
+Ten pakiet zawiera narzêdzia kliencie potrzebne do monitorowania UPS-a
+do którego pod³±czony jest komputer kliencki, kiedy kabel szeregowy
+UPS-a jest pod³±czony do innego komputera w sieci.
 
 %package cgi
 Summary:	Multi-vendor UPS Monitoring Project Server - CGI utils
+Summary(pl):	Narzêdzia CGI do monitorowania UPS-ów
 Group:		Applications/System
 Group(de):	Applikationen/System
 Group(pl):	Aplikacje/System
@@ -53,6 +63,12 @@ assortment of UPSes that are found out there in the field. Many models
 have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
+
+%description cgi -l pl
+Te programy s± czê¶ci± projektu do monitorowania wielu UPS-ów w jakim¶
+otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±¶ formê
+sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
+zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
 
 %prep
 %setup -q
@@ -82,6 +98,9 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 install conf/ups.conf $RPM_BUILD_ROOT%{_sysconfdir}/ups.conf
 
 gzip -9nf CREDITS README docs/{FAQ,Changes*,*.txt,cables/*}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 #%pre
 #if [ -n "`id -u ups 2>/dev/null`" ]; then
@@ -130,9 +149,6 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del upsmon
 fi
 	
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(644,root,root,755)
 %doc *.gz docs/{,cables}/*.gz
