@@ -34,7 +34,7 @@ if [ -n "$BIND_ADDRESS" ] || [ -n "$TCP_PORT" ]; then
 	fi
 fi
 
-
+RETVAL=0
 # See how we are called.
 case "$1" in
   start)
@@ -51,49 +51,44 @@ case "$1" in
 		fi
 	else
 		msg_already_running "UPS drivers and network daemon"
-		exit 1
 	fi
 	;;
   stop)
 	if [ -f /var/lock/subsys/ups ]; then
 		msg_stopping "UPS daemon"
 		killproc upsd
-		show "Stopping UPS drivers"
-		daemon /usr/lib/nut/upsdrvctl stop
-		RETVAL=$?
+		run_cmd "Stopping UPS drivers" /usr/lib/nut/upsdrvctl stop
 		rm -f /var/lock/subsys/ups
 	else
 		msg_not_running "UPS daemon"
-		exit 1
 	fi
 	;;
   restart)
 	$0 stop
 	$0 start
+	exit $?
 	;;
-  reload)
+  reload|force-reload)
 	if [ -f /var/lock/subsys/ups ]; then
 		show "Reloading UPS drivers"
 		daemon /usr/lib/nut/upsdrvctl reload
+		[ $? -ne 0 ] && RETVAL=7
 		msg_reloading "UPS network daemon"
 		daemon upsd -c reload
+		[ $? -ne 0 ] && RETVAL=7
 	else
-		msg_not_running "UPS daemon"
-		exit 1
+		msg_not_running "UPS daemon" >&2
+		exit 7
 	fi
-	;;
-  force-reload)
-	$0 reload
-	exit $?
 	;;
   status)
 	status upsd
+	RETVAL=$?
 	/usr/lib/nut/upsdrvctl status
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
-	exit 1
-	;;
+	exit 3
 esac 
 
 exit $RETVAL

@@ -18,7 +18,7 @@
 # Get config.
 [ -f /etc/sysconfig/upsmon ] && . /etc/sysconfig/upsmon
 
-
+RETVAL=0
 # See how we are called.
 case "$1" in
   start)
@@ -30,7 +30,6 @@ case "$1" in
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/upsmon
 	else
 		msg_already_running "UPSmon"
-		exit 1
 	fi
 	;;
   stop)
@@ -40,15 +39,11 @@ case "$1" in
 		rm -f /var/lock/subsys/upsmon
 	else
 		msg_not_running "UPSmon"
-		exit 1
 	fi
 	;;
-  restart|reload)
+  restart|force-reload)
 	$0 stop
 	$0 start
-	;;
-  force-reload)
-	$0 stop && $0 start
 	exit $?
 	;;
   status)
@@ -56,9 +51,8 @@ case "$1" in
 	exit $?
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
-	exit 1
-	;;
+	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	exit 3
 esac 
 
 exit $RETVAL
