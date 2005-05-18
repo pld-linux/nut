@@ -6,11 +6,11 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	2.0.1
-Release:	7
+Release:	8
 License:	GPL
 Group:		Applications/System
-Source0:	http://eu1.networkupstools.org/source/2.0/testing/%{name}-%{version}-pre4.tar.gz
-# Source0-md5:	399f79406e07aa2a689bc6a119b0fcad
+Source0:	http://eu1.networkupstools.org/source/2.0/%{name}-%{version}.tar.gz
+# Source0-md5:	fe28e182ab31015cfcfad5870a2322a2
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -223,7 +223,6 @@ fi
 %groupadd -g 76 ups
 %useradd -u 70 -d /usr/share/empty -s /bin/false -c "UPS Manager User" -g ups ups
 
-
 %post
 /sbin/chkconfig --add ups
 if [ -f /var/lock/subsys/ups ]; then
@@ -269,11 +268,11 @@ fi
 %attr(755,root,root) %{_bindir}/upsrw
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) /sbin/poweroff-ups
-%config(noreplace) %verify(not size mtime md5) /etc/sysconfig/ups
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
-%attr(640,root,ups) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.conf
-%attr(640,root,ups) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/ups.conf
-%attr(640,root,ups) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsd.users
+%attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.conf
+%attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ups.conf
+%attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.users
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
@@ -300,9 +299,9 @@ fi
 %attr(755,root,root) %{_sbindir}/upssched
 %attr(755,root,root) %{_sbindir}/upssched-cmd
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
-%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsmon.conf
-%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upssched.conf
-%config(noreplace) %verify(not size mtime md5) /etc/sysconfig/upsmon
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsmon.conf
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched.conf
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/upsmon
 %{_mandir}/man5/upsmon.conf.5*
 %{_mandir}/man5/upssched.conf.5*
 %{_mandir}/man8/upsc.8*
@@ -312,9 +311,9 @@ fi
 %files cgi
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/hosts.conf
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/upsset.conf
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.html
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hosts.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsset.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.html
 %{_mandir}/man5/hosts.conf.5*
 %{_mandir}/man5/upsset.conf.5*
 %{_mandir}/man5/upsstats.html.5*
