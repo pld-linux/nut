@@ -49,17 +49,11 @@ have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
 
-This nut ships with modified everups.c - support for Ever UPS models
-(by Mikolaj Tutak <mtutak@eranet.pl>)
-
 %description -l pl
 Te programy s± czê¶ci± projektu do monitorowania wielu UPS-ów w jakim¶
 otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±¶ formê
 sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
 zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
-
-Ta wersja posiada zmieniony sterownik everups.c - obs³uguje zasilacze
-firmy Ever UPS models (autorstwa Miko³aja Tutaka <mtutak@eranet.pl>)
 
 %description -l ru
 üÔÉ ĞÒÏÇÒÁÍÍÙ - ŞÁÓÔØ ĞÒÏÅËÔÁ ĞÏ ÍÏÎÉÔÏÒÉÎÇÕ ÒÁÚÌÉŞÎÙÈ UPS. õ ÍÎÏÇÉÈ
