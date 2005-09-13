@@ -5,12 +5,12 @@
 Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzЙdzie do UPS-Сw
 Name:		nut
-Version:	2.0.1
-Release:	8
+Version:	2.0.2
+Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.0/%{name}-%{version}.tar.gz
-# Source0-md5:	fe28e182ab31015cfcfad5870a2322a2
+# Source0-md5:	6560df8d0a42f0f585d34ed1ae8c6f67
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -25,15 +25,15 @@ BuildRequires:	gd-devel >= 2.0.15
 BuildRequires:	libpng-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	rpmbuild(macros) >= 1.202
-PreReq:		rc-scripts
-Requires(pre):  /bin/id
-Requires(pre):  /usr/bin/getgid
-Requires(pre):  /usr/sbin/groupadd
+Requires:	rc-scripts
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/groupmod
-Requires(pre):  /usr/sbin/useradd
-Requires(post,preun):   /sbin/chkconfig
-Requires(postun):       /usr/sbin/groupdel
-Requires(postun):       /usr/sbin/userdel
+Requires(pre):	/usr/sbin/useradd
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires:	%{name}-common = %{version}-%{release}
 Provides:	group(ups)
 Provides:	user(ups)
@@ -86,7 +86,7 @@ Summary(pl):	NarzЙdzia klienckie do monitorowania UPS-Сw
 Summary(uk):	Network UPS Tools - кл╕╓нтськ╕ утил╕ти мон╕торингу
 Summary(ru):	Network UPS Tools - клиентские утилиты мониторинга
 Group:		Applications/System
-PreReq:		rc-scripts
+Requires:	rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
 
@@ -272,6 +272,7 @@ fi
 %{_mandir}/man5/upsd.users.5*
 %{_mandir}/man8/[!u]*.8*
 %{_mandir}/man8/upscmd.8*
+%{_mandir}/man8/upscode2.8*
 %{_mandir}/man8/upsd.8*
 %{_mandir}/man8/upsdrvctl.8*
 %{_mandir}/man8/upslog.8*
