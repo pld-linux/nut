@@ -6,7 +6,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzЙdzie do UPS-Сw
 Name:		nut
 Version:	2.0.2
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.0/%{name}-%{version}.tar.gz
@@ -26,17 +26,8 @@ BuildRequires:	libpng-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	rpmbuild(macros) >= 1.202
 Requires:	rc-scripts
-Requires(pre):	/bin/id
-Requires(pre):	/usr/bin/getgid
-Requires(pre):	/usr/sbin/groupadd
-Requires(pre):	/usr/sbin/groupmod
-Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
 Requires:	%{name}-common = %{version}-%{release}
-Provides:	group(ups)
-Provides:	user(ups)
 Obsoletes:	smartupstools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -73,6 +64,15 @@ UPS. Ця можлив╕сть була використана, де це можливо, для виконання
 Summary:	Package with common files for nut daemon and its clients
 Summary(pl):	Pakiet z plikami wspСlnymi dla demona nut i jego klientСw
 Group:		Applications/System
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/groupmod
+Requires(pre):	/usr/sbin/useradd
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Provides:	group(ups)
+Provides:	user(ups)
 
 %description common
 Package with common files for nut daemon and its clients.
@@ -207,7 +207,7 @@ EOF
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre
+%pre common
 # move to trigger?
 if [ -n "`/usr/bin/getgid ups`" ] && [ "`/usr/bin/getgid ups`" = 121 ]; then
 	/usr/sbin/groupmod -g 76 ups
@@ -249,7 +249,7 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del upsmon
 fi
 
-%postun
+%postun common
 if [ "$1" = "0" ]; then
 	%userremove ups
 	%groupremove ups
@@ -294,8 +294,8 @@ fi
 %attr(755,root,root) %{_sbindir}/upssched
 %attr(755,root,root) %{_sbindir}/upssched-cmd
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsmon.conf
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched.conf
+%attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsmon.conf
+%attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched.conf
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/upsmon
 %{_mandir}/man5/upsmon.conf.5*
 %{_mandir}/man5/upssched.conf.5*
