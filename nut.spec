@@ -207,6 +207,22 @@ EOF
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+/sbin/chkconfig --add ups
+if [ -f /var/lock/subsys/ups ]; then
+	/etc/rc.d/init.d/ups restart >&2
+else
+	echo "Run \"/etc/rc.d/init.d/ups start\" to start NUT ups daemon."
+fi
+
+%preun
+if [ "$1" = "0" ]; then
+	if [ -f /var/lock/subsys/ups ]; then
+		/etc/rc.d/init.d/ups stop >&2
+	fi
+	/sbin/chkconfig --del ups
+fi
+
 %pre common
 # move to trigger?
 if [ -n "`/usr/bin/getgid ups`" ] && [ "`/usr/bin/getgid ups`" = 121 ]; then
@@ -217,28 +233,12 @@ fi
 %groupadd -g 76 ups
 %useradd -u 70 -d /usr/share/empty -s /bin/false -c "UPS Manager User" -g ups ups
 
-%post
-/sbin/chkconfig --add ups
-if [ -f /var/lock/subsys/ups ]; then
-	/etc/rc.d/init.d/ups restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/ups start\" to start NUT ups daemon."
-fi
-
 %post client
 /sbin/chkconfig --add upsmon
 if [ -f /var/lock/subsys/upsmon ]; then
 	/etc/rc.d/init.d/upsmon restart >&2
 else
 	echo "Run \"/etc/rc.d/init.d/upsmon start\" to start NUT upsmon daemon."
-fi
-
-%preun
-if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/ups ]; then
-		/etc/rc.d/init.d/ups stop >&2
-	fi
-	/sbin/chkconfig --del ups
 fi
 
 %preun client
