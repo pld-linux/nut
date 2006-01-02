@@ -1,0 +1,12 @@
+diff -ur nut-2.0.2/drivers/apcsmart.h nut-2.0.2-smart/drivers/apcsmart.h
+--- nut-2.0.2/drivers/apcsmart.h	2005-05-04 11:36:36.000000000 +0200
++++ nut-2.0.2-smart/drivers/apcsmart.h	2006-01-02 17:28:28.000000000 +0100
+@@ -121,6 +121,8 @@
+ 
+ 	{ "ups.temperature", 	APC_POLL|APC_F_CELSIUS, 'C' },
+ 	{ "ups.load",  		APC_POLL|APC_F_PERCENT, 'P' },
++/* Some UPSes report Load with '\' command not 'P' (SmartUPS-DP10000I) */
++	{ "ups.load",  		APC_POLL|APC_F_PERCENT, '\\' },
+ 
+ 	{ "ups.test.interval",  APC_F_HOURS,		'E' },
+ 	{ "ups.test.result", 	APC_POLL,     		'X' },
