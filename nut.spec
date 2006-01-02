@@ -6,7 +6,7 @@ Summary:	Network UPS Tools
 Summary(pl):	Sieciowe narzêdzie do UPS-ów
 Name:		nut
 Version:	2.0.2
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.0/%{name}-%{version}.tar.gz
@@ -18,6 +18,7 @@ Source4:	%{name}.sysconfig.upsmon
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
 Patch2:		%{name}-config.patch
+Patch3:		%{name}-smartdp-load.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -159,6 +160,7 @@ Plik wynikowy oraz nag³ówek s³u¿±ce do tworzenia klientów NUT-a.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
