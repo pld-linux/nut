@@ -25,10 +25,10 @@ BuildRequires:	automake
 BuildRequires:	gd-devel >= 2.0.15
 BuildRequires:	libpng-devel
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	rpmbuild(macros) >= 1.202
-Requires:	rc-scripts
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	rc-scripts
 Obsoletes:	smartupstools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -65,13 +65,13 @@ UPS. ãÑ ÍÏÖÌÉ×¦ÓÔØ ÂÕÌÁ ×ÉËÏÒÉÓÔÁÎÁ, ÄÅ ÃÅ ÍÏÖÌÉ×Ï, ÄÌÑ ×ÉËÏÎÁÎÎÑ
 Summary:	Package with common files for nut daemon and its clients
 Summary(pl):	Pakiet z plikami wspólnymi dla demona nut i jego klientów
 Group:		Applications/System
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/groupmod
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
 Provides:	group(ups)
 Provides:	user(ups)
 
@@ -84,12 +84,12 @@ Pakiet z plikami wspólnymi dla demona nut i jego klientów.
 %package client
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
 Summary(pl):	Narzêdzia klienckie do monitorowania UPS-ów
-Summary(uk):	Network UPS Tools - ËÌ¦¤ÎÔÓØË¦ ÕÔÉÌ¦ÔÉ ÍÏÎ¦ÔÏÒÉÎÇÕ
 Summary(ru):	Network UPS Tools - ËÌÉÅÎÔÓËÉÅ ÕÔÉÌÉÔÙ ÍÏÎÉÔÏÒÉÎÇÁ
+Summary(uk):	Network UPS Tools - ËÌ¦¤ÎÔÓØË¦ ÕÔÉÌ¦ÔÉ ÍÏÎ¦ÔÏÒÉÎÇÕ
 Group:		Applications/System
-Requires:	rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	rc-scripts
 
 %description client
 This package includes the client utilities that are required to
@@ -211,17 +211,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add ups
-if [ -f /var/lock/subsys/ups ]; then
-	/etc/rc.d/init.d/ups restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/ups start\" to start NUT ups daemon."
-fi
+%service ups restart "NUT ups daemon"
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/ups ]; then
-		/etc/rc.d/init.d/ups stop >&2
-	fi
+	%service ups stop
 	/sbin/chkconfig --del ups
 fi
 
@@ -237,17 +231,11 @@ fi
 
 %post client
 /sbin/chkconfig --add upsmon
-if [ -f /var/lock/subsys/upsmon ]; then
-	/etc/rc.d/init.d/upsmon restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/upsmon start\" to start NUT upsmon daemon."
-fi
+%service upsmon restart "NUT upsmon daemon"
 
 %preun client
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/upsmon ]; then
-		/etc/rc.d/init.d/upsmon stop >&2
-	fi
+	%service upsmon stop
 	/sbin/chkconfig --del upsmon
 fi
 
