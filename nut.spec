@@ -200,6 +200,7 @@ install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
 install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
 
 %{?with_hidups:install drivers/hidups $RPM_BUILD_ROOT/lib/nut}
+%{?with_hidups:install drivers/newhidups $RPM_BUILD_ROOT/lib/nut}
 
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
