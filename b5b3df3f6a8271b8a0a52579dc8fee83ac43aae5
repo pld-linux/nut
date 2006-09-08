@@ -1,0 +1,5 @@
+- more work:
+  - package name nocgi changed to cgi and moved to them cgi scripts,
+  - updated to 0.43.0,
+  - full %attr description in %files.
+- still NFY.
