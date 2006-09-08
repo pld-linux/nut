@@ -1,0 +1,3 @@
+- moved /etc/ups dir and %doc to -common subpackage
+- moved manuals to proper subpackages
+- added verify() for config files
