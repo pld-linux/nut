@@ -1,5 +1,5 @@
 Summary:	Network UPS Tools
-Summary(pl):	Sieciowe narzêdzie do UPS-ów
+Summary(pl.UTF-8):   Sieciowe narzÄ™dzie do UPS-Ã³w
 Name:		nut
 Version:	1.1.14
 Release:	1
@@ -30,15 +30,15 @@ have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
 
-%description -l pl
-Te programy s± czê¶ci± projektu do monitorowania wielu UPS-ów w jakim¶
-otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±¶ formê
-sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
-zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
+%description -l pl.UTF-8
+Te programy sÄ… czÄ™Å›ciÄ… projektu do monitorowania wielu UPS-Ã³w w jakimÅ›
+otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jakÄ…Å› formÄ™
+sprawdzania stanu. Ta funkcjonalnoÅ›Ä‡ pozwala na bezpieczne
+zatrzymywanie systemÃ³w, sprawdzanie stanu zasilania przez WWW i inne.
 
 %package client
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
-Summary(pl):	Narzêdzia klienckie do monitorowania UPS-ów
+Summary(pl.UTF-8):   NarzÄ™dzia klienckie do monitorowania UPS-Ã³w
 Group:		Applications/System
 Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
@@ -48,14 +48,14 @@ This package includes the client utilities that are required to
 monitor a UPS that the client host is plugged into but monitored via
 serial cable by another host on the network....
 
-%description client -l pl
-Ten pakiet zawiera narzêdzia kliencie potrzebne do monitorowania UPS-a
-do którego pod³±czony jest komputer kliencki, kiedy kabel szeregowy
-UPS-a jest pod³±czony do innego komputera w sieci.
+%description client -l pl.UTF-8
+Ten pakiet zawiera narzÄ™dzia kliencie potrzebne do monitorowania UPS-a
+do ktÃ³rego podÅ‚Ä…czony jest komputer kliencki, kiedy kabel szeregowy
+UPS-a jest podÅ‚Ä…czony do innego komputera w sieci.
 
 %package cgi
 Summary:	Multi-vendor UPS Monitoring Project Server - CGI utils
-Summary(pl):	Narzêdzia CGI do monitorowania UPS-ów
+Summary(pl.UTF-8):   NarzÄ™dzia CGI do monitorowania UPS-Ã³w
 Group:		Applications/System
 
 %description cgi
@@ -66,12 +66,12 @@ checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more. This
 package contains CGI utils.
 
-%description cgi -l pl
-Te programy s± czê¶ci± projektu do monitorowania wielu UPS-ów w jakim¶
-otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak±¶ formê
-sprawdzania stanu. Ta funkcjonalno¶æ pozwala na bezpieczne
-zatrzymywanie systemów, sprawdzanie stanu zasilania przez WWW i inne.
-Ten pakiet zawiera narzêdzia CGI.
+%description cgi -l pl.UTF-8
+Te programy sÄ… czÄ™Å›ciÄ… projektu do monitorowania wielu UPS-Ã³w w jakimÅ›
+otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jakÄ…Å› formÄ™
+sprawdzania stanu. Ta funkcjonalnoÅ›Ä‡ pozwala na bezpieczne
+zatrzymywanie systemÃ³w, sprawdzanie stanu zasilania przez WWW i inne.
+Ten pakiet zawiera narzÄ™dzia CGI.
 
 %prep
 %setup -q
