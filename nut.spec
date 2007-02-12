@@ -3,7 +3,7 @@
 %bcond_without	hidups			# experimental hidups driver
 #
 Summary:	Network UPS Tools
-Summary(pl):	Sieciowe narzЙdzie do UPS-Сw
+Summary(pl.UTF-8):   Sieciowe narzд≥dzie do UPS-цЁw
 Name:		nut
 Version:	2.0.5
 Release:	1
@@ -41,29 +41,29 @@ have serial serial ports of some kind that allow some form of state
 checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more.
 
-%description -l pl
-Te programy s╠ czЙ╤ci╠ projektu do monitorowania wielu UPS-Сw w jakim╤
-otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak╠╤ formЙ
-sprawdzania stanu. Ta funkcjonalno╤Ф pozwala na bezpieczne
-zatrzymywanie systemСw, sprawdzanie stanu zasilania przez WWW i inne.
+%description -l pl.UTF-8
+Te programy sд┘ czд≥е⌡ciд┘ projektu do monitorowania wielu UPS-цЁw w jakimе⌡
+otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jakд┘е⌡ formд≥
+sprawdzania stanu. Ta funkcjonalnoе⌡д┤ pozwala na bezpieczne
+zatrzymywanie systemцЁw, sprawdzanie stanu zasilania przez WWW i inne.
 
-%description -l ru
-Эти программы - часть проекта по мониторингу различных UPS. У многих
-моделей есть сериальные порты, позволяющие проверять состояние этих
-UPS. Эта возможность была использована, где это возможно, для
-выполнения безопасных остановов компьютеров, отслеживания статуса
-через веб и т.п.
+%description -l ru.UTF-8
+п╜я┌п╦ п©я─п╬пЁя─п╟п╪п╪я▀ - я┤п╟я│я┌я▄ п©я─п╬п╣п╨я┌п╟ п©п╬ п╪п╬п╫п╦я┌п╬я─п╦п╫пЁя┐ я─п╟п╥п╩п╦я┤п╫я▀я┘ UPS. пё п╪п╫п╬пЁп╦я┘
+п╪п╬п╢п╣п╩п╣п╧ п╣я│я┌я▄ я│п╣я─п╦п╟п╩я▄п╫я▀п╣ п©п╬я─я┌я▀, п©п╬п╥п╡п╬п╩я▐я▌я┴п╦п╣ п©я─п╬п╡п╣я─я▐я┌я▄ я│п╬я│я┌п╬я▐п╫п╦п╣ я█я┌п╦я┘
+UPS. п╜я┌п╟ п╡п╬п╥п╪п╬п╤п╫п╬я│я┌я▄ п╠я▀п╩п╟ п╦я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╟, пЁп╢п╣ я█я┌п╬ п╡п╬п╥п╪п╬п╤п╫п╬, п╢п╩я▐
+п╡я▀п©п╬п╩п╫п╣п╫п╦я▐ п╠п╣п╥п╬п©п╟я│п╫я▀я┘ п╬я│я┌п╟п╫п╬п╡п╬п╡ п╨п╬п╪п©я▄я▌я┌п╣я─п╬п╡, п╬я┌я│п╩п╣п╤п╦п╡п╟п╫п╦я▐ я│я┌п╟я┌я┐я│п╟
+я┤п╣я─п╣п╥ п╡п╣п╠ п╦ я┌.п©.
 
-%description -l uk
-Ц╕ програми ╓ частиною проекту по мон╕торингу р╕зноман╕тних UPS.
-Багато моделей мають сер╕альн╕ порти, що дозволять перев╕ряти стан цих
-UPS. Ця можлив╕сть була використана, де це можливо, для виконання
-безпечних зупинок комп'ютер╕в, в╕дсл╕дковування статусу через веб,
-тощо.
+%description -l uk.UTF-8
+п╕я√ п©я─п╬пЁя─п╟п╪п╦ я■ я┤п╟я│я┌п╦п╫п╬я▌ п©я─п╬п╣п╨я┌я┐ п©п╬ п╪п╬п╫я√я┌п╬я─п╦п╫пЁя┐ я─я√п╥п╫п╬п╪п╟п╫я√я┌п╫п╦я┘ UPS.
+п▒п╟пЁп╟я┌п╬ п╪п╬п╢п╣п╩п╣п╧ п╪п╟я▌я┌я▄ я│п╣я─я√п╟п╩я▄п╫я√ п©п╬я─я┌п╦, я┴п╬ п╢п╬п╥п╡п╬п╩я▐я┌я▄ п©п╣я─п╣п╡я√я─я▐я┌п╦ я│я┌п╟п╫ я├п╦я┘
+UPS. п╕я▐ п╪п╬п╤п╩п╦п╡я√я│я┌я▄ п╠я┐п╩п╟ п╡п╦п╨п╬я─п╦я│я┌п╟п╫п╟, п╢п╣ я├п╣ п╪п╬п╤п╩п╦п╡п╬, п╢п╩я▐ п╡п╦п╨п╬п╫п╟п╫п╫я▐
+п╠п╣п╥п©п╣я┤п╫п╦я┘ п╥я┐п©п╦п╫п╬п╨ п╨п╬п╪п©'я▌я┌п╣я─я√п╡, п╡я√п╢я│п╩я√п╢п╨п╬п╡я┐п╡п╟п╫п╫я▐ я│я┌п╟я┌я┐я│я┐ я┤п╣я─п╣п╥ п╡п╣п╠,
+я┌п╬я┴п╬.
 
 %package common
 Summary:	Package with common files for nut daemon and its clients
-Summary(pl):	Pakiet z plikami wspСlnymi dla demona nut i jego klientСw
+Summary(pl.UTF-8):   Pakiet z plikami wspцЁlnymi dla demona nut i jego klientцЁw
 Group:		Applications/System
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -78,14 +78,14 @@ Provides:	user(ups)
 %description common
 Package with common files for nut daemon and its clients.
 
-%description common -l pl
-Pakiet z plikami wspСlnymi dla demona nut i jego klientСw.
+%description common -l pl.UTF-8
+Pakiet z plikami wspцЁlnymi dla demona nut i jego klientцЁw.
 
 %package client
 Summary:	Multi-vendor UPS Monitoring Project Client Utilities
-Summary(pl):	NarzЙdzia klienckie do monitorowania UPS-Сw
-Summary(ru):	Network UPS Tools - клиентские утилиты мониторинга
-Summary(uk):	Network UPS Tools - кл╕╓нтськ╕ утил╕ти мон╕торингу
+Summary(pl.UTF-8):   Narzд≥dzia klienckie do monitorowania UPS-цЁw
+Summary(ru.UTF-8):   Network UPS Tools - п╨п╩п╦п╣п╫я┌я│п╨п╦п╣ я┐я┌п╦п╩п╦я┌я▀ п╪п╬п╫п╦я┌п╬я─п╦п╫пЁп╟
+Summary(uk.UTF-8):   Network UPS Tools - п╨п╩я√я■п╫я┌я│я▄п╨я√ я┐я┌п╦п╩я√я┌п╦ п╪п╬п╫я√я┌п╬я─п╦п╫пЁя┐
 Group:		Applications/System
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
@@ -96,26 +96,26 @@ This package includes the client utilities that are required to
 monitor a UPS that the client host is plugged into but monitored via
 serial cable by another host on the network....
 
-%description client -l pl
-Ten pakiet zawiera narzЙdzia kliencie potrzebne do monitorowania UPS-a
-do ktСrego podЁ╠czony jest komputer kliencki, kiedy kabel szeregowy
-UPS-a jest podЁ╠czony do innego komputera w sieci.
+%description client -l pl.UTF-8
+Ten pakiet zawiera narzд≥dzia kliencie potrzebne do monitorowania UPS-a
+do ktцЁrego podе┌д┘czony jest komputer kliencki, kiedy kabel szeregowy
+UPS-a jest podе┌д┘czony do innego komputera w sieci.
 
-%description client -l ru
-Этот пакет включает клиентские утилиты, необходимые для мониторинга
-UPS, к которому клиентский хост имеет доступ, но UPS физически
-подключен к другому компьютеру в сети.
+%description client -l ru.UTF-8
+п╜я┌п╬я┌ п©п╟п╨п╣я┌ п╡п╨п╩я▌я┤п╟п╣я┌ п╨п╩п╦п╣п╫я┌я│п╨п╦п╣ я┐я┌п╦п╩п╦я┌я▀, п╫п╣п╬п╠я┘п╬п╢п╦п╪я▀п╣ п╢п╩я▐ п╪п╬п╫п╦я┌п╬я─п╦п╫пЁп╟
+UPS, п╨ п╨п╬я┌п╬я─п╬п╪я┐ п╨п╩п╦п╣п╫я┌я│п╨п╦п╧ я┘п╬я│я┌ п╦п╪п╣п╣я┌ п╢п╬я│я┌я┐п©, п╫п╬ UPS я└п╦п╥п╦я┤п╣я│п╨п╦
+п©п╬п╢п╨п╩я▌я┤п╣п╫ п╨ п╢я─я┐пЁп╬п╪я┐ п╨п╬п╪п©я▄я▌я┌п╣я─я┐ п╡ я│п╣я┌п╦.
 
-%description client -l uk
-Цей пакет включа╓ кл╕╓нтськ╕ утил╕ти, потр╕бн╕ для мон╕торингу UPS, до
-якого кл╕╓нтський хост ма╓ доступ, але UPS ф╕зично п╕дключений до
-╕ншого комп'ютеру в мереж╕.
+%description client -l uk.UTF-8
+п╕п╣п╧ п©п╟п╨п╣я┌ п╡п╨п╩я▌я┤п╟я■ п╨п╩я√я■п╫я┌я│я▄п╨я√ я┐я┌п╦п╩я√я┌п╦, п©п╬я┌я─я√п╠п╫я√ п╢п╩я▐ п╪п╬п╫я√я┌п╬я─п╦п╫пЁя┐ UPS, п╢п╬
+я▐п╨п╬пЁп╬ п╨п╩я√я■п╫я┌я│я▄п╨п╦п╧ я┘п╬я│я┌ п╪п╟я■ п╢п╬я│я┌я┐п©, п╟п╩п╣ UPS я└я√п╥п╦я┤п╫п╬ п©я√п╢п╨п╩я▌я┤п╣п╫п╦п╧ п╢п╬
+я√п╫я┬п╬пЁп╬ п╨п╬п╪п©'я▌я┌п╣я─я┐ п╡ п╪п╣я─п╣п╤я√.
 
 %package cgi
 Summary:	Multi-vendor UPS Monitoring Project Server - CGI utils
-Summary(pl):	NarzЙdzia CGI do monitorowania UPS-Сw
-Summary(ru):	Network UPS Tools - CGI утилиты
-Summary(uk):	Network UPS Tools - CGI утил╕ти
+Summary(pl.UTF-8):   Narzд≥dzia CGI do monitorowania UPS-цЁw
+Summary(ru.UTF-8):   Network UPS Tools - CGI я┐я┌п╦п╩п╦я┌я▀
+Summary(uk.UTF-8):   Network UPS Tools - CGI я┐я┌п╦п╩я√я┌п╦
 Group:		Applications/System
 Requires:	%{name}-common = %{version}-%{release}
 
@@ -127,24 +127,24 @@ checking. This capability has been harnessed where possible to allow
 for safe shutdowns, live status tracking on web pages, and more. This
 package contains CGI utils.
 
-%description cgi -l pl
-Te programy s╠ czЙ╤ci╠ projektu do monitorowania wielu UPS-Сw w jakim╤
-otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jak╠╤ formЙ
-sprawdzania stanu. Ta funkcjonalno╤Ф pozwala na bezpieczne
-zatrzymywanie systemСw, sprawdzanie stanu zasilania przez WWW i inne.
-Ten pakiet zawiera narzЙdzia CGI.
+%description cgi -l pl.UTF-8
+Te programy sд┘ czд≥е⌡ciд┘ projektu do monitorowania wielu UPS-цЁw w jakimе⌡
+otoczeniu. Wiele modeli ma porty szeregowe i pozwala na jakд┘е⌡ formд≥
+sprawdzania stanu. Ta funkcjonalnoе⌡д┤ pozwala na bezpieczne
+zatrzymywanie systemцЁw, sprawdzanie stanu zasilania przez WWW i inne.
+Ten pakiet zawiera narzд≥dzia CGI.
 
-%description cgi -l ru
-Этот пакет включает CGI программы для доступа к информации о статусе
-UPS через веб-интерфейс.
+%description cgi -l ru.UTF-8
+п╜я┌п╬я┌ п©п╟п╨п╣я┌ п╡п╨п╩я▌я┤п╟п╣я┌ CGI п©я─п╬пЁя─п╟п╪п╪я▀ п╢п╩я▐ п╢п╬я│я┌я┐п©п╟ п╨ п╦п╫я└п╬я─п╪п╟я├п╦п╦ п╬ я│я┌п╟я┌я┐я│п╣
+UPS я┤п╣я─п╣п╥ п╡п╣п╠-п╦п╫я┌п╣я─я└п╣п╧я│.
 
-%description cgi -l uk
-Цей пакет включа╓ CGI програми для доступу до ╕нформац╕╖ про статус
-UPS через веб-╕нтерфейс.
+%description cgi -l uk.UTF-8
+п╕п╣п╧ п©п╟п╨п╣я┌ п╡п╨п╩я▌я┤п╟я■ CGI п©я─п╬пЁя─п╟п╪п╦ п╢п╩я▐ п╢п╬я│я┌я┐п©я┐ п╢п╬ я√п╫я└п╬я─п╪п╟я├я√я≈ п©я─п╬ я│я┌п╟я┌я┐я│
+UPS я┤п╣я─п╣п╥ п╡п╣п╠-я√п╫я┌п╣я─я└п╣п╧я│.
 
 %package devel
 Summary:	Files for NUT clients development
-Summary(pl):	Pliki do tworzenia klientСw NUT-a
+Summary(pl.UTF-8):   Pliki do tworzenia klientцЁw NUT-a
 Group:		Development/Libraries
 Requires:	openssl-devel >= 0.9.7c
 # it does NOT require nut
@@ -152,8 +152,8 @@ Requires:	openssl-devel >= 0.9.7c
 %description devel
 Object file and header for developing NUT clients.
 
-%description devel -l pl
-Plik wynikowy oraz nagЁСwek sЁu©╠ce do tworzenia klientСw NUT-a.
+%description devel -l pl.UTF-8
+Plik wynikowy oraz nagе┌цЁwek sе┌uе╪д┘ce do tworzenia klientцЁw NUT-a.
 
 %prep
 %setup -q
