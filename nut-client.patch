@@ -1,12 +1,11 @@
-diff -urN nut-1.1.14.org/clients/Makefile.in nut-1.1.14/clients/Makefile.in
---- nut-1.1.14.org/clients/Makefile.in	Wed Oct 30 17:05:02 2002
-+++ nut-1.1.14/clients/Makefile.in	Wed Oct 30 17:05:23 2002
-@@ -16,7 +16,7 @@
- CC	 = @CC@
- CFLAGS	 = -I../include @CFLAGS@
- PROGS	 = upsc upslog upsrw upscmd
--SPROGS	 = upsmon upssched
-+SPROGS	 = upsmon upssched upssched-cmd
- CGIPROGS = upsstats.cgi upsimage.cgi upsset.cgi
- LIBDEP   = @LIBOBJ@
- LIBOBJ	 = $(LIBDEP) @NETLIBS@
+--- nut-2.2.0/clients/Makefile.am.orig	2007-07-25 16:53:40.493327586 +0000
++++ nut-2.2.0/clients/Makefile.am	2007-07-25 16:53:51.491649721 +0000
+@@ -7,7 +7,7 @@
+ AM_CFLAGS = -I$(top_srcdir)/include $(LIBSSL_CFLAGS) $(LIBGD_CFLAGS)
+ 
+ bin_PROGRAMS = upsc upslog upsrw upscmd
+-dist_bin_SCRIPTS = upssched-cmd
++dist_sbin_SCRIPTS = upssched-cmd
+ sbin_PROGRAMS = upsmon upssched
+ if WITH_LIB
+  lib_LTLIBRARIES = libupsclient.la
