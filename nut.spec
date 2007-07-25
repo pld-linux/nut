@@ -3,6 +3,7 @@
 #		/usr/html/{{bottom,header,index}.html,nut-banner.png}
 #		/etc/udev/rules.d/52_nut-usbups.rules
 #	- check hal BR
+#	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
 #
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
@@ -18,9 +19,8 @@ Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Source4:	%{name}.sysconfig.upsmon
 Patch0:		%{name}-client.patch
-Patch1:		%{name}-datadir.patch
-Patch2:		%{name}-config.patch
-Patch3:		%{name}-smartdp-load.patch
+Patch1:		%{name}-config.patch
+Patch2:		%{name}-smartdp-load.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -162,9 +162,8 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 %prep
 %setup -q
 %patch0 -p1
-#patch1 -p1
+%patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
