@@ -1,6 +1,7 @@
 # TODO:
 #	- hidups bcond has wrong name and description (should be "usbups"? or removed)
 #	- unpackaged files: /usr/html/{{bottom,header,index}.html,nut-banner.png}
+#	- check hal BR
 #
 # Conditional build:
 %bcond_without	hidups			# experimental hidups driver
@@ -172,7 +173,10 @@ cp -f /usr/share/automake/config.sub .
 %{__aclocal} -I m4
 %{__autoconf}
 %configure \
-	%{?with_hidups:--with-linux-hiddev} \
+	--with-hal \
+	--with-serial \
+	--with-snmp \
+	--with-usb \
 	--with-ssl \
 	--with-cgi \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
@@ -182,7 +186,6 @@ cp -f /usr/share/automake/config.sub .
 	--with-user=ups \
 	--with-group=ups
 %{__make} all snmp cgi
-%{?with_hidups:%{__make} build-usb}
 
 %install
 rm -rf $RPM_BUILD_ROOT
