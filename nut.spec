@@ -201,9 +201,6 @@ install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
 install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
 install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
 
-%{?with_hidups:install drivers/hidups $RPM_BUILD_ROOT/lib/nut}
-%{?with_hidups:install drivers/newhidups $RPM_BUILD_ROOT/lib/nut}
-
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
 /etc/rc.d/init.d/ups powerdown
@@ -263,7 +260,48 @@ fi
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
-%{_mandir}/man8/[!u]*.8*
+%{_mandir}/man8/al175.8*
+%{_mandir}/man8/apcsmart.8*
+%{_mandir}/man8/bcmxcp.8*
+%{_mandir}/man8/bcmxcp_usb.8*
+%{_mandir}/man8/belkin.8*
+%{_mandir}/man8/belkinunv.8*
+%{_mandir}/man8/bestfcom.8*
+%{_mandir}/man8/bestuferrups.8*
+%{_mandir}/man8/bestups.8*
+%{_mandir}/man8/cpsups.8*
+%{_mandir}/man8/cyberpower.8*
+%{_mandir}/man8/dummy-ups.8*
+%{_mandir}/man8/energizerups.8*
+%{_mandir}/man8/etapro.8*
+%{_mandir}/man8/everups.8*
+%{_mandir}/man8/fentonups.8*
+%{_mandir}/man8/genericups.8*
+%{_mandir}/man8/hidups.8*
+%{_mandir}/man8/ippon.8*
+%{_mandir}/man8/isbmex.8*
+%{_mandir}/man8/liebert.8*
+%{_mandir}/man8/masterguard.8*
+%{_mandir}/man8/megatec.8*
+%{_mandir}/man8/metasys.8*
+%{_mandir}/man8/mge-shut.8*
+%{_mandir}/man8/mge-utalk.8*
+%{_mandir}/man8/mustek.8*
+%{_mandir}/man8/newhidups.8*
+%{_mandir}/man8/nitram.8*
+%{_mandir}/man8/nutupsdrv.8*
+%{_mandir}/man8/oneac.8*
+%{_mandir}/man8/optiups.8*
+%{_mandir}/man8/powercom.8*
+%{_mandir}/man8/powerpanel.8*
+%{_mandir}/man8/safenet.8*
+%{_mandir}/man8/sms.8*
+%{_mandir}/man8/snmp-ups.8*
+%{_mandir}/man8/solis.8*
+%{_mandir}/man8/tripplite.8*
+%{_mandir}/man8/tripplite_usb.8*
+%{_mandir}/man8/tripplitesu.8*
+%{_mandir}/man8/victronups.8*
 %{_mandir}/man8/upscmd.8*
 %{_mandir}/man8/upscode2.8*
 %{_mandir}/man8/upsd.8*
@@ -272,7 +310,52 @@ fi
 %{_mandir}/man8/upsrw.8*
 %dir %attr(770,root,ups) /var/lib/ups
 %dir /lib/nut
-%attr(755,root,root) /lib/nut/*
+%attr(755,root,root) /lib/nut/al175
+%attr(755,root,root) /lib/nut/apcsmart
+%attr(755,root,root) /lib/nut/bcmxcp
+%attr(755,root,root) /lib/nut/bcmxcp_usb
+%attr(755,root,root) /lib/nut/belkin
+%attr(755,root,root) /lib/nut/belkinunv
+%attr(755,root,root) /lib/nut/bestfcom
+%attr(755,root,root) /lib/nut/bestuferrups
+%attr(755,root,root) /lib/nut/bestups
+%attr(755,root,root) /lib/nut/blazer
+%attr(755,root,root) /lib/nut/cpsups
+%attr(755,root,root) /lib/nut/cyberpower
+%attr(755,root,root) /lib/nut/energizerups
+%attr(755,root,root) /lib/nut/esupssmart
+%attr(755,root,root) /lib/nut/etapro
+%attr(755,root,root) /lib/nut/everups
+%attr(755,root,root) /lib/nut/fentonups
+%attr(755,root,root) /lib/nut/gamatronic
+%attr(755,root,root) /lib/nut/genericups
+%attr(755,root,root) /lib/nut/hidups
+%attr(755,root,root) /lib/nut/ippon
+%attr(755,root,root) /lib/nut/isbmex
+%attr(755,root,root) /lib/nut/liebert
+%attr(755,root,root) /lib/nut/masterguard
+%attr(755,root,root) /lib/nut/megatec
+%attr(755,root,root) /lib/nut/metasys
+%attr(755,root,root) /lib/nut/mge-shut
+%attr(755,root,root) /lib/nut/mge-utalk
+%attr(755,root,root) /lib/nut/mustek
+%attr(755,root,root) /lib/nut/newhidups
+%attr(755,root,root) /lib/nut/nitram
+%attr(755,root,root) /lib/nut/oneac
+%attr(755,root,root) /lib/nut/optiups
+%attr(755,root,root) /lib/nut/powercom
+%attr(755,root,root) /lib/nut/powerpanel
+%attr(755,root,root) /lib/nut/rhino
+%attr(755,root,root) /lib/nut/safenet
+%attr(755,root,root) /lib/nut/sms
+%attr(755,root,root) /lib/nut/snmp-ups
+%attr(755,root,root) /lib/nut/solis
+%attr(755,root,root) /lib/nut/tripplite
+%attr(755,root,root) /lib/nut/tripplite_usb
+%attr(755,root,root) /lib/nut/tripplitesu
+%attr(755,root,root) /lib/nut/upscode2
+%attr(755,root,root) /lib/nut/upsdrvctl
+%attr(755,root,root) /lib/nut/victronups
 %{_datadir}/nut
 
 %files common
