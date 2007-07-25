@@ -3,9 +3,6 @@
 #	- unpackaged files: /usr/html/{{bottom,header,index}.html,nut-banner.png}
 #	- check hal BR
 #
-# Conditional build:
-%bcond_without	hidups			# experimental hidups driver
-#
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
@@ -192,7 +189,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/sbin,/etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
 	$RPM_BUILD_ROOT{/lib/nut,%{_libdir},%{_includedir}/nut}
 
-%{__make} -j1 install install-snmp install-cgi %{?with_hidups: install-usb} \
+%{__make} -j1 install install-snmp install-cgi \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
@@ -352,7 +349,6 @@ fi
 %attr(755,root,root) /lib/nut/upsdrvctl
 %attr(755,root,root) /lib/nut/victronups
 %{_datadir}/nut
-%if %{with hidups}
 %{_mandir}/man8/bcmxcp_usb.8*
 %{_mandir}/man8/energizerups.8*
 %{_mandir}/man8/hidups.8*
@@ -363,7 +359,6 @@ fi
 %attr(755,root,root) /lib/nut/hidups
 %attr(755,root,root) /lib/nut/newhidups
 %attr(755,root,root) /lib/nut/tripplite_usb
-%endif
 
 %files common
 %defattr(644,root,root,755)
