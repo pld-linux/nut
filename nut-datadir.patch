@@ -1,15 +1,3 @@
-diff -urN nut-1.4.0.org/data/Makefile.in nut-1.4.0/data/Makefile.in
---- nut-1.4.0.org/data/Makefile.in	2003-08-01 16:19:04.000000000 +0200
-+++ nut-1.4.0/data/Makefile.in	2003-08-01 17:41:30.000000000 +0200
-@@ -3,7 +3,7 @@
- prefix		= @prefix@
- exec_prefix	= @exec_prefix@
- 
--DATADIR		= $(DESTDIR)@datadir@
-+DATADIR		= $(DESTDIR)@datadir@/nut
- 
- INSTALLCMD  = @INSTALL@
- INSTALLMODE = 0644
 diff -urN nut-1.4.0.org/server/desc.c nut-1.4.0/server/desc.c
 --- nut-1.4.0.org/server/desc.c	2003-08-01 16:19:03.000000000 +0200
 +++ nut-1.4.0/server/desc.c	2003-08-01 17:41:02.000000000 +0200
