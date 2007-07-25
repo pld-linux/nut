@@ -2,14 +2,13 @@
 #	- unpackaged files:
 #		/usr/html/{{bottom,header,index}.html,nut-banner.png}
 #		/etc/udev/rules.d/52_nut-usbups.rules
-#	- check hal BR
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
-#
 #
 # Conditional build:
 %bcond_without	usb			# build without usb drivers
 %bcond_without	hal			# build without hal support
 %bcond_without	snmp			# build without snmp driver
+%bcond_without	cgi			# build without cgi support
 #
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
@@ -30,12 +29,13 @@ Patch2:		%{name}-smartdp-load.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	gd-devel >= 2.0.15
-BuildRequires:	libpng-devel
-BuildRequires:	net-snmp-devel
+%{?with_hal:BuildRequires:	dbus-glib-devel}
+%{?with_cgi:BuildRequires:	gd-devel >= 2.0.15}
+%{?with_hal:BuildRequires:	hal-devel}
+%{?with_usb:BuildRequires:	libusb-devel}
+%{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	rpmbuild(macros) >= 1.268
-BuildRequires:	xorg-lib-libXpm-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-scripts
@@ -186,7 +186,8 @@ cp -f /usr/share/automake/config.sub .
 	%{?with_usb:--with-usb} \
 	%{!?with_usb:--without-usb} \
 	--with-ssl \
-	--with-cgi \
+	%{?with_cgi:--with-cgi} \
+	%{!?with_cgi:--without-cgi} \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
 	--with-statepath=%{_var}/lib/ups \
 	--with-drvpath=/lib/nut \
@@ -401,6 +402,7 @@ fi
 %{_mandir}/man8/upsmon.8*
 %{_mandir}/man8/upssched.8*
 
+%if %{with cgi}
 %files cgi
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
@@ -413,6 +415,7 @@ fi
 %{_mandir}/man8/upsimage.cgi.8*
 %{_mandir}/man8/upsset.cgi.8*
 %{_mandir}/man8/upsstats.cgi.8*
+%endif
 
 %files devel
 %defattr(644,root,root,755)
