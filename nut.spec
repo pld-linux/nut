@@ -5,6 +5,12 @@
 #	- check hal BR
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
 #
+#
+# Conditional build:
+%bcond_without	usb			# build without usb drivers
+%bcond_without	hal			# build without hal support
+%bcond_without	snmp			# build without snmp driver
+#
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
@@ -172,10 +178,13 @@ cp -f /usr/share/automake/config.sub .
 %{__autoconf}
 %configure \
 	--datadir=%{_datadir}/%{name} \
-	--with-hal \
+	%{?with_hal:--with-hal} \
+	%{!?with_hal:--without-hal} \
 	--with-serial \
-	--with-snmp \
-	--with-usb \
+	%{?with_snmp:--with-snmp} \
+	%{!?with_snmp:--without-snmp} \
+	%{?with_usb:--with-usb} \
+	%{!?with_usb:--without-usb} \
 	--with-ssl \
 	--with-cgi \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
@@ -283,7 +292,7 @@ fi
 %attr(755,root,root) /lib/nut/al175
 %attr(755,root,root) /lib/nut/apcsmart
 %attr(755,root,root) /lib/nut/bcmxcp
-%attr(755,root,root) /lib/nut/bcmxcp_usb
+%{?with_usb:%attr(755,root,root) /lib/nut/bcmxcp_usb}
 %attr(755,root,root) /lib/nut/belkin
 %attr(755,root,root) /lib/nut/belkinunv
 %attr(755,root,root) /lib/nut/bestfcom
@@ -292,20 +301,22 @@ fi
 %attr(755,root,root) /lib/nut/cpsups
 %attr(755,root,root) /lib/nut/cyberpower
 %attr(755,root,root) /lib/nut/dummy-ups
-%attr(755,root,root) /lib/nut/energizerups
+%{?with_usb:%attr(755,root,root) /lib/nut/energizerups}
 %attr(755,root,root) /lib/nut/etapro
 %attr(755,root,root) /lib/nut/everups
 %attr(755,root,root) /lib/nut/gamatronic
 %attr(755,root,root) /lib/nut/genericups
+%if %{with hal}
 %attr(755,root,root) /lib/nut/hald-addon-bcmxcp_usb
 %attr(755,root,root) /lib/nut/hald-addon-megatec_usb
 %attr(755,root,root) /lib/nut/hald-addon-tripplite_usb
 %attr(755,root,root) /lib/nut/hald-addon-usbhid-ups
+%endif
 %attr(755,root,root) /lib/nut/isbmex
 %attr(755,root,root) /lib/nut/liebert
 %attr(755,root,root) /lib/nut/masterguard
 %attr(755,root,root) /lib/nut/megatec
-%attr(755,root,root) /lib/nut/megatec_usb
+%{?with_usb:%attr(755,root,root) /lib/nut/megatec_usb}
 %attr(755,root,root) /lib/nut/metasys
 %attr(755,root,root) /lib/nut/mge-shut
 %attr(755,root,root) /lib/nut/mge-utalk
@@ -318,20 +329,20 @@ fi
 %attr(755,root,root) /lib/nut/rhino
 %attr(755,root,root) /lib/nut/safenet
 %attr(755,root,root) /lib/nut/skel
-%attr(755,root,root) /lib/nut/snmp-ups
+%{?with_snmp:%attr(755,root,root) /lib/nut/snmp-ups}
 %attr(755,root,root) /lib/nut/solis
 %attr(755,root,root) /lib/nut/tripplite
 %attr(755,root,root) /lib/nut/tripplitesu
-%attr(755,root,root) /lib/nut/tripplite_usb
+%{?with_usb:%attr(755,root,root) /lib/nut/tripplite_usb}
 %attr(755,root,root) /lib/nut/upscode2
 %attr(755,root,root) /lib/nut/upsdrvctl
-%attr(755,root,root) /lib/nut/usbhid-ups
+%{?with_usb:%attr(755,root,root) /lib/nut/usbhid-ups}
 %attr(755,root,root) /lib/nut/victronups
 %{_datadir}/nut
 %{_mandir}/man8/al175.8*
 %{_mandir}/man8/apcsmart.8*
 %{_mandir}/man8/bcmxcp.8*
-%{_mandir}/man8/bcmxcp_usb.8*
+%{?with_usb:%{_mandir}/man8/bcmxcp_usb.8*}
 %{_mandir}/man8/belkin.8*
 %{_mandir}/man8/belkinunv.8*
 %{_mandir}/man8/bestfcom.8*
@@ -340,7 +351,7 @@ fi
 %{_mandir}/man8/cpsups.8*
 %{_mandir}/man8/cyberpower.8*
 %{_mandir}/man8/dummy-ups.8*
-%{_mandir}/man8/energizerups.8*
+%{?with_usb:%{_mandir}/man8/energizerups.8*}
 %{_mandir}/man8/etapro.8*
 %{_mandir}/man8/everups.8*
 %{_mandir}/man8/gamatronic.8*
@@ -349,7 +360,7 @@ fi
 %{_mandir}/man8/liebert.8*
 %{_mandir}/man8/masterguard.8*
 %{_mandir}/man8/megatec.8*
-%{_mandir}/man8/megatec_usb.8*
+%{?with_usb:%{_mandir}/man8/megatec_usb.8*}
 %{_mandir}/man8/metasys.8*
 %{_mandir}/man8/mge-shut.8*
 %{_mandir}/man8/mge-utalk.8*
@@ -361,12 +372,12 @@ fi
 %{_mandir}/man8/powerpanel.8*
 %{_mandir}/man8/rhino.8*
 %{_mandir}/man8/safenet.8*
-%{_mandir}/man8/snmp-ups.8*
+%{?with_snmp:%{_mandir}/man8/snmp-ups.8*}
 %{_mandir}/man8/solis.8*
 %{_mandir}/man8/tripplite.8*
 %{_mandir}/man8/tripplitesu.8*
-%{_mandir}/man8/tripplite_usb.8*
-%{_mandir}/man8/usbhid-ups.8*
+%{?with_usb:%{_mandir}/man8/tripplite_usb.8*}
+%{?with_usb:%{_mandir}/man8/usbhid-ups.8*}
 %{_mandir}/man8/victronups.8*
 
 %files common
