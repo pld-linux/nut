@@ -1,7 +1,4 @@
 # TODO:
-#	- upssched-cmd installed in /usr/bin, should be /sbin (Patch0, client/Makefile.am) 
-#	- _datadir files installed in /usr/share (Patch1, data/Makefile.am)
-#	- hidups bcond has wrong name and description (should be "usbups"? or removed)
 #	- unpackaged files:
 #		/usr/html/{{bottom,header,index}.html,nut-banner.png}
 #		/etc/udev/rules.d/52_nut-usbups.rules
@@ -164,7 +161,7 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 
 %prep
 %setup -q
-#patch0 -p1
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -172,8 +169,10 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 %build
 cp -f /usr/share/automake/config.sub .
 %{__aclocal} -I m4
+%{__automake}
 %{__autoconf}
 %configure \
+	--datadir=%{_datadir}/%{name} \
 	--with-hal \
 	--with-serial \
 	--with-snmp \
@@ -329,7 +328,7 @@ fi
 %attr(755,root,root) /lib/nut/upsdrvctl
 %attr(755,root,root) /lib/nut/usbhid-ups
 %attr(755,root,root) /lib/nut/victronups
-#{_datadir}/nut
+%{_datadir}/nut
 %{_mandir}/man8/al175.8*
 %{_mandir}/man8/apcsmart.8*
 %{_mandir}/man8/bcmxcp.8*
@@ -381,7 +380,7 @@ fi
 %attr(755,root,root) %{_bindir}/upsc
 %attr(755,root,root) %{_sbindir}/upsmon
 %attr(755,root,root) %{_sbindir}/upssched
-#attr(755,root,root) %{_sbindir}/upssched-cmd
+%attr(755,root,root) %{_sbindir}/upssched-cmd
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsmon.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched.conf
