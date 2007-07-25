@@ -1,3 +1,6 @@
+# TODO:
+#	- hidups bcond has wrong name and description (should be "usbups"? or removed)
+#	- unpackaged files: /usr/html/{{bottom,header,index}.html,nut-banner.png}
 #
 # Conditional build:
 %bcond_without	hidups			# experimental hidups driver
@@ -6,7 +9,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.0.5
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.0/%{name}-%{version}.tar.gz
