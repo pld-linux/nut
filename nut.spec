@@ -9,7 +9,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.2.0
-Release:	0.3
+Release:	0.4
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.2/%{name}-%{version}.tar.gz
@@ -184,14 +184,14 @@ cp -f /usr/share/automake/config.sub .
 	--with-cgipath=/home/services/httpd/cgi-bin \
 	--with-user=ups \
 	--with-group=ups
-%{__make} all snmp cgi
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/sbin,/etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
 	$RPM_BUILD_ROOT{/lib/nut,%{_libdir},%{_includedir}/nut}
 
-%{__make} -j1 install install-snmp install-cgi \
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
