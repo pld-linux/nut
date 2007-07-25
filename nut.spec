@@ -1,6 +1,10 @@
 # TODO:
+#	- upssched-cmd installed in /usr/bin, should be /sbin (Patch0, client/Makefile.am) 
+#	- _datadir files installed in /usr/share (Patch1, data/Makefile.am)
 #	- hidups bcond has wrong name and description (should be "usbups"? or removed)
-#	- unpackaged files: /usr/html/{{bottom,header,index}.html,nut-banner.png}
+#	- unpackaged files:
+#		/usr/html/{{bottom,header,index}.html,nut-banner.png}
+#		/etc/udev/rules.d/52_nut-usbups.rules
 #	- check hal BR
 #
 Summary:	Network UPS Tools
@@ -198,7 +202,15 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/upsmon
 
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
-install conf/*.users conf/*.conf conf/*.html $RPM_BUILD_ROOT%{_sysconfdir}
+install conf/upsd.users.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsd.users
+install conf/hosts.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/hosts.conf
+install conf/ups.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/ups.conf
+install conf/upsd.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsd.conf
+install conf/upsmon.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsmon.conf
+install conf/upssched.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/upssched.conf
+install conf/upsset.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsset.conf
+install conf/upsstats.html.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsstats.html
+install conf/upsstats-single.html.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsstats-single.html
 
 install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
 install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
@@ -275,9 +287,7 @@ fi
 %{_mandir}/man8/dummy-ups.8*
 %{_mandir}/man8/etapro.8*
 %{_mandir}/man8/everups.8*
-%{_mandir}/man8/fentonups.8*
 %{_mandir}/man8/genericups.8*
-%{_mandir}/man8/ippon.8*
 %{_mandir}/man8/isbmex.8*
 %{_mandir}/man8/liebert.8*
 %{_mandir}/man8/masterguard.8*
@@ -285,7 +295,6 @@ fi
 %{_mandir}/man8/metasys.8*
 %{_mandir}/man8/mge-shut.8*
 %{_mandir}/man8/mge-utalk.8*
-%{_mandir}/man8/mustek.8*
 %{_mandir}/man8/nitram.8*
 %{_mandir}/man8/nutupsdrv.8*
 %{_mandir}/man8/oneac.8*
@@ -293,7 +302,6 @@ fi
 %{_mandir}/man8/powercom.8*
 %{_mandir}/man8/powerpanel.8*
 %{_mandir}/man8/safenet.8*
-%{_mandir}/man8/sms.8*
 %{_mandir}/man8/snmp-ups.8*
 %{_mandir}/man8/solis.8*
 %{_mandir}/man8/tripplite.8*
@@ -315,16 +323,12 @@ fi
 %attr(755,root,root) /lib/nut/bestfcom
 %attr(755,root,root) /lib/nut/bestuferrups
 %attr(755,root,root) /lib/nut/bestups
-%attr(755,root,root) /lib/nut/blazer
 %attr(755,root,root) /lib/nut/cpsups
 %attr(755,root,root) /lib/nut/cyberpower
-%attr(755,root,root) /lib/nut/esupssmart
 %attr(755,root,root) /lib/nut/etapro
 %attr(755,root,root) /lib/nut/everups
-%attr(755,root,root) /lib/nut/fentonups
 %attr(755,root,root) /lib/nut/gamatronic
 %attr(755,root,root) /lib/nut/genericups
-%attr(755,root,root) /lib/nut/ippon
 %attr(755,root,root) /lib/nut/isbmex
 %attr(755,root,root) /lib/nut/liebert
 %attr(755,root,root) /lib/nut/masterguard
@@ -332,7 +336,6 @@ fi
 %attr(755,root,root) /lib/nut/metasys
 %attr(755,root,root) /lib/nut/mge-shut
 %attr(755,root,root) /lib/nut/mge-utalk
-%attr(755,root,root) /lib/nut/mustek
 %attr(755,root,root) /lib/nut/nitram
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
@@ -340,7 +343,6 @@ fi
 %attr(755,root,root) /lib/nut/powerpanel
 %attr(755,root,root) /lib/nut/rhino
 %attr(755,root,root) /lib/nut/safenet
-%attr(755,root,root) /lib/nut/sms
 %attr(755,root,root) /lib/nut/snmp-ups
 %attr(755,root,root) /lib/nut/solis
 %attr(755,root,root) /lib/nut/tripplite
@@ -348,21 +350,30 @@ fi
 %attr(755,root,root) /lib/nut/upscode2
 %attr(755,root,root) /lib/nut/upsdrvctl
 %attr(755,root,root) /lib/nut/victronups
-%{_datadir}/nut
+#{_datadir}/nut
 %{_mandir}/man8/bcmxcp_usb.8*
 %{_mandir}/man8/energizerups.8*
-%{_mandir}/man8/hidups.8*
-%{_mandir}/man8/newhidups.8*
 %{_mandir}/man8/tripplite_usb.8*
+%{_mandir}/man8/gamatronic.8*
+%{_mandir}/man8/megatec_usb.8*
+%{_mandir}/man8/rhino.8*
+%{_mandir}/man8/usbhid-ups.8*
 %attr(755,root,root) /lib/nut/bcmxcp_usb
 %attr(755,root,root) /lib/nut/energizerups
-%attr(755,root,root) /lib/nut/hidups
-%attr(755,root,root) /lib/nut/newhidups
 %attr(755,root,root) /lib/nut/tripplite_usb
+%attr(755,root,root) /lib/nut/dummy-ups
+%attr(755,root,root) /lib/nut/hald-addon-bcmxcp_usb
+%attr(755,root,root) /lib/nut/hald-addon-megatec_usb
+%attr(755,root,root) /lib/nut/hald-addon-tripplite_usb
+%attr(755,root,root) /lib/nut/hald-addon-usbhid-ups
+%attr(755,root,root) /lib/nut/megatec_usb
+%attr(755,root,root) /lib/nut/newmge-shut
+%attr(755,root,root) /lib/nut/skel
+%attr(755,root,root) /lib/nut/usbhid-ups
 
 %files common
 %defattr(644,root,root,755)
-%doc NEWS README ChangeLog CREDITS docs
+%doc AUTHORS MAINTAINERS NEWS README UPGRADING ChangeLog docs
 %dir %{_sysconfdir}
 
 %files client
@@ -370,7 +381,7 @@ fi
 %attr(755,root,root) %{_bindir}/upsc
 %attr(755,root,root) %{_sbindir}/upsmon
 %attr(755,root,root) %{_sbindir}/upssched
-%attr(755,root,root) %{_sbindir}/upssched-cmd
+#attr(755,root,root) %{_sbindir}/upssched-cmd
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsmon.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched.conf
