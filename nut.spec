@@ -20,7 +20,7 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Source4:	%{name}.sysconfig.upsmon
-#Patch0:		%{name}-client.patch
+Patch0:		%{name}-client.patch
 Patch1:		%{name}-datadir.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-smartdp-load.patch
@@ -274,39 +274,6 @@ fi
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
-%{_mandir}/man8/al175.8*
-%{_mandir}/man8/apcsmart.8*
-%{_mandir}/man8/bcmxcp.8*
-%{_mandir}/man8/belkin.8*
-%{_mandir}/man8/belkinunv.8*
-%{_mandir}/man8/bestfcom.8*
-%{_mandir}/man8/bestuferrups.8*
-%{_mandir}/man8/bestups.8*
-%{_mandir}/man8/cpsups.8*
-%{_mandir}/man8/cyberpower.8*
-%{_mandir}/man8/dummy-ups.8*
-%{_mandir}/man8/etapro.8*
-%{_mandir}/man8/everups.8*
-%{_mandir}/man8/genericups.8*
-%{_mandir}/man8/isbmex.8*
-%{_mandir}/man8/liebert.8*
-%{_mandir}/man8/masterguard.8*
-%{_mandir}/man8/megatec.8*
-%{_mandir}/man8/metasys.8*
-%{_mandir}/man8/mge-shut.8*
-%{_mandir}/man8/mge-utalk.8*
-%{_mandir}/man8/nitram.8*
-%{_mandir}/man8/nutupsdrv.8*
-%{_mandir}/man8/oneac.8*
-%{_mandir}/man8/optiups.8*
-%{_mandir}/man8/powercom.8*
-%{_mandir}/man8/powerpanel.8*
-%{_mandir}/man8/safenet.8*
-%{_mandir}/man8/snmp-ups.8*
-%{_mandir}/man8/solis.8*
-%{_mandir}/man8/tripplite.8*
-%{_mandir}/man8/tripplitesu.8*
-%{_mandir}/man8/victronups.8*
 %{_mandir}/man8/upscmd.8*
 %{_mandir}/man8/upscode2.8*
 %{_mandir}/man8/upsd.8*
@@ -318,6 +285,7 @@ fi
 %attr(755,root,root) /lib/nut/al175
 %attr(755,root,root) /lib/nut/apcsmart
 %attr(755,root,root) /lib/nut/bcmxcp
+%attr(755,root,root) /lib/nut/bcmxcp_usb
 %attr(755,root,root) /lib/nut/belkin
 %attr(755,root,root) /lib/nut/belkinunv
 %attr(755,root,root) /lib/nut/bestfcom
@@ -325,17 +293,25 @@ fi
 %attr(755,root,root) /lib/nut/bestups
 %attr(755,root,root) /lib/nut/cpsups
 %attr(755,root,root) /lib/nut/cyberpower
+%attr(755,root,root) /lib/nut/dummy-ups
+%attr(755,root,root) /lib/nut/energizerups
 %attr(755,root,root) /lib/nut/etapro
 %attr(755,root,root) /lib/nut/everups
 %attr(755,root,root) /lib/nut/gamatronic
 %attr(755,root,root) /lib/nut/genericups
+%attr(755,root,root) /lib/nut/hald-addon-bcmxcp_usb
+%attr(755,root,root) /lib/nut/hald-addon-megatec_usb
+%attr(755,root,root) /lib/nut/hald-addon-tripplite_usb
+%attr(755,root,root) /lib/nut/hald-addon-usbhid-ups
 %attr(755,root,root) /lib/nut/isbmex
 %attr(755,root,root) /lib/nut/liebert
 %attr(755,root,root) /lib/nut/masterguard
 %attr(755,root,root) /lib/nut/megatec
+%attr(755,root,root) /lib/nut/megatec_usb
 %attr(755,root,root) /lib/nut/metasys
 %attr(755,root,root) /lib/nut/mge-shut
 %attr(755,root,root) /lib/nut/mge-utalk
+%attr(755,root,root) /lib/nut/newmge-shut
 %attr(755,root,root) /lib/nut/nitram
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
@@ -343,33 +319,57 @@ fi
 %attr(755,root,root) /lib/nut/powerpanel
 %attr(755,root,root) /lib/nut/rhino
 %attr(755,root,root) /lib/nut/safenet
+%attr(755,root,root) /lib/nut/skel
 %attr(755,root,root) /lib/nut/snmp-ups
 %attr(755,root,root) /lib/nut/solis
 %attr(755,root,root) /lib/nut/tripplite
 %attr(755,root,root) /lib/nut/tripplitesu
+%attr(755,root,root) /lib/nut/tripplite_usb
 %attr(755,root,root) /lib/nut/upscode2
 %attr(755,root,root) /lib/nut/upsdrvctl
+%attr(755,root,root) /lib/nut/usbhid-ups
 %attr(755,root,root) /lib/nut/victronups
 #{_datadir}/nut
+%{_mandir}/man8/al175.8*
+%{_mandir}/man8/apcsmart.8*
+%{_mandir}/man8/bcmxcp.8*
 %{_mandir}/man8/bcmxcp_usb.8*
+%{_mandir}/man8/belkin.8*
+%{_mandir}/man8/belkinunv.8*
+%{_mandir}/man8/bestfcom.8*
+%{_mandir}/man8/bestuferrups.8*
+%{_mandir}/man8/bestups.8*
+%{_mandir}/man8/cpsups.8*
+%{_mandir}/man8/cyberpower.8*
+%{_mandir}/man8/dummy-ups.8*
 %{_mandir}/man8/energizerups.8*
-%{_mandir}/man8/tripplite_usb.8*
+%{_mandir}/man8/etapro.8*
+%{_mandir}/man8/everups.8*
 %{_mandir}/man8/gamatronic.8*
+%{_mandir}/man8/genericups.8*
+%{_mandir}/man8/isbmex.8*
+%{_mandir}/man8/liebert.8*
+%{_mandir}/man8/masterguard.8*
+%{_mandir}/man8/megatec.8*
 %{_mandir}/man8/megatec_usb.8*
+%{_mandir}/man8/metasys.8*
+%{_mandir}/man8/mge-shut.8*
+%{_mandir}/man8/mge-utalk.8*
+%{_mandir}/man8/nitram.8*
+%{_mandir}/man8/nutupsdrv.8*
+%{_mandir}/man8/oneac.8*
+%{_mandir}/man8/optiups.8*
+%{_mandir}/man8/powercom.8*
+%{_mandir}/man8/powerpanel.8*
 %{_mandir}/man8/rhino.8*
+%{_mandir}/man8/safenet.8*
+%{_mandir}/man8/snmp-ups.8*
+%{_mandir}/man8/solis.8*
+%{_mandir}/man8/tripplite.8*
+%{_mandir}/man8/tripplitesu.8*
+%{_mandir}/man8/tripplite_usb.8*
 %{_mandir}/man8/usbhid-ups.8*
-%attr(755,root,root) /lib/nut/bcmxcp_usb
-%attr(755,root,root) /lib/nut/energizerups
-%attr(755,root,root) /lib/nut/tripplite_usb
-%attr(755,root,root) /lib/nut/dummy-ups
-%attr(755,root,root) /lib/nut/hald-addon-bcmxcp_usb
-%attr(755,root,root) /lib/nut/hald-addon-megatec_usb
-%attr(755,root,root) /lib/nut/hald-addon-tripplite_usb
-%attr(755,root,root) /lib/nut/hald-addon-usbhid-ups
-%attr(755,root,root) /lib/nut/megatec_usb
-%attr(755,root,root) /lib/nut/newmge-shut
-%attr(755,root,root) /lib/nut/skel
-%attr(755,root,root) /lib/nut/usbhid-ups
+%{_mandir}/man8/victronups.8*
 
 %files common
 %defattr(644,root,root,755)
