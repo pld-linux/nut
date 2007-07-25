@@ -171,7 +171,6 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 cp -f /usr/share/automake/config.sub .
 %{__aclocal} -I m4
 %{__autoconf}
-LDFLAGS="-L%{_prefix}/X11R6/%{_lib}"; export LDFLAGS
 %configure \
 	%{?with_hidups:--with-linux-hiddev} \
 	--with-ssl \
