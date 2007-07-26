@@ -22,3 +22,69 @@ diff -Nuard nut-2.0.1.orig/conf/upssched.conf nut-2.0.1/conf/upssched.conf
  
  # ============================================================================
  #
+@@ -41,7 +41,7 @@
+ # This is commented out by default to make you visit this file and think
+ # about how your system works before potentially opening a hole.
+ #
+-# PIPEFN /var/run/upssched/upssched.pipe
++# PIPEFN /var/lib/ups/upssched.pipe
+ 
+ # ============================================================================
+ #
+@@ -56,7 +56,7 @@
+ #
+ # You should put this in the same directory as PIPEFN.
+ #
+-# LOCKFN /var/run/upssched/upssched.lock
++# LOCKFN /var/lib/ups/upssched.lock
+ 
+ # ============================================================================
+ #
+@@ -111,3 +111,10 @@
+ #   'ups-back-on-line' via CMDSCRIPT.
+ #
+ #   AT ONLINE * EXECUTE ups-back-on-line
++# 
++# ============================================================================
++#
++# AT ONBATT * START-TIMER EarlyShutdown 30
++# AT ONLINE * CANCEL-TIMER EarlyShutdown
++# AT COMMBAD * START-TIMER upsgone 10
++# AT COMMOK * CANCEL-TIMER upsgone
+--- nut-2.2.0/conf/upsmon.conf.sample.orig	2007-07-26 11:15:08.152047877 +0000
++++ nut-2.2.0/conf/upsmon.conf.sample	2007-07-26 11:17:20.131913520 +0000
+@@ -126,7 +126,7 @@
+ # information and ideas, see pager.txt in the docs directory.
+ #
+ # Example:
+-# NOTIFYCMD /usr/local/ups/bin/notifyme
++# NOTIFYCMD /usr/sbin/upssched
+ 
+ # --------------------------------------------------------------------------
+ # POLLFREQ <n> 
+@@ -241,6 +241,12 @@
+ # IGNORE - Don't do anything
+ #
+ # If you use IGNORE, don't use any other flags on the same line.
++# ==========================================================================
++#
++# NOTIFYFLAG ONLINE SYSLOG+EXEC
++# NOTIFYFLAG ONBATT SYSLOG+EXEC
++# NOTIFYFLAG COMMOK SYSLOG+EXEC
++# NOTIFYFLAG COMMBAD SYSLOG+EXEC
+ 
+ # --------------------------------------------------------------------------
+ # RBWARNTIME - replace battery warning time in seconds
+--- nut-2.2.0/clients/upssched-cmd.orig	2007-07-26 11:21:16.595839465 +0000
++++ nut-2.2.0/clients/upssched-cmd	2007-07-26 11:23:45.573112047 +0000
+@@ -14,6 +14,10 @@
+ 	upsgone)
+ 		logger -t upssched-cmd "The UPS has been gone for awhile"
+ 		;;
++#	EarlyShutdown)
++#		logger -t upssched-cmd "The UPS is being shutdown by the master"
++#		/usr/sbin/upsmon -c fsd
++#		;;
+ 	*)
+ 		logger -t upssched-cmd "Unrecognized command: $1"
+ 		;;
