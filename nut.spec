@@ -14,7 +14,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.2.0
-Release:	0.4
+Release:	0.5
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.2/%{name}-%{version}.tar.gz
@@ -26,6 +26,7 @@ Source4:	%{name}.sysconfig.upsmon
 Patch0:		%{name}-client.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
+Patch3:		%{name}-upssched-cmd-sysconf.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -170,6 +171,7 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -384,10 +386,10 @@ fi
 %attr(755,root,root) %{_bindir}/upsc
 %attr(755,root,root) %{_sbindir}/upsmon
 %attr(755,root,root) %{_sbindir}/upssched
-%attr(755,root,root) %{_sbindir}/upssched-cmd
 %attr(754,root,root) /etc/rc.d/init.d/upsmon
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsmon.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched.conf
+%attr(750,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched-cmd
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/upsmon
 %{_mandir}/man5/upsmon.conf.5*
 %{_mandir}/man5/upssched.conf.5*
