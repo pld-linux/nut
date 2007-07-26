@@ -1,0 +1,23 @@
+--- nut-2.2.0/clients/Makefile.am.orig	2007-07-25 16:53:40.493327586 +0000
++++ nut-2.2.0/clients/Makefile.am	2007-07-25 16:53:51.491649721 +0000
+@@ -7,7 +7,7 @@
+ AM_CFLAGS = -I$(top_srcdir)/include $(LIBSSL_CFLAGS) $(LIBGD_CFLAGS)
+ 
+ bin_PROGRAMS = upsc upslog upsrw upscmd
+-dist_sbin_SCRIPTS = upssched-cmd
++dist_sysconf_DATA = upssched-cmd
+ sbin_PROGRAMS = upsmon upssched
+ if WITH_LIB
+  lib_LTLIBRARIES = libupsclient.la
+diff -Nuard nut-2.0.1.orig/conf/upssched.conf nut-2.0.1/conf/upssched.conf
+--- nut-2.0.1.orig/conf/upssched.conf	2004-10-26 11:50:12.410074640 +0200
++++ nut-2.0.1/conf/upssched.conf.sample	2004-10-26 11:50:23.295419816 +0200
+@@ -14,7 +14,7 @@
+ # A shell script with a big case..esac construct should work nicely for this.
+ # An example has been provided to help you get started.
+ 
+-CMDSCRIPT /usr/sbin/upssched-cmd
++CMDSCRIPT /etc/ups/upssched-cmd
+ 
+ # ============================================================================
+ #
