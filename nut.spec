@@ -2,6 +2,7 @@
 #	- unpackaged files:
 #		/usr/html/{{bottom,header,index}.html,nut-banner.png}
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
+#	- maybe package scripts/hal/20-ups-nut-device.fdi (and test that hal-stuff)
 #
 # Conditional build:
 %bcond_without	usb			# build without usb drivers
