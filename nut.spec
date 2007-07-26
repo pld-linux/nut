@@ -1,7 +1,6 @@
 # TODO:
 #	- unpackaged files:
 #		/usr/html/{{bottom,header,index}.html,nut-banner.png}
-#		/etc/udev/rules.d/52_nut-usbups.rules
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
 #
 # Conditional build:
@@ -14,7 +13,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.2.0
-Release:	0.5
+Release:	0.6
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.2/%{name}-%{version}.tar.gz
@@ -44,6 +43,7 @@ Obsoletes:	smartupstools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ups
+%define		_udevrulesdir	/etc/udev/rules.d
 
 %description
 These programs are part of a developing project to monitor the
@@ -218,6 +218,12 @@ done
 install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
 install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
 
+%if %{with usb}
+mv -f $RPM_BUILD_ROOT%{_udevrulesdir}/52{_,-}nut-usbups.rules
+%else
+rm -f $RPM_BUILD_ROOT%{_udevrulesdir}/52_nut-usbups.rules
+%endif
+
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
 /etc/rc.d/init.d/ups powerdown
@@ -375,6 +381,7 @@ fi
 %{?with_usb:%{_mandir}/man8/tripplite_usb.8*}
 %{?with_usb:%{_mandir}/man8/usbhid-ups.8*}
 %{_mandir}/man8/victronups.8*
+%{?with_usb:%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/52-nut-usbups.rules}
 
 %files common
 %defattr(644,root,root,755)
