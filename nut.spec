@@ -209,16 +209,9 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/upsmon
 
-rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/*
-install conf/upsd.users.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsd.users
-install conf/hosts.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/hosts.conf
-install conf/ups.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/ups.conf
-install conf/upsd.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsd.conf
-install conf/upsmon.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsmon.conf
-install conf/upssched.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/upssched.conf
-install conf/upsset.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsset.conf
-install conf/upsstats.html.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsstats.html
-install conf/upsstats-single.html.sample $RPM_BUILD_ROOT%{_sysconfdir}/upsstats-single.html
+for i in $RPM_BUILD_ROOT%{_sysconfdir}/*.sample; do
+	mv -f $i ${i%.sample}
+done
 
 install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
 install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
