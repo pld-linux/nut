@@ -33,6 +33,8 @@ BuildRequires:	automake
 %{?with_hal:BuildRequires:	dbus-glib-devel}
 %{?with_cgi:BuildRequires:	gd-devel >= 2.0.15}
 %{?with_hal:BuildRequires:	hal-devel}
+BuildRequires:	krb5-devel
+BuildRequires:	libtool
 %{?with_usb:BuildRequires:	libusb-devel}
 %{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
@@ -176,6 +178,7 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 
 %build
 cp -f /usr/share/automake/config.sub .
+%{__libtoolize}
 %{__aclocal} -I m4
 %{__automake}
 %{__autoconf}
