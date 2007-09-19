@@ -183,16 +183,13 @@ cp -f /usr/share/automake/config.sub .
 %{__autoconf}
 %configure \
 	--datadir=%{_datadir}/%{name} \
-	%{?with_hal:--with-hal} \
-	%{!?with_hal:--without-hal} \
+	--with%{!?with_hal:out}-hal \
 	--with-serial \
-	%{?with_snmp:--with-snmp} \
-	%{!?with_snmp:--without-snmp} \
-	%{?with_usb:--with-usb} \
-	%{!?with_usb:--without-usb} \
+	--with%{!?with_snmp:out}-snmp \
+	--with%{!?with_usb:out}-usb \
+	%{?with_usb:--with-udev-dir=/etc/udev} \
 	--with-ssl \
-	%{?with_cgi:--with-cgi} \
-	%{!?with_cgi:--without-cgi} \
+	--with%{!?with_cgi:out}-cgi \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
 	--with-statepath=%{_var}/lib/ups \
 	--with-drvpath=/lib/nut \
