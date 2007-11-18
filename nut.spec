@@ -6,7 +6,7 @@
 #
 # Conditional build:
 %bcond_without	usb			# build without usb drivers
-%bcond_without	hal			# build without hal support
+%bcond_with	hal			# build without hal support
 %bcond_without	snmp			# build without snmp driver
 %bcond_without	cgi			# build without cgi support
 #
@@ -14,7 +14,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.2.0
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.2/%{name}-%{version}.tar.gz
@@ -28,6 +28,7 @@ Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
 Patch3:		%{name}-upssched-cmd-sysconf.patch
 URL:		http://www.networkupstools.org/
+BuildRequires:	X11-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_hal:BuildRequires:	dbus-glib-devel}
@@ -174,6 +175,7 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+sed -i -e 's!`gdlib-config --ldflags`!-L/usr/X11R6/%{_lib} `gdlib-config --ldflags`!g' m4/nut_check_libgd.m4
 
 %build
 cp -f /usr/share/automake/config.sub .
