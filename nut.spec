@@ -160,13 +160,25 @@ Summary:	Files for NUT clients development
 Summary(pl.UTF-8):	Pliki do tworzenia klientów NUT-a
 Group:		Development/Libraries
 Requires:	openssl-devel >= 0.9.7c
-# it does NOT require nut
+Requires:	%{name}-common = %{version}-%{release}
 
 %description devel
 Object file and header for developing NUT clients.
 
 %description devel -l pl.UTF-8
 Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
+
+%package hal
+Summary:	NUT integration with FreeDesktop HAL
+Summary(pl.UTF-8):	Pliki do integracji NUT-a z HAL-em
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description hal
+NUT integration with FreeDesktop HAL.
+
+%description hal -l pl.UTF-8
+Pliki do integracji NUT-a z HAL-em.
 
 %prep
 %setup -q
@@ -310,13 +322,6 @@ fi
 %attr(755,root,root) /lib/nut/everups
 %attr(755,root,root) /lib/nut/gamatronic
 %attr(755,root,root) /lib/nut/genericups
-%if %{with hal}
-%attr(755,root,root) %{_libdir}/hal/hald-addon-bcmxcp_usb
-%attr(755,root,root) %{_libdir}/hal/hald-addon-megatec_usb
-%attr(755,root,root) %{_libdir}/hal/hald-addon-tripplite_usb
-%attr(755,root,root) %{_libdir}/hal/hald-addon-usbhid-ups
-%{_datadir}/hal/fdi/information/20thirdparty/20-ups-nut-device.fdi
-%endif
 %attr(755,root,root) /lib/nut/isbmex
 %attr(755,root,root) /lib/nut/liebert
 %attr(755,root,root) /lib/nut/masterguard
@@ -390,11 +395,11 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS MAINTAINERS NEWS README UPGRADING ChangeLog docs
 %dir %{_sysconfdir}
+%ghost %{_libdir}/libupsclient.so.1
+%attr(755,root,root) %{_libdir}/libupsclient.so.*.*.*
 
 %files client
 %defattr(644,root,root,755)
-%ghost %{_libdir}/libupsclient.so.1
-%attr(755,root,root) %{_libdir}/libupsclient.so.*.*.*
 %attr(755,root,root) %{_bindir}/upsc
 %attr(755,root,root) %{_sbindir}/upsmon
 %attr(755,root,root) %{_sbindir}/upssched
@@ -423,6 +428,16 @@ fi
 %{_mandir}/man8/upsimage.cgi.8*
 %{_mandir}/man8/upsset.cgi.8*
 %{_mandir}/man8/upsstats.cgi.8*
+%endif
+
+%if %{with hal}
+%files hal
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/hal/hald-addon-bcmxcp_usb
+%attr(755,root,root) %{_libdir}/hal/hald-addon-megatec_usb
+%attr(755,root,root) %{_libdir}/hal/hald-addon-tripplite_usb
+%attr(755,root,root) %{_libdir}/hal/hald-addon-usbhid-ups
+%{_datadir}/hal/fdi/information/20thirdparty/20-ups-nut-device.fdi
 %endif
 
 %files devel
