@@ -1,0 +1,13 @@
+--- nut-2.2.2/clients/Makefile.am~	2008-06-03 15:10:49.000000000 +0200
++++ nut-2.2.2/clients/Makefile.am	2008-06-03 15:11:44.000000000 +0200
+@@ -48,6 +48,10 @@
+ libupsclient_la_SOURCES = upsclient.c upsclient.h
+ libupsclient_la_LIBADD = ../common/parseconf.lo
+ libupsclient_la_LDFLAGS = -version-info 1:0:0
++if WITH_SSL
++  libupsclient_la_LIBADD += $(LIBSSL_LDFLAGS)
++  libupsclient_la_CFLAGS = $(LIBSSL_CFLAGS)
++endif
+ 
+ # rules for cross-directory targets
+ ../common/libcommon.a: FORCE
