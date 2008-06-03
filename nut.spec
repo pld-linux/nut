@@ -1,24 +1,23 @@
 # TODO:
-#	- unpackaged files:
-#		/usr/html/{{bottom,header,index}.html,nut-banner.png}
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
-#	- maybe package scripts/hal/20-ups-nut-device.fdi (and test that hal-stuff)
+#	- test that hal-stuff
 #
 # Conditional build:
 %bcond_without	usb			# build without usb drivers
 %bcond_without	hal			# build without hal support
 %bcond_without	snmp			# build without snmp driver
 %bcond_without	cgi			# build without cgi support
+%bcond_with	neonxml			# build with neon based XML/HTTP driver
 #
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
-Version:	2.2.1
+Version:	2.2.2
 Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.2/%{name}-%{version}.tar.gz
-# Source0-md5:	c7ae871961a7dbe12b22d504267dc132
+# Source0-md5:	677a84a83e9be7bc93610413ee696375
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -27,6 +26,7 @@ Patch0:		%{name}-client.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
 Patch3:		%{name}-upssched-cmd-sysconf.patch
+Patch4:		%{name}-as-needed.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -174,6 +174,7 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -183,25 +184,29 @@ cp -f /usr/share/automake/config.sub .
 %{__autoconf}
 %configure \
 	--datadir=%{_datadir}/%{name} \
-	--with%{!?with_hal:out}-hal \
+	--with-htmlpath=%{_datadir}/%{name}/html \
 	--with-serial \
-	--with%{!?with_snmp:out}-snmp \
 	--with%{!?with_usb:out}-usb \
-	%{?with_usb:--with-udev-dir=/etc/udev} \
-	--with-ssl \
+	--with%{!?with_snmp:out}-snmp \
+	--with%{!?with_hal:out}-hal \
 	--with%{!?with_cgi:out}-cgi \
+	--with-dev \
+	--with%{!?with_neonxml:out}-neonxml \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
+	--with-ssl \
+	--with-ipv6 \
+	%{?with_usb:--with-udev-dir=/etc/udev} \
 	--with-statepath=%{_var}/lib/ups \
 	--with-drvpath=/lib/nut \
 	--with-cgipath=/home/services/httpd/cgi-bin \
 	--with-user=ups \
 	--with-group=ups
+
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/sbin,/etc/{sysconfig,rc.d/init.d},/var/lib/ups} \
-	$RPM_BUILD_ROOT{/lib/nut,%{_libdir},%{_includedir}/nut}
+install -d $RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d},/var/lib/ups,/lib/nut,/sbin}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -214,9 +219,6 @@ install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/upsmon
 for i in $RPM_BUILD_ROOT%{_sysconfdir}/*.sample; do
 	mv -f $i ${i%.sample}
 done
-
-install clients/upsclient.o common/parseconf.o $RPM_BUILD_ROOT%{_libdir}
-install clients/upsclient.h include/parseconf.h $RPM_BUILD_ROOT%{_includedir}/nut
 
 %if %{with usb}
 mv -f $RPM_BUILD_ROOT%{_udevrulesdir}/52{_,-}nut-usbups.rules
@@ -309,10 +311,11 @@ fi
 %attr(755,root,root) /lib/nut/gamatronic
 %attr(755,root,root) /lib/nut/genericups
 %if %{with hal}
-%attr(755,root,root) /lib/nut/hald-addon-bcmxcp_usb
-%attr(755,root,root) /lib/nut/hald-addon-megatec_usb
-%attr(755,root,root) /lib/nut/hald-addon-tripplite_usb
-%attr(755,root,root) /lib/nut/hald-addon-usbhid-ups
+%attr(755,root,root) %{_libdir}/hal/hald-addon-bcmxcp_usb
+%attr(755,root,root) %{_libdir}/hal/hald-addon-megatec_usb
+%attr(755,root,root) %{_libdir}/hal/hald-addon-tripplite_usb
+%attr(755,root,root) %{_libdir}/hal/hald-addon-usbhid-ups
+%{_datadir}/hal/fdi/information/20thirdparty/20-ups-nut-device.fdi
 %endif
 %attr(755,root,root) /lib/nut/isbmex
 %attr(755,root,root) /lib/nut/liebert
@@ -390,6 +393,8 @@ fi
 
 %files client
 %defattr(644,root,root,755)
+%ghost %{_libdir}/libupsclient.so.1
+%attr(755,root,root) %{_libdir}/libupsclient.so.*.*.*
 %attr(755,root,root) %{_bindir}/upsc
 %attr(755,root,root) %{_sbindir}/upsmon
 %attr(755,root,root) %{_sbindir}/upssched
@@ -407,6 +412,7 @@ fi
 %if %{with cgi}
 %files cgi
 %defattr(644,root,root,755)
+%{_datadir}/%{name}/html
 %attr(755,root,root) /home/services/httpd/cgi-bin/*.cgi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hosts.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsset.conf
@@ -421,6 +427,8 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/upsclient.o
-%{_libdir}/parseconf.o
-%{_includedir}/nut
+%attr(755,root,root) %{_libdir}/libupsclient.la
+%attr(755,root,root) %{_libdir}/libupsclient.so
+%{_pkgconfigdir}/*
+%{_includedir}/*.h
+%{_mandir}/man3/*.3*
