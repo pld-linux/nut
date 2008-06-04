@@ -1,0 +1,68 @@
+--- nut-2.2.2/m4/nut_check_libhal.m4~	2008-05-07 11:25:45.000000000 +0200
++++ nut-2.2.2/m4/nut_check_libhal.m4	2008-06-04 13:41:31.000000000 +0200
+@@ -62,36 +62,59 @@
+    dnl Determine installation paths for callout and .fdi
+    dnl As per HAL spec, §5 Callouts and §2 Device Information Files
+    dnl - addon install path: $libdir/hal
++   HAL_CALLOUTS_PATH=""
+    AC_MSG_CHECKING(for libhal Callouts path)
++   AC_ARG_WITH(hal-callouts-path,
++   AC_HELP_STRING([--with-hal-callouts-path=PATH], [path for callout and .fdi files (auto)]),
++   [case "${withval}" in
++	yes|no)
++		;;
++	*)
++		HAL_CALLOUTS_PATH="${withval}"
++		;;
++    esac],)
++
++   if (test -z "${HAL_CALLOUTS_PATH}")
++   then
+    if (test -d "/usr/lib/hal" || test -d "/usr/lib64/hal")
+    then
+      # For Debian
+      HAL_CALLOUTS_PATH="${libdir}/hal"
+-	   AC_MSG_RESULT(${HAL_CALLOUTS_PATH})
++     AC_MSG_RESULT(${HAL_CALLOUTS_PATH})
+    else # For RedHat
+      if (test -d "/usr/libexec")
+      then
+        HAL_CALLOUTS_PATH="${libexecdir}"
+        AC_MSG_RESULT(${HAL_CALLOUTS_PATH})
+      else
+-       # FIXME
+-       HAL_CALLOUTS_PATH=""
+-	     AC_MSG_RESULT(not found)
++       AC_MSG_RESULT(not found)
+      fi
+    fi
++   fi
+ 
+    dnl - fdi install path: $datarootdir/hal/fdi/information/20thirdparty
++   HAL_FDI_PATH=""
+    AC_MSG_CHECKING(for libhal Device Information path)
++   AC_ARG_WITH(hal-fdi-path,
++   AC_HELP_STRING([--with-hal-fdi-path=PATH], [fdi install path (auto)]),
++   [case "${withval}" in
++	yes|no)
++		;;
++	*)
++		HAL_FDI_PATH="${withval}"
++		;;
++    esac],)
++   if (test -z "${HAL_FDI_PATH}")
++   then
+    if (test -d "/usr/share/hal/fdi/information/20thirdparty")
+    then
+      # seems supported everywhere
+      HAL_FDI_PATH="${datarootdir}/hal/fdi/information/20thirdparty"
+ 	   AC_MSG_RESULT(${HAL_FDI_PATH})
+    else
+-     # FIXME
+-     HAL_FDI_PATH=""
+ 	   AC_MSG_RESULT(not found)
+    fi
++   fi
+ 
+    if test "${nut_have_libhal}" != "yes"; then
+       dnl try again
