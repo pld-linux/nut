@@ -7,13 +7,13 @@
 %bcond_without	hal			# build without hal support
 %bcond_without	snmp			# build without snmp driver
 %bcond_without	cgi			# build without cgi support
-%bcond_with	neonxml			# build with neon based XML/HTTP driver
+%bcond_without	neon			# build with neon based XML/HTTP driver
 #
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.2.2
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.2/%{name}-%{version}.tar.gz
@@ -36,6 +36,7 @@ BuildRequires:	automake
 %{?with_hal:BuildRequires:	hal-devel >= 0.5.8}
 BuildRequires:	libtool
 %{?with_usb:BuildRequires:	libusb-devel}
+%{?with_neon:BuildRequires:	neon-devel}
 %{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	rpmbuild(macros) >= 1.268
@@ -205,7 +206,7 @@ cp -f /usr/share/automake/config.sub .
 	--with%{!?with_hal:out}-hal \
 	--with%{!?with_cgi:out}-cgi \
 	--with-dev \
-	--with%{!?with_neonxml:out}-neonxml \
+	--with%{!?with_neon:out}-neonxml \
 	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
 	--with-ssl \
 	--with-ipv6 \
@@ -334,6 +335,7 @@ fi
 %attr(755,root,root) /lib/nut/metasys
 %attr(755,root,root) /lib/nut/mge-shut
 %attr(755,root,root) /lib/nut/mge-utalk
+%{?with_neon:%attr(755,root,root) /lib/nut/netxml-ups}
 %attr(755,root,root) /lib/nut/newmge-shut
 %attr(755,root,root) /lib/nut/nitram
 %attr(755,root,root) /lib/nut/oneac
@@ -378,6 +380,7 @@ fi
 %{_mandir}/man8/metasys.8*
 %{_mandir}/man8/mge-shut.8*
 %{_mandir}/man8/mge-utalk.8*
+%{?with_neon:%{_mandir}/man8/netxml-ups.8*}
 %{_mandir}/man8/nitram.8*
 %{_mandir}/man8/nutupsdrv.8*
 %{_mandir}/man8/oneac.8*
