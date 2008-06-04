@@ -27,6 +27,7 @@ Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
 Patch3:		%{name}-upssched-cmd-sysconf.patch
 Patch4:		%{name}-as-needed.patch
+Patch5:		%{name}-hal-paths.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -187,6 +188,7 @@ Pliki do integracji NUT-a z HAL-em.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -208,6 +210,8 @@ cp -f /usr/share/automake/config.sub .
 	--with-ssl \
 	--with-ipv6 \
 	%{?with_usb:--with-udev-dir=/etc/udev} \
+	%{?with_hal:--with-hal-callouts-path=%{_libdir}/hal} \
+	%{?with_hal:--with-hal-fdi-path=%{_datadir}/hal/fdi/information/20thirdparty} \
 	--with-statepath=%{_var}/lib/ups \
 	--with-drvpath=/lib/nut \
 	--with-cgipath=/home/services/httpd/cgi-bin \
