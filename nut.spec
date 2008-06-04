@@ -271,6 +271,15 @@ fi
 %groupadd -g 76 ups
 %useradd -u 70 -d /usr/share/empty -s /bin/false -c "UPS Manager User" -g ups ups
 
+%post common -p /sbin/ldconfig
+
+%postun common
+/sbin/ldconfig
+if [ "$1" = "0" ]; then
+	%userremove ups
+	%groupremove ups
+fi
+
 %post client
 /sbin/chkconfig --add upsmon
 %service upsmon restart "NUT upsmon daemon"
@@ -279,12 +288,6 @@ fi
 if [ "$1" = "0" ]; then
 	%service upsmon stop
 	/sbin/chkconfig --del upsmon
-fi
-
-%postun common
-if [ "$1" = "0" ]; then
-	%userremove ups
-	%groupremove ups
 fi
 
 %files
