@@ -9,3 +9,16 @@
  
  	{ NULL,		NULL,			0 },
  };
+--- nut-2.2.2/drivers/apcsmart.c~	2007-12-12 21:34:51.000000000 +0100
++++ nut-2.2.2/drivers/apcsmart.c	2008-06-12 17:38:28.000000000 +0200
+@@ -540,8 +540,8 @@
+ 				!strcmp(buf, "6QI")) { /* (APC600.) */
+ 			upsdebugx(1, "Found Smart-UPS");
+ 			dstate_setinfo("ups.model", "Smart-UPS");
+-		}
+-		else return 0;
++		} else if (strcmp(buf, "5YI")) /* Matrix */
++			return 0;
+ 	}
+ 
+ 	upsdebugx(2, "Firmware: [%s]", buf);
