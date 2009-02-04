@@ -13,7 +13,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.2.2
-Release:	5
+Release:	6
 License:	GPL
 Group:		Applications/System
 Source0:	http://eu1.networkupstools.org/source/2.2/%{name}-%{version}.tar.gz
@@ -36,7 +36,7 @@ BuildRequires:	automake
 %{?with_cgi:BuildRequires:	gd-devel >= 2.0.15}
 %{?with_hal:BuildRequires:	hal-devel >= 0.5.8}
 BuildRequires:	libtool
-%{?with_usb:BuildRequires:	libusb-devel}
+%{?with_usb:BuildRequires:	libusb-compat-devel}
 %{?with_neon:BuildRequires:	neon-devel}
 %{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
