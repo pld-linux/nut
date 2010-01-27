@@ -40,6 +40,7 @@ BuildRequires:	libwrap-devel
 %{?with_neon:BuildRequires:	neon-devel}
 %{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
@@ -162,8 +163,8 @@ UPS через веб-інтерфейс.
 Summary:	Files for NUT clients development
 Summary(pl.UTF-8):	Pliki do tworzenia klientów NUT-a
 Group:		Development/Libraries
-Requires:	openssl-devel >= 0.9.7c
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	openssl-devel >= 0.9.7c
 
 %description devel
 Object file and header for developing NUT clients.
@@ -402,7 +403,7 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS MAINTAINERS NEWS README UPGRADING ChangeLog docs
 %dir %{_sysconfdir}
-%ghost %{_libdir}/libupsclient.so.1
+%attr(755,root,root) %ghost %{_libdir}/libupsclient.so.1
 %attr(755,root,root) %{_libdir}/libupsclient.so.*.*.*
 
 %files client
