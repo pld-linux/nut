@@ -12,12 +12,12 @@
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
-Version:	2.2.2
-Release:	6
+Version:	2.4.1
+Release:	0.1
 License:	GPL
 Group:		Applications/System
-Source0:	http://eu1.networkupstools.org/source/2.2/%{name}-%{version}.tar.gz
-# Source0-md5:	677a84a83e9be7bc93610413ee696375
+Source0:	http://www.networkupstools.org/source/2.4/%{name}-%{version}.tar.gz
+# Source0-md5:	609ebaf2123fc7171d25a6c742dd7d66
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -26,7 +26,6 @@ Patch0:		%{name}-client.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
 Patch3:		%{name}-upssched-cmd-sysconf.patch
-Patch4:		%{name}-as-needed.patch
 Patch5:		%{name}-hal-paths.patch
 Patch6:		%{name}-matrix.patch
 URL:		http://www.networkupstools.org/
@@ -37,6 +36,7 @@ BuildRequires:	automake
 %{?with_hal:BuildRequires:	hal-devel >= 0.5.8}
 BuildRequires:	libtool
 %{?with_usb:BuildRequires:	libusb-compat-devel}
+BuildRequires:	libwrap-devel
 %{?with_neon:BuildRequires:	neon-devel}
 %{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
@@ -189,7 +189,6 @@ Pliki do integracji NUT-a z HAL-em.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 %patch5 -p1
 %patch6 -p1
 
@@ -239,11 +238,7 @@ for i in $RPM_BUILD_ROOT%{_sysconfdir}/*.sample; do
 	mv -f $i ${i%.sample}
 done
 
-%if %{with usb}
-mv -f $RPM_BUILD_ROOT%{_udevrulesdir}/52{_,-}nut-usbups.rules
-%else
-rm -f $RPM_BUILD_ROOT%{_udevrulesdir}/52_nut-usbups.rules
-%endif
+%{!?with_usb:rm -f $RPM_BUILD_ROOT%{_udevrulesdir}/52-nut-usbups.rules}
 
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
@@ -301,6 +296,7 @@ fi
 %attr(755,root,root) /sbin/poweroff-ups
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
+%attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/nut.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ups.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.users
@@ -315,7 +311,6 @@ fi
 %{_mandir}/man8/upsrw.8*
 %dir %attr(770,root,ups) /var/lib/ups
 %dir /lib/nut
-%attr(755,root,root) /lib/nut/al175
 %attr(755,root,root) /lib/nut/apcsmart
 %attr(755,root,root) /lib/nut/bcmxcp
 %{?with_usb:%attr(755,root,root) /lib/nut/bcmxcp_usb}
@@ -324,10 +319,10 @@ fi
 %attr(755,root,root) /lib/nut/bestfcom
 %attr(755,root,root) /lib/nut/bestuferrups
 %attr(755,root,root) /lib/nut/bestups
-%attr(755,root,root) /lib/nut/cpsups
+%attr(755,root,root) /lib/nut/blazer_ser
+%{?with_usb:%attr(755,root,root) /lib/nut/blazer_usb}
 %attr(755,root,root) /lib/nut/cyberpower
 %attr(755,root,root) /lib/nut/dummy-ups
-%{?with_usb:%attr(755,root,root) /lib/nut/energizerups}
 %attr(755,root,root) /lib/nut/etapro
 %attr(755,root,root) /lib/nut/everups
 %attr(755,root,root) /lib/nut/gamatronic
@@ -340,14 +335,15 @@ fi
 %attr(755,root,root) /lib/nut/metasys
 %attr(755,root,root) /lib/nut/mge-shut
 %attr(755,root,root) /lib/nut/mge-utalk
+%attr(755,root,root) /lib/nut/microdowell
 %{?with_neon:%attr(755,root,root) /lib/nut/netxml-ups}
 %attr(755,root,root) /lib/nut/newmge-shut
-%attr(755,root,root) /lib/nut/nitram
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
 %attr(755,root,root) /lib/nut/powercom
 %attr(755,root,root) /lib/nut/powerpanel
 %attr(755,root,root) /lib/nut/rhino
+%{?with_usb:%attr(755,root,root) /lib/nut/richcomm_usb}
 %attr(755,root,root) /lib/nut/safenet
 %attr(755,root,root) /lib/nut/skel
 %{?with_snmp:%attr(755,root,root) /lib/nut/snmp-ups}
@@ -360,7 +356,6 @@ fi
 %{?with_usb:%attr(755,root,root) /lib/nut/usbhid-ups}
 %attr(755,root,root) /lib/nut/victronups
 %{_datadir}/nut
-%{_mandir}/man8/al175.8*
 %{_mandir}/man8/apcsmart.8*
 %{_mandir}/man8/bcmxcp.8*
 %{?with_usb:%{_mandir}/man8/bcmxcp_usb.8*}
@@ -369,10 +364,9 @@ fi
 %{_mandir}/man8/bestfcom.8*
 %{_mandir}/man8/bestuferrups.8*
 %{_mandir}/man8/bestups.8*
-%{_mandir}/man8/cpsups.8*
+%{_mandir}/man8/blazer.8*
 %{_mandir}/man8/cyberpower.8*
 %{_mandir}/man8/dummy-ups.8*
-%{?with_usb:%{_mandir}/man8/energizerups.8*}
 %{_mandir}/man8/etapro.8*
 %{_mandir}/man8/everups.8*
 %{_mandir}/man8/gamatronic.8*
@@ -385,14 +379,15 @@ fi
 %{_mandir}/man8/metasys.8*
 %{_mandir}/man8/mge-shut.8*
 %{_mandir}/man8/mge-utalk.8*
+%{_mandir}/man8/microdowell.8*
 %{?with_neon:%{_mandir}/man8/netxml-ups.8*}
-%{_mandir}/man8/nitram.8*
 %{_mandir}/man8/nutupsdrv.8*
 %{_mandir}/man8/oneac.8*
 %{_mandir}/man8/optiups.8*
 %{_mandir}/man8/powercom.8*
 %{_mandir}/man8/powerpanel.8*
 %{_mandir}/man8/rhino.8*
+%{?with_usb:%{_mandir}/man8/richcomm_usb.8*}
 %{_mandir}/man8/safenet.8*
 %{?with_snmp:%{_mandir}/man8/snmp-ups.8*}
 %{_mandir}/man8/solis.8*

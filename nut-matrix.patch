@@ -1,10 +1,9 @@
 --- nut-2.2.2/drivers/apcsmart.h~	2008-06-10 16:43:03.000000000 +0200
 +++ nut-2.2.2/drivers/apcsmart.h	2008-06-12 17:14:18.000000000 +0200
-@@ -265,6 +265,8 @@
- 	{ "D4",         "789ABCEFGKLMNOPQRSUVWXYZ", 0 },
- 	/* SmartUPS 1250. */
- 	{ "8QD",	"79ABCDEFGKLMNOPQRSUVWXYZcefgjklmnopqrsuxz", 0 },
-+	/* Matrix-UPS */
+@@ -265,6 +265,7 @@
+ 	/* APC Matrix */
+ 	{ "0ZI",	"79ABCDEFGKLMNOPQRSUVWXYZcefgjklmnopqrsuxz/<>", 0 },
+ 	{ "5UI",	"79ABCDEFGKLMNOPQRSUVWXYZcefgjklmnopqrsuxz/<>", 0 },
 +	{ "5YI",	"789ABCDEFGLMNOPQTUVWXYcefgjklmnopqrsuwxyz\\<>/", 0 },
  
  	{ NULL,		NULL,			0 },
