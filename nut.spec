@@ -13,7 +13,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.4.1
-Release:	0.1
+Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.4/%{name}-%{version}.tar.gz
@@ -26,8 +26,8 @@ Patch0:		%{name}-client.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
 Patch3:		%{name}-upssched-cmd-sysconf.patch
-Patch5:		%{name}-hal-paths.patch
-Patch6:		%{name}-matrix.patch
+Patch4:		%{name}-hal-paths.patch
+Patch5:		%{name}-matrix.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -189,8 +189,8 @@ Pliki do integracji NUT-a z HAL-em.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 %patch5 -p1
-%patch6 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
