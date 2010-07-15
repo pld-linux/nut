@@ -1,23 +1,10 @@
---- nut-2.2.2/drivers/apcsmart.h~	2008-06-10 16:43:03.000000000 +0200
-+++ nut-2.2.2/drivers/apcsmart.h	2008-06-12 17:14:18.000000000 +0200
-@@ -265,6 +265,7 @@
+--- nut-2.4.3/drivers/apcsmart.h~	2010-07-15 09:48:38.358605322 +0200
++++ nut-2.4.3/drivers/apcsmart.h	2010-07-15 09:49:46.457765191 +0200
+@@ -257,6 +257,7 @@
  	/* APC Matrix */
  	{ "0ZI",	"79ABCDEFGKLMNOPQRSUVWXYZcefgjklmnopqrsuxz/<>", 0 },
  	{ "5UI",	"79ABCDEFGKLMNOPQRSUVWXYZcefgjklmnopqrsuxz/<>", 0 },
-+	{ "5YI",	"789ABCDEFGLMNOPQTUVWXYcefgjklmnopqrsuwxyz\\<>/", 0 },
- 
- 	{ NULL,		NULL,			0 },
- };
---- nut-2.2.2/drivers/apcsmart.c~	2007-12-12 21:34:51.000000000 +0100
-+++ nut-2.2.2/drivers/apcsmart.c	2008-06-12 17:38:28.000000000 +0200
-@@ -540,8 +540,8 @@
- 				!strcmp(buf, "6QI")) { /* (APC600.) */
- 			upsdebugx(1, "Found Smart-UPS");
- 			dstate_setinfo("ups.model", "Smart-UPS");
--		}
--		else return 0;
-+		} else if (strcmp(buf, "5YI")) /* Matrix */
-+			return 0;
- 	}
- 
- 	upsdebugx(2, "Firmware: [%s]", buf);
++	{ "5YI",        "789ABCDEFGLMNOPQTUVWXYcefgjklmnopqrsuwxyz\\<>/", 0 },
+ 	{ "5ZM",	"79ABCDEFGKLMNOPQRSUVWXYZcefgjklmnopqrsuxz/<>", 0 },
+ 	/* APC600 */
+ 	{ "6QD",	"79ABCDEFGKLMNOPQRSUVWXYZcefgjklmnopqrsuxz", 0 },

@@ -12,12 +12,12 @@
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
-Version:	2.4.1
-Release:	4
+Version:	2.4.3
+Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.4/%{name}-%{version}.tar.gz
-# Source0-md5:	609ebaf2123fc7171d25a6c742dd7d66
+# Source0-md5:	6f893b61b07915e7a139324fa3f79121
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -208,8 +208,7 @@ cp -f /usr/share/automake/config.sub .
 	--with%{!?with_hal:out}-hal \
 	--with%{!?with_cgi:out}-cgi \
 	--with-dev \
-	--with%{!?with_neon:out}-neonxml \
-	--with-linux-hiddev=%{_includedir}/linux/hiddev.h \
+	--with%{!?with_neon:out}-neon \
 	--with-ssl \
 	--with-ipv6 \
 	%{?with_usb:--with-udev-dir=/etc/udev} \
@@ -318,18 +317,22 @@ fi
 %attr(755,root,root) /lib/nut/belkin
 %attr(755,root,root) /lib/nut/belkinunv
 %attr(755,root,root) /lib/nut/bestfcom
+%attr(755,root,root) /lib/nut/bestfortress
 %attr(755,root,root) /lib/nut/bestuferrups
 %attr(755,root,root) /lib/nut/bestups
 %attr(755,root,root) /lib/nut/blazer_ser
 %{?with_usb:%attr(755,root,root) /lib/nut/blazer_usb}
-%attr(755,root,root) /lib/nut/cyberpower
+%attr(755,root,root) /lib/nut/clone
+%attr(755,root,root) /lib/nut/clone-outlet
 %attr(755,root,root) /lib/nut/dummy-ups
 %attr(755,root,root) /lib/nut/etapro
 %attr(755,root,root) /lib/nut/everups
 %attr(755,root,root) /lib/nut/gamatronic
 %attr(755,root,root) /lib/nut/genericups
 %attr(755,root,root) /lib/nut/isbmex
+%attr(755,root,root) /lib/nut/ivtscd
 %attr(755,root,root) /lib/nut/liebert
+%attr(755,root,root) /lib/nut/liebertgxt2
 %attr(755,root,root) /lib/nut/masterguard
 %attr(755,root,root) /lib/nut/megatec
 %{?with_usb:%attr(755,root,root) /lib/nut/megatec_usb}
@@ -357,23 +360,27 @@ fi
 %{?with_usb:%attr(755,root,root) /lib/nut/usbhid-ups}
 %attr(755,root,root) /lib/nut/victronups
 %{_datadir}/nut
+%{_mandir}/man5/nut.conf.5*
 %{_mandir}/man8/apcsmart.8*
 %{_mandir}/man8/bcmxcp.8*
 %{?with_usb:%{_mandir}/man8/bcmxcp_usb.8*}
 %{_mandir}/man8/belkin.8*
 %{_mandir}/man8/belkinunv.8*
 %{_mandir}/man8/bestfcom.8*
+%{_mandir}/man8/bestfortress.8*
 %{_mandir}/man8/bestuferrups.8*
 %{_mandir}/man8/bestups.8*
 %{_mandir}/man8/blazer.8*
-%{_mandir}/man8/cyberpower.8*
+%{_mandir}/man8/clone.8*
 %{_mandir}/man8/dummy-ups.8*
 %{_mandir}/man8/etapro.8*
 %{_mandir}/man8/everups.8*
 %{_mandir}/man8/gamatronic.8*
 %{_mandir}/man8/genericups.8*
 %{_mandir}/man8/isbmex.8*
+%{_mandir}/man8/ivtscd.8*
 %{_mandir}/man8/liebert.8*
+%{_mandir}/man8/liebertgxt2.8*
 %{_mandir}/man8/masterguard.8*
 %{_mandir}/man8/megatec.8*
 %{?with_usb:%{_mandir}/man8/megatec_usb.8*}

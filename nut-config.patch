@@ -17,7 +17,7 @@ diff -Nuard nut-2.0.1.orig/conf/upssched.conf nut-2.0.1/conf/upssched.conf
  # A shell script with a big case..esac construct should work nicely for this.
  # An example has been provided to help you get started.
  
--CMDSCRIPT /usr/local/ups/bin/upssched-cmd
+-CMDSCRIPT @BINDIR@/upssched-cmd
 +CMDSCRIPT /usr/sbin/upssched-cmd
  
  # ============================================================================
