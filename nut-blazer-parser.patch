@@ -1,0 +1,14 @@
+--- nut-2.4.3/drivers/blazer.c.orig	2010-02-11 22:43:23.000000000 +0100
++++ nut-2.4.3/drivers/blazer.c	2010-11-05 18:48:21.171067449 +0100
+@@ -211,6 +211,11 @@
+ 		dstate_setinfo(status[i].var, status[i].fmt, status[i].conv(val, NULL));
+ 	}
+ 
++	if (!val) {
++		upsdebugx(2, "%s: parsing failed", __func__);
++		return -1;
++	}
++
+ 	if (strspn(val, "01") != 8) {
+ 		upsdebugx(2, "Invalid status [%s]", val);
+ 		return -1;
