@@ -262,7 +262,7 @@ fi
 
 %pre common
 # move to trigger?
-if [ -n "`/usr/bin/getgid ups`" ] && [ "`/usr/bin/getgid ups`" = 121 ]; then
+if [ -n "`/usr/bin/getgid ups 2> /dev/null`" ] && [ "`/usr/bin/getgid ups 2> /dev/null`" = 121 ]; then
 	/usr/sbin/groupmod -g 76 ups
 	chgrp ups %{_sysconfdir}/{upsd.conf,ups.conf,upsd.users}
 	/usr/sbin/usermod -g 76 ups
