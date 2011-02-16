@@ -334,10 +334,8 @@ fi
 %attr(755,root,root) /lib/nut/isbmex
 %attr(755,root,root) /lib/nut/ivtscd
 %attr(755,root,root) /lib/nut/liebert
-%attr(755,root,root) /lib/nut/liebertgxt2
+%attr(755,root,root) /lib/nut/liebert-esp2
 %attr(755,root,root) /lib/nut/masterguard
-%attr(755,root,root) /lib/nut/megatec
-%{?with_usb:%attr(755,root,root) /lib/nut/megatec_usb}
 %attr(755,root,root) /lib/nut/metasys
 %attr(755,root,root) /lib/nut/mge-shut
 %attr(755,root,root) /lib/nut/mge-utalk
@@ -382,10 +380,8 @@ fi
 %{_mandir}/man8/isbmex.8*
 %{_mandir}/man8/ivtscd.8*
 %{_mandir}/man8/liebert.8*
-%{_mandir}/man8/liebertgxt2.8*
+%{_mandir}/man8/liebert-esp2.8*
 %{_mandir}/man8/masterguard.8*
-%{_mandir}/man8/megatec.8*
-%{?with_usb:%{_mandir}/man8/megatec_usb.8*}
 %{_mandir}/man8/metasys.8*
 %{_mandir}/man8/mge-shut.8*
 %{_mandir}/man8/mge-utalk.8*
@@ -451,7 +447,7 @@ fi
 %files hal
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/hal/hald-addon-bcmxcp_usb
-%attr(755,root,root) %{_libdir}/hal/hald-addon-megatec_usb
+%attr(755,root,root) %{_libdir}/hal/hald-addon-blazer_usb
 %attr(755,root,root) %{_libdir}/hal/hald-addon-tripplite_usb
 %attr(755,root,root) %{_libdir}/hal/hald-addon-usbhid-ups
 %{_datadir}/hal/fdi/information/20thirdparty/20-ups-nut-device.fdi
