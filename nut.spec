@@ -191,9 +191,9 @@ Pliki do integracji NUT-a z HAL-em.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
+#patch4 -p1
 %patch5 -p1
-%patch6 -p1
+#patch6 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
