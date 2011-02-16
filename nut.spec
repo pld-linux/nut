@@ -12,12 +12,12 @@
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
-Version:	2.4.3
-Release:	4
+Version:	2.6.0
+Release:	0.1
 License:	GPL
 Group:		Applications/System
-Source0:	http://www.networkupstools.org/source/2.4/%{name}-%{version}.tar.gz
-# Source0-md5:	6f893b61b07915e7a139324fa3f79121
+Source0:	http://www.networkupstools.org/source/2.6/%{name}-%{version}.tar.gz
+# Source0-md5:	21caf82b34ecd46b7881c2b1823f5e41
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
