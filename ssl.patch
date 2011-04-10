@@ -1,0 +1,9 @@
+--- nut-2.6.0/lib/libupsclient.pc.in.wiget	2011-04-10 22:40:52.640610125 +0200
++++ nut-2.6.0/lib/libupsclient.pc.in	2011-04-10 22:41:02.441650442 +0200
+@@ -9,5 +9,5 @@ nutuser=@RUN_AS_USER@
+ Name: libupsclient
+ Description: UPS monitoring with Network UPS Tools
+ Version: @PACKAGE_VERSION@
+-Libs: -L${libdir} -lupsclient @LIBSSL_LDFLAGS@
++Libs: -L${libdir} -lupsclient @LIBSSL_LIBS@
+ Cflags: -I${includedir} @LIBSSL_CFLAGS@

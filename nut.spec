@@ -13,7 +13,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.6.0
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.6/%{name}-%{version}.tar.gz
@@ -27,6 +27,7 @@ Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
 Patch3:		%{name}-upssched-cmd-sysconf.patch
 Patch4:		%{name}-matrix.patch
+Patch5:		ssl.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -190,6 +191,7 @@ Pliki do integracji NUT-a z HAL-em.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -242,6 +244,8 @@ cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
 /etc/rc.d/init.d/ups powerdown
 EOF
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -451,8 +455,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libupsclient.la
 %attr(755,root,root) %{_libdir}/libupsclient.so
-%{_pkgconfigdir}/*
+%{_pkgconfigdir}/libupsclient.pc
 %{_includedir}/*.h
 %{_mandir}/man3/*.3*
