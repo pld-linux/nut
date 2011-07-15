@@ -42,12 +42,13 @@ case "$1" in
 	if [ ! -f /var/lock/subsys/ups ]; then
 		show "Starting UPS drivers"
 		daemon /lib/nut/upsdrvctl start
+		RETVALDRV=$?
+		msg_starting "UPS network daemon"
+		daemon /usr/sbin/upsd "$OPTIONS"
 		RETVAL=$?
 		if [ $RETVAL -eq 0 ]; then
-			msg_starting "UPS network daemon"
-			daemon /usr/sbin/upsd "$OPTIONS"
-			RETVAL=$?
 			touch /var/lock/subsys/ups
+			RETVAL=$RETVALDRV
 		fi
 	else
 		msg_already_running "UPS drivers and network daemon"
