@@ -1,10 +1,9 @@
 # TODO:
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
-#	- test that hal-stuff
 #
 # Conditional build:
 %bcond_without	usb			# build without usb drivers
-%bcond_without	hal			# build without hal support
+%bcond_with	hal			# build with hal support (DEPRECATED)
 %bcond_without	snmp			# build without snmp driver
 %bcond_without	cgi			# build without cgi support
 %bcond_without	neon			# build with neon based XML/HTTP driver
@@ -13,7 +12,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.6.1
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.6/%{name}-%{version}.tar.gz
