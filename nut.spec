@@ -11,12 +11,12 @@
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
-Version:	2.6.1
-Release:	4
+Version:	2.6.3
+Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.6/%{name}-%{version}.tar.gz
-# Source0-md5:	89e6405272cc82c53d7b84160945761b
+# Source0-md5:	8db00c21f8bc03add6e14d15f634ec6a
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -290,11 +290,13 @@ fi
 
 %files
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/nut-scanner
 %attr(755,root,root) %{_bindir}/upscmd
 %attr(755,root,root) %{_bindir}/upslog
 %attr(755,root,root) %{_bindir}/upsrw
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) /sbin/poweroff-ups
+%attr(755,root,root) %ghost %{_libdir}/libnutscan.so.1
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/nut.conf
@@ -304,6 +306,7 @@ fi
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
+%{_mandir}/man8/nut-scanner.8*
 %{_mandir}/man8/upscmd.8*
 %{_mandir}/man8/upscode2.8*
 %{_mandir}/man8/upsd.8*
@@ -313,6 +316,7 @@ fi
 %dir %attr(770,root,ups) /var/lib/ups
 %dir /lib/nut
 %attr(755,root,root) /lib/nut/apcsmart
+%attr(755,root,root) /lib/nut/apcsmart-old
 %attr(755,root,root) /lib/nut/bcmxcp
 %{?with_usb:%attr(755,root,root) /lib/nut/bcmxcp_usb}
 %attr(755,root,root) /lib/nut/belkin
@@ -361,6 +365,7 @@ fi
 %{_datadir}/nut
 %{_mandir}/man5/nut.conf.5*
 %{_mandir}/man8/apcsmart.8*
+%{_mandir}/man8/apcsmart-old.8*
 %{_mandir}/man8/bcmxcp.8*
 %{?with_usb:%{_mandir}/man8/bcmxcp_usb.8*}
 %{_mandir}/man8/belkin.8*

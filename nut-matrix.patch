@@ -1,5 +1,5 @@
---- nut-2.4.3/drivers/apcsmart.h~	2010-07-15 09:48:38.358605322 +0200
-+++ nut-2.4.3/drivers/apcsmart.h	2010-07-15 09:49:46.457765191 +0200
+--- nut-2.4.3/drivers/apcsmart-old.h~	2010-07-15 09:48:38.358605322 +0200
++++ nut-2.4.3/drivers/apcsmart-old.h	2010-07-15 09:49:46.457765191 +0200
 @@ -257,6 +257,7 @@
  	/* APC Matrix */
  	{ "0ZI",	"79ABCDEFGKLMNOPQRSUVWXYZcefgjklmnopqrsuxz/<>", 0 },
