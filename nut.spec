@@ -12,7 +12,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.6.3
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.6/%{name}-%{version}.tar.gz
@@ -250,8 +250,12 @@ EOF
 rm -rf $RPM_BUILD_ROOT
 
 %post
+/sbin/ldconfig
 /sbin/chkconfig --add ups
 %service ups restart "NUT ups daemon"
+
+%postun
+/sbin/ldconfig
 
 %preun
 if [ "$1" = "0" ]; then
@@ -297,6 +301,7 @@ fi
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) /sbin/poweroff-ups
 %attr(755,root,root) %ghost %{_libdir}/libnutscan.so.1
+%attr(755,root,root) %{_libdir}/libnutscan.so.*.*.*
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/nut.conf
