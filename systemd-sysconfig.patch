@@ -1,0 +1,24 @@
+--- nut-2.6.4/scripts/systemd/nut-server.service.in.orig	2012-06-23 23:05:33.638939671 +0200
++++ nut-2.6.4/scripts/systemd/nut-server.service.in	2012-06-23 23:13:37.038936168 +0200
+@@ -5,7 +5,8 @@
+ Before=nut-monitor.service
+ 
+ [Service]
+-ExecStart=@SBINDIR@/upsd 
++EnvironmentFile=-/etc/sysconfig/ups
++ExecStart=@SBINDIR@/upsd $UPSD_OPTIONS
+ Type=forking
+ 
+ [Install]
+--- nut-2.6.4/scripts/systemd/nut-monitor.service.in.orig	2012-05-02 23:35:36.000000000 +0200
++++ nut-2.6.4/scripts/systemd/nut-monitor.service.in	2012-06-23 23:14:10.582269261 +0200
+@@ -3,7 +3,8 @@
+ After=local-fs.target network.target nut-server.service
+ 
+ [Service]
+-ExecStart=@SBINDIR@/upsmon
++EnvironmentFile=-/etc/sysconfig/upsmon
++ExecStart=@SBINDIR@/upsmon $PROGRAM_ARGS
+ PIDFile=@PIDPATH@/upsmon.pid
+ Type=forking
+ 

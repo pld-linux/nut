@@ -26,6 +26,7 @@ Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
 Patch3:		%{name}-upssched-cmd-sysconf.patch
 Patch4:		%{name}-matrix.patch
+Patch5:		systemd-sysconfig.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -189,6 +190,7 @@ Pliki do integracji NUT-a z HAL-em.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -230,6 +232,10 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/upsmon
+
+# mask sysv services for systemd because of different naming
+ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/ups.service
+ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/upsmon.service
 
 for i in $RPM_BUILD_ROOT%{_sysconfdir}/*.sample; do
 	mv -f $i ${i%.sample}
@@ -306,9 +312,13 @@ fi
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ups.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.users
+%{systemdunitdir}/nut-driver.service
+%{systemdunitdir}/nut-server.service
+%{systemdunitdir}/ups.service
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
+%{_mandir}/man8/nut-recorder.8*
 %{_mandir}/man8/nut-scanner.8*
 %{_mandir}/man8/upscmd.8*
 %{_mandir}/man8/upscode2.8*
@@ -428,6 +438,9 @@ fi
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched.conf
 %attr(750,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upssched-cmd
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/upsmon
+/lib/systemd/system-shutdown/nutshutdown
+%{systemdunitdir}/nut-monitor.service
+%{systemdunitdir}/upsmon.service
 %{_mandir}/man5/upsmon.conf.5*
 %{_mandir}/man5/upssched.conf.5*
 %{_mandir}/man8/upsc.8*
@@ -463,6 +476,8 @@ fi
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libupsclient.so
+%attr(755,root,root) %{_libdir}/libnutscan.so
 %{_pkgconfigdir}/libupsclient.pc
+%{_pkgconfigdir}/libnutscan.pc
 %{_includedir}/*.h
 %{_mandir}/man3/*.3*
