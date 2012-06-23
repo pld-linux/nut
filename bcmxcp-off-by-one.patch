@@ -1,0 +1,11 @@
+--- nut-2.6.4/drivers/bcmxcp.c~	2012-05-11 10:29:33.000000000 +0200
++++ nut-2.6.4/drivers/bcmxcp.c	2012-06-24 01:04:21.722366188 +0200
+@@ -1134,7 +1134,7 @@
+ 			len--;
+ 			ncpu++;
+ 
+-		} while ((len > 0) && (ncpu <= 5));
++		} while ((len > 0) && (ncpu < 5));
+ 
+ 		dstate_setinfo("ups.firmware", "%s", pTmp);
+ 
