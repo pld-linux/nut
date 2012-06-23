@@ -41,7 +41,8 @@ BuildRequires:	libwrap-devel
 %{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pkgconfig
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.647
+Requires:	systemd-units >= 38
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-scripts
@@ -107,6 +108,7 @@ Group:		Applications/System
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-scripts
+Requires:	systemd-units >= 38
 
 %description client
 This package includes the client utilities that are required to
