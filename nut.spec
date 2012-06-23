@@ -233,10 +233,6 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/upsmon
 
-# mask sysv services for systemd because of different naming
-ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/ups.service
-ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/upsmon.service
-
 for i in $RPM_BUILD_ROOT%{_sysconfdir}/*.sample; do
 	mv -f $i ${i%.sample}
 done
@@ -257,15 +253,26 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/ldconfig
 /sbin/chkconfig --add ups
 %service ups restart "NUT ups daemon"
-
-%postun
-/sbin/ldconfig
+%systemd_post nut-driver.service nut-server.service
 
 %preun
 if [ "$1" = "0" ]; then
 	%service ups stop
 	/sbin/chkconfig --del ups
 fi
+%systemd_preun nut-driver.service nut-server.service
+
+%postun
+/sbin/ldconfig
+%systemd_reload
+
+%triggerpostun -- nut < 2.6.4-2
+[ -f /etc/sysconfig/rpm ] && . /etc/sysconfig/rpm
+[ ${RPM_ENABLE_SYSTEMD_SERVICE:-yes} = no ] && exit 0
+/sbin/chkconfig --list ups 2>/dev/null | grep -qsv "[0-6]:on" || exit 0
+export SYSTEMD_LOG_LEVEL=warning SYSTEMD_LOG_TARGET=syslog
+%systemd_service_enable nut-driver.service nut-server.service
+%systemd_service mask ups.service
 
 %pre common
 # move to trigger?
@@ -289,12 +296,25 @@ fi
 %post client
 /sbin/chkconfig --add upsmon
 %service upsmon restart "NUT upsmon daemon"
+%systemd_post nut-monitor.service
 
 %preun client
 if [ "$1" = "0" ]; then
 	%service upsmon stop
 	/sbin/chkconfig --del upsmon
 fi
+%systemd_preun nut-monitor.service
+
+%postun client
+%systemd_reload
+
+%triggerpostun client -- nut-client < 2.6.4-2
+[ -f /etc/sysconfig/rpm ] && . /etc/sysconfig/rpm
+[ ${RPM_ENABLE_SYSTEMD_SERVICE:-yes} = no ] && exit 0
+/sbin/chkconfig --list upsmon 2>/dev/null | grep -qsv "[0-6]:on" || exit 0
+export SYSTEMD_LOG_LEVEL=warning SYSTEMD_LOG_TARGET=syslog
+%systemd_service_enable nut-monitor.service
+%systemd_service mask upsmon.service
 
 %files
 %defattr(644,root,root,755)
@@ -314,7 +334,6 @@ fi
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.users
 %{systemdunitdir}/nut-driver.service
 %{systemdunitdir}/nut-server.service
-%{systemdunitdir}/ups.service
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
@@ -440,7 +459,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/upsmon
 /lib/systemd/system-shutdown/nutshutdown
 %{systemdunitdir}/nut-monitor.service
-%{systemdunitdir}/upsmon.service
 %{_mandir}/man5/upsmon.conf.5*
 %{_mandir}/man5/upssched.conf.5*
 %{_mandir}/man8/upsc.8*
