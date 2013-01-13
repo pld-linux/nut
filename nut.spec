@@ -28,12 +28,18 @@ Patch3:		%{name}-upssched-cmd-sysconf.patch
 Patch4:		%{name}-matrix.patch
 Patch5:		systemd-sysconfig.patch
 Patch6:		bcmxcp-off-by-one.patch
+Patch7:		nut-2.6.5-ipmifix.patch
+Patch8:		nut-2.6.5-pthreadfix.patch
+Patch9:		nut-2.6.5-unreachable.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	avahi-devel
 %{?with_hal:BuildRequires:	dbus-glib-devel}
+BuildRequires:	freeipmi-devel
 %{?with_cgi:BuildRequires:	gd-devel >= 2.0.15}
 %{?with_hal:BuildRequires:	hal-devel >= 0.5.8}
+BuildRequires:	libltdl-devel
 BuildRequires:	libtool
 %{?with_usb:BuildRequires:	libusb-compat-devel}
 BuildRequires:	libwrap-devel
@@ -195,6 +201,9 @@ Pliki do integracji NUT-a z HAL-em.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -210,11 +219,14 @@ cp -f /usr/share/automake/config.sub .
 	--with%{!?with_snmp:out}-snmp \
 	--with%{!?with_hal:out}-hal \
 	--with%{!?with_cgi:out}-cgi \
+	--with-avahi \
+	--with-snmp \
+	--with-ipmi \
 	--with-dev \
 	--with%{!?with_neon:out}-neon \
 	--with-ssl \
-	--with-ipv6 \
 	%{?with_usb:--with-udev-dir=/etc/udev} \
+	%{!?with_hal:--without-hal} \
 	%{?with_hal:--with-hal-callouts-path=%{_libdir}/hal} \
 	%{?with_hal:--with-hal-fdi-path=%{_datadir}/hal/fdi/information/20thirdparty} \
 	--with-statepath=%{_var}/lib/ups \
@@ -379,6 +391,7 @@ fi
 %attr(755,root,root) /lib/nut/mge-utalk
 %attr(755,root,root) /lib/nut/microdowell
 %{?with_neon:%attr(755,root,root) /lib/nut/netxml-ups}
+%attr(755,root,root) /lib/nut/nut-ipmipsu
 %attr(755,root,root) /lib/nut/oldmge-shut
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
@@ -427,6 +440,7 @@ fi
 %{_mandir}/man8/mge-utalk.8*
 %{_mandir}/man8/microdowell.8*
 %{?with_neon:%{_mandir}/man8/netxml-ups.8*}
+%{_mandir}/man8/nut-ipmipsu.8*
 %{_mandir}/man8/nutupsdrv.8*
 %{_mandir}/man8/oneac.8*
 %{_mandir}/man8/optiups.8*
@@ -443,6 +457,7 @@ fi
 %{?with_usb:%{_mandir}/man8/usbhid-ups.8*}
 %{_mandir}/man8/victronups.8*
 %{?with_usb:%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/52-nut-usbups.rules}
+%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/52-nut-ipmipsu.rules
 
 %files common
 %defattr(644,root,root,755)
