@@ -11,12 +11,12 @@
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
-Version:	2.6.4
-Release:	4
+Version:	2.6.5
+Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.6/%{name}-%{version}.tar.gz
-# Source0-md5:	78d672fbbcd90683e49c667665a95f87
+# Source0-md5:	e6eac4fa04baff0d0a827d64efe81a7e
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -28,7 +28,6 @@ Patch3:		%{name}-upssched-cmd-sysconf.patch
 Patch4:		%{name}-matrix.patch
 Patch5:		systemd-sysconfig.patch
 Patch6:		bcmxcp-off-by-one.patch
-Patch7:		systemd-upsdrvctl-path.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -196,7 +195,6 @@ Pliki do integracji NUT-a z HAL-em.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -222,6 +220,7 @@ cp -f /usr/share/automake/config.sub .
 	--with-statepath=%{_var}/lib/ups \
 	--with-drvpath=/lib/nut \
 	--with-cgipath=/home/services/httpd/cgi-bin \
+	--with-systemdsystemunitdir=%{systemdunitdir} \
 	--with-user=ups \
 	--with-group=ups
 
@@ -380,7 +379,7 @@ fi
 %attr(755,root,root) /lib/nut/mge-utalk
 %attr(755,root,root) /lib/nut/microdowell
 %{?with_neon:%attr(755,root,root) /lib/nut/netxml-ups}
-%attr(755,root,root) /lib/nut/newmge-shut
+%attr(755,root,root) /lib/nut/oldmge-shut
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
 %attr(755,root,root) /lib/nut/powercom
@@ -398,7 +397,8 @@ fi
 %attr(755,root,root) /lib/nut/upsdrvctl
 %{?with_usb:%attr(755,root,root) /lib/nut/usbhid-ups}
 %attr(755,root,root) /lib/nut/victronups
-%{_datadir}/nut
+%{_datadir}/nut/cmdvartab
+%{_datadir}/nut/driver.list
 %{_mandir}/man5/nut.conf.5*
 %{_mandir}/man8/apcsmart.8*
 %{_mandir}/man8/apcsmart-old.8*

@@ -22,3 +22,16 @@
  PIDFile=@PIDPATH@/upsmon.pid
  Type=forking
  
+--- nut-2.6.5/configure.in~	2012-08-06 14:37:36.000000000 +0200
++++ nut-2.6.5/configure.in	2013-01-13 12:42:30.807862312 +0100
+@@ -986,9 +986,8 @@
+ dnl prefix. This is needed for 'distcheck*' targets, otherwise
+ dnl files will try to get intalled to the actual system directories
+ if test -n "${systemdsystemunitdir}"; then
+-	systemdsystemshutdowndir="${libdir}/systemd/system-shutdown"
++	systemdsystemshutdowndir="/lib/systemd/system-shutdown"
+ 	AC_MSG_RESULT(using ${systemdsystemunitdir})
+-	systemdsystemunitdir="`echo ${systemdsystemunitdir} | sed 's/\/lib/\${libdir}/'`"
+ else
+ 	AC_MSG_RESULT(no)
+ fi
