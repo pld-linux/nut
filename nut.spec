@@ -220,7 +220,6 @@ cp -f /usr/share/automake/config.sub .
 	--with%{!?with_hal:out}-hal \
 	--with%{!?with_cgi:out}-cgi \
 	--with-avahi \
-	--with-snmp \
 	--with-ipmi \
 	--with-dev \
 	--with%{!?with_neon:out}-neon \
