@@ -12,7 +12,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.6.5
-Release:	3
+Release:	4
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.6/%{name}-%{version}.tar.gz
@@ -249,6 +249,9 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/upsmon
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/upsmon
 
+ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/ups.service
+ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/upsmon.service
+
 for i in $RPM_BUILD_ROOT%{_sysconfdir}/*.sample; do
 	mv -f $i ${i%.sample}
 done
@@ -287,9 +290,8 @@ fi
 %triggerpostun -- nut < 2.6.4-2
 [ -f /etc/sysconfig/rpm ] && . /etc/sysconfig/rpm
 [ ${RPM_ENABLE_SYSTEMD_SERVICE:-yes} = no ] && exit 0
-/sbin/chkconfig --list ups 2>/dev/null | grep -qsv "[0-6]:on" && exit 0
+[ "$(echo /etc/rc.d/rc[0-6].d/S[0-9][0-9]ups)" != "/etc/rc.d/rc[0-6].d/S[0-9][0-9]ups" ] || exit 0
 %systemd_service_enable nut-driver.service nut-server.service
-%systemd_service mask ups.service
 
 %pre common
 # move to trigger?
@@ -329,8 +331,8 @@ fi
 [ -f /etc/sysconfig/rpm ] && . /etc/sysconfig/rpm
 [ ${RPM_ENABLE_SYSTEMD_SERVICE:-yes} = no ] && exit 0
 /sbin/chkconfig --list upsmon 2>/dev/null | grep -qsv "[0-6]:on" && exit 0
+[ "$(echo /etc/rc.d/rc[0-6].d/S[0-9][0-9]upsmon)" != "/etc/rc.d/rc[0-6].d/S[0-9][0-9]upsmon" ] || exit 0
 %systemd_service_enable nut-monitor.service
-%systemd_service mask upsmon.service
 
 %files
 %defattr(644,root,root,755)
@@ -350,6 +352,7 @@ fi
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.users
 %{systemdunitdir}/nut-driver.service
 %{systemdunitdir}/nut-server.service
+%{systemdunitdir}/ups.service
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
@@ -480,6 +483,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/upsmon
 /lib/systemd/system-shutdown/nutshutdown
 %{systemdunitdir}/nut-monitor.service
+%{systemdunitdir}/upsmon.service
 %{_mandir}/man5/upsmon.conf.5*
 %{_mandir}/man5/upssched.conf.5*
 %{_mandir}/man8/upsc.8*
