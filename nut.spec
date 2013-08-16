@@ -257,7 +257,9 @@ done
 
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
-/etc/rc.d/init.d/ups powerdown
+echo "Switching the power off"
+/lib/nut/upsdrvctl shutdown
+sleep 60
 EOF
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
