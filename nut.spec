@@ -3,7 +3,6 @@
 #
 # Conditional build:
 %bcond_without	usb			# build without usb drivers
-%bcond_with	hal			# build with hal support (DEPRECATED)
 %bcond_without	snmp			# build without snmp driver
 %bcond_without	cgi			# build without cgi support
 %bcond_without	neon			# build with neon based XML/HTTP driver
@@ -11,12 +10,12 @@
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
-Version:	2.6.5
-Release:	6
+Version:	2.7.2
+Release:	1
 License:	GPL
 Group:		Applications/System
-Source0:	http://www.networkupstools.org/source/2.6/%{name}-%{version}.tar.gz
-# Source0-md5:	e6eac4fa04baff0d0a827d64efe81a7e
+Source0:	http://www.networkupstools.org/source/2.7/%{name}-%{version}.tar.gz
+# Source0-md5:	c3568b42e058cfc385b46d25140dced4
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
@@ -28,17 +27,12 @@ Patch3:		%{name}-upssched-cmd-sysconf.patch
 Patch4:		%{name}-matrix.patch
 Patch5:		systemd-sysconfig.patch
 Patch6:		bcmxcp-off-by-one.patch
-Patch7:		nut-2.6.5-ipmifix.patch
-Patch8:		nut-2.6.5-pthreadfix.patch
-Patch9:		nut-2.6.5-unreachable.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	avahi-devel
-%{?with_hal:BuildRequires:	dbus-glib-devel}
 BuildRequires:	freeipmi-devel
 %{?with_cgi:BuildRequires:	gd-devel >= 2.0.15}
-%{?with_hal:BuildRequires:	hal-devel >= 0.5.8}
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool
 %{?with_usb:BuildRequires:	libusb-compat-devel}
@@ -52,6 +46,7 @@ Requires:	systemd-units >= 38
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-scripts
+Obsoletes:	nut-hal
 Obsoletes:	smartupstools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -180,18 +175,6 @@ Object file and header for developing NUT clients.
 %description devel -l pl.UTF-8
 Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 
-%package hal
-Summary:	NUT integration with FreeDesktop HAL
-Summary(pl.UTF-8):	Pliki do integracji NUT-a z HAL-em
-Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description hal
-NUT integration with FreeDesktop HAL.
-
-%description hal -l pl.UTF-8
-Pliki do integracji NUT-a z HAL-em.
-
 %prep
 %setup -q
 %patch0 -p1
@@ -201,9 +184,6 @@ Pliki do integracji NUT-a z HAL-em.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -217,17 +197,14 @@ cp -f /usr/share/automake/config.sub .
 	--with-serial \
 	--with%{!?with_usb:out}-usb \
 	--with%{!?with_snmp:out}-snmp \
-	--with%{!?with_hal:out}-hal \
 	--with%{!?with_cgi:out}-cgi \
 	--with-avahi \
 	--with-ipmi \
 	--with-dev \
 	--with%{!?with_neon:out}-neon \
 	--with-ssl \
+	--with-openssl \
 	%{?with_usb:--with-udev-dir=/etc/udev} \
-	%{!?with_hal:--without-hal} \
-	%{?with_hal:--with-hal-callouts-path=%{_libdir}/hal} \
-	%{?with_hal:--with-hal-fdi-path=%{_datadir}/hal/fdi/information/20thirdparty} \
 	--with-statepath=%{_var}/lib/ups \
 	--with-drvpath=/lib/nut \
 	--with-cgipath=/home/services/httpd/cgi-bin \
@@ -341,6 +318,7 @@ fi
 %attr(755,root,root) %{_bindir}/upslog
 %attr(755,root,root) %{_bindir}/upsrw
 %attr(755,root,root) %{_sbindir}/upsd
+%attr(755,root,root) %{_sbindir}/upsdrvctl
 %attr(755,root,root) /sbin/poweroff-ups
 %attr(755,root,root) %ghost %{_libdir}/libnutscan.so.1
 %attr(755,root,root) %{_libdir}/libnutscan.so.*.*.*
@@ -366,8 +344,10 @@ fi
 %{_mandir}/man8/upsrw.8*
 %dir %attr(770,root,ups) /var/lib/ups
 %dir /lib/nut
+%attr(755,root,root) /lib/nut/al175
 %attr(755,root,root) /lib/nut/apcsmart
 %attr(755,root,root) /lib/nut/apcsmart-old
+%attr(755,root,root) /lib/nut/apcupsd-ups
 %attr(755,root,root) /lib/nut/bcmxcp
 %{?with_usb:%attr(755,root,root) /lib/nut/bcmxcp_usb}
 %attr(755,root,root) /lib/nut/belkin
@@ -395,6 +375,8 @@ fi
 %attr(755,root,root) /lib/nut/mge-utalk
 %attr(755,root,root) /lib/nut/microdowell
 %{?with_neon:%attr(755,root,root) /lib/nut/netxml-ups}
+%{?with_usb:%attr(755,root,root) /lib/nut/nutdrv_atcl_usb}
+%attr(755,root,root) /lib/nut/nutdrv_qx
 %attr(755,root,root) /lib/nut/nut-ipmipsu
 %attr(755,root,root) /lib/nut/oldmge-shut
 %attr(755,root,root) /lib/nut/oneac
@@ -403,6 +385,8 @@ fi
 %attr(755,root,root) /lib/nut/powerpanel
 %attr(755,root,root) /lib/nut/rhino
 %{?with_usb:%attr(755,root,root) /lib/nut/richcomm_usb}
+%attr(755,root,root) /lib/nut/riello_ser
+%{?with_usb:%attr(755,root,root) /lib/nut/riello_usb}
 %attr(755,root,root) /lib/nut/safenet
 %attr(755,root,root) /lib/nut/skel
 %{?with_snmp:%attr(755,root,root) /lib/nut/snmp-ups}
@@ -411,15 +395,16 @@ fi
 %attr(755,root,root) /lib/nut/tripplitesu
 %{?with_usb:%attr(755,root,root) /lib/nut/tripplite_usb}
 %attr(755,root,root) /lib/nut/upscode2
-%attr(755,root,root) /lib/nut/upsdrvctl
 %{?with_usb:%attr(755,root,root) /lib/nut/usbhid-ups}
 %attr(755,root,root) /lib/nut/victronups
 %dir %{_datadir}/nut
 %{_datadir}/nut/cmdvartab
 %{_datadir}/nut/driver.list
 %{_mandir}/man5/nut.conf.5*
+%{_mandir}/man8/al175.8*
 %{_mandir}/man8/apcsmart.8*
 %{_mandir}/man8/apcsmart-old.8*
+%{_mandir}/man8/apcupsd-ups.8*
 %{_mandir}/man8/bcmxcp.8*
 %{?with_usb:%{_mandir}/man8/bcmxcp_usb.8*}
 %{_mandir}/man8/belkin.8*
@@ -428,7 +413,8 @@ fi
 %{_mandir}/man8/bestfortress.8*
 %{_mandir}/man8/bestuferrups.8*
 %{_mandir}/man8/bestups.8*
-%{_mandir}/man8/blazer.8*
+%{_mandir}/man8/blazer_ser.8*
+%{?with_usb:%{_mandir}/man8/blazer_usb.8*}
 %{_mandir}/man8/clone.8*
 %{_mandir}/man8/dummy-ups.8*
 %{_mandir}/man8/etapro.8*
@@ -445,6 +431,8 @@ fi
 %{_mandir}/man8/mge-utalk.8*
 %{_mandir}/man8/microdowell.8*
 %{?with_neon:%{_mandir}/man8/netxml-ups.8*}
+%{?with_usb:%{_mandir}/man8/nutdrv_atcl_usb.8*}
+%{_mandir}/man8/nutdrv_qx.8*
 %{_mandir}/man8/nut-ipmipsu.8*
 %{_mandir}/man8/nutupsdrv.8*
 %{_mandir}/man8/oneac.8*
@@ -453,6 +441,8 @@ fi
 %{_mandir}/man8/powerpanel.8*
 %{_mandir}/man8/rhino.8*
 %{?with_usb:%{_mandir}/man8/richcomm_usb.8*}
+%{_mandir}/man8/riello_ser.8*
+%{?with_usb:%{_mandir}/man8/riello_usb.8*}
 %{_mandir}/man8/safenet.8*
 %{?with_snmp:%{_mandir}/man8/snmp-ups.8*}
 %{_mandir}/man8/solis.8*
@@ -468,7 +458,9 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS MAINTAINERS NEWS README UPGRADING ChangeLog docs
 %dir %{_sysconfdir}
-%attr(755,root,root) %ghost %{_libdir}/libupsclient.so.1
+%attr(755,root,root) %ghost %{_libdir}/libnutclient.so.0
+%attr(755,root,root) %{_libdir}/libnutclient.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libupsclient.so.4
 %attr(755,root,root) %{_libdir}/libupsclient.so.*.*.*
 
 %files client
@@ -506,21 +498,13 @@ fi
 %{_mandir}/man8/upsstats.cgi.8*
 %endif
 
-%if %{with hal}
-%files hal
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/hal/hald-addon-bcmxcp_usb
-%attr(755,root,root) %{_libdir}/hal/hald-addon-blazer_usb
-%attr(755,root,root) %{_libdir}/hal/hald-addon-tripplite_usb
-%attr(755,root,root) %{_libdir}/hal/hald-addon-usbhid-ups
-%{_datadir}/hal/fdi/information/20thirdparty/20-ups-nut-device.fdi
-%endif
-
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libnutclient.so
 %attr(755,root,root) %{_libdir}/libupsclient.so
 %attr(755,root,root) %{_libdir}/libnutscan.so
-%{_pkgconfigdir}/libupsclient.pc
+%{_pkgconfigdir}/libnutclient.pc
 %{_pkgconfigdir}/libnutscan.pc
+%{_pkgconfigdir}/libupsclient.pc
 %{_includedir}/*.h
 %{_mandir}/man3/*.3*

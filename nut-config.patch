@@ -5,7 +5,7 @@ diff -Nuard nut-2.0.1.orig/conf/upsmon.conf nut-2.0.1/conf/upsmon.conf
  #
  # This user should not have write access to upsmon.conf.
  #
--# RUN_AS_USER nutmon
+-# RUN_AS_USER nut
 +# RUN_AS_USER ups
  
  # --------------------------------------------------------------------------
