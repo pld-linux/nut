@@ -1,0 +1,11 @@
+--- nut-2.7.4/tools/nut-scanner/Makefile.am~	2015-12-29 13:08:34.000000000 +0100
++++ nut-2.7.4/tools/nut-scanner/Makefile.am	2017-07-28 12:01:22.623458373 +0200
+@@ -15,7 +15,7 @@ libnutscan_la_SOURCES = scan_nut.c scan_
+ 			../../drivers/serial.c \
+ 			../../drivers/bcmxcp_ser.c \
+-			../../common/common.c
++			../../common/common.c ../../common/str.c
+ libnutscan_la_LIBADD = $(NETLIBS) $(LIBLTDL_LIBS)
+ libnutscan_la_LDFLAGS = $(SERLIBS) -version-info 1:0:0
+ libnutscan_la_CFLAGS = -I$(top_srcdir)/clients -I$(top_srcdir)/include $(LIBLTDL_CFLAGS) -I$(top_srcdir)/drivers
+ 
