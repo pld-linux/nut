@@ -11,7 +11,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.7.4
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.7/%{name}-%{version}.tar.gz
@@ -240,7 +240,7 @@ done
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
 echo "Switching the power off"
-/lib/nut/upsdrvctl shutdown
+/usr/sbin/upsdrvctl shutdown
 sleep 60
 EOF
 
