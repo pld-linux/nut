@@ -1,18 +1,21 @@
 # TODO:
+#	- --with-powerman (BR: libpowerman)
+#	- --with-linux-i2c (requires i2c-dev.h header with i2c_smbus_* inline functions)
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
 #
 # Conditional build:
-%bcond_without	usb			# build without usb drivers
-%bcond_without	snmp			# build without snmp driver
-%bcond_without	cgi			# build without cgi support
-%bcond_without	neon			# build with neon based XML/HTTP driver
+%bcond_without	cgi		# CGI support
+%bcond_without	freeipmi	# IPMI support
+%bcond_without	neon		# neon based XML/HTTP driver
+%bcond_without	snmp		# SNMP driver
+%bcond_without	usb		# USB drivers
 #
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.7.4
 Release:	2
-License:	GPL
+License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.7/%{name}-%{version}.tar.gz
 # Source0-md5:	3ba53656933d7471f95140b32a5b8d5c
@@ -29,16 +32,20 @@ Patch5:		systemd-sysconfig.patch
 Patch6:		bcmxcp-off-by-one.patch
 Patch7:		%{name}-build.patch
 URL:		http://www.networkupstools.org/
-BuildRequires:	autoconf
+BuildRequires:	asciidoc >= 8.6.3
+BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
-BuildRequires:	avahi-devel
-BuildRequires:	freeipmi-devel
+BuildRequires:	avahi-devel >= 0.6.30
+%{?with_freeipmi:BuildRequires:	freeipmi-devel}
 %{?with_cgi:BuildRequires:	gd-devel >= 2.0.15}
 BuildRequires:	libltdl-devel
+BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 %{?with_usb:BuildRequires:	libusb-compat-devel}
 BuildRequires:	libwrap-devel
-%{?with_neon:BuildRequires:	neon-devel}
+BuildRequires:	libxml2-progs >= 2
+BuildRequires:	libxslt-progs
+%{?with_neon:BuildRequires:	neon-devel >= 0.25.0}
 %{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pkgconfig
@@ -171,10 +178,22 @@ Requires:	%{name}-common = %{version}-%{release}
 Requires:	openssl-devel >= 0.9.7c
 
 %description devel
-Object file and header for developing NUT clients.
+Header files for developing NUT clients.
 
 %description devel -l pl.UTF-8
-Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
+Pliki nagłówkowe służące do tworzenia klientów NUT-a.
+
+%package static
+Summary:	Static NUT libraries
+Summary(pl.UTF-8):	Statyczne biblioteki NUT-a
+Group:		Development/Libraries
+Requires:	%{name}-client = %{version}-%{release}
+
+%description static
+Static NUT libraries.
+
+%description static -l pl.UTF-8
+Statyczne biblioteki NUT-a.
 
 %prep
 %setup -q
@@ -188,31 +207,31 @@ Plik wynikowy oraz nagłówek służące do tworzenia klientów NUT-a.
 %patch7 -p1
 
 %build
-cp -f /usr/share/automake/config.sub .
 %{__libtoolize}
 %{__aclocal} -I m4
-%{__automake}
 %{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	--datadir=%{_datadir}/%{name} \
-	--with-htmlpath=%{_datadir}/%{name}/html \
-	--with-serial \
-	--with%{!?with_usb:out}-usb \
-	--with%{!?with_snmp:out}-snmp \
-	--with%{!?with_cgi:out}-cgi \
-	--with-avahi \
-	--with-ipmi \
-	--with-dev \
-	--with%{!?with_neon:out}-neon \
-	--with-ssl \
-	--with-openssl \
-	%{?with_usb:--with-udev-dir=/etc/udev} \
-	--with-statepath=%{_var}/lib/ups \
-	--with-drvpath=/lib/nut \
 	--with-cgipath=/home/services/httpd/cgi-bin \
+	--with-drvpath=/lib/nut \
+	--with-htmlpath=%{_datadir}/%{name}/html \
+	--with-statepath=%{_var}/lib/ups \
 	--with-systemdsystemunitdir=%{systemdunitdir} \
+	%{?with_usb:--with-udev-dir=/etc/udev} \
+	--with-group=ups \
 	--with-user=ups \
-	--with-group=ups
+	--with-avahi \
+	--with-cgi%{!?with_cgi:=no} \
+	--with-dev \
+	--with-ipmi%{!?with_freeipmi:=no} \
+	--with-neon%{!?with_neon:=no} \
+	--with-openssl \
+	--with-serial \
+	--with-snmp%{!?with_snmp:=no} \
+	--with-ssl \
+	--with-usb%{!?with_usb:=no}
 
 %{__make}
 
@@ -377,9 +396,9 @@ fi
 %attr(755,root,root) /lib/nut/mge-utalk
 %attr(755,root,root) /lib/nut/microdowell
 %{?with_neon:%attr(755,root,root) /lib/nut/netxml-ups}
+%{?with_ipmi:%attr(755,root,root) /lib/nut/nut-ipmipsu}
 %{?with_usb:%attr(755,root,root) /lib/nut/nutdrv_atcl_usb}
 %attr(755,root,root) /lib/nut/nutdrv_qx
-%attr(755,root,root) /lib/nut/nut-ipmipsu
 %attr(755,root,root) /lib/nut/oldmge-shut
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
@@ -433,9 +452,9 @@ fi
 %{_mandir}/man8/mge-utalk.8*
 %{_mandir}/man8/microdowell.8*
 %{?with_neon:%{_mandir}/man8/netxml-ups.8*}
+%{?with_ipmi:%{_mandir}/man8/nut-ipmipsu.8*}
 %{?with_usb:%{_mandir}/man8/nutdrv_atcl_usb.8*}
 %{_mandir}/man8/nutdrv_qx.8*
-%{_mandir}/man8/nut-ipmipsu.8*
 %{_mandir}/man8/nutupsdrv.8*
 %{_mandir}/man8/oneac.8*
 %{_mandir}/man8/optiups.8*
@@ -453,8 +472,8 @@ fi
 %{?with_usb:%{_mandir}/man8/tripplite_usb.8*}
 %{?with_usb:%{_mandir}/man8/usbhid-ups.8*}
 %{_mandir}/man8/victronups.8*
+%{?with_ipmi:%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/52-nut-ipmipsu.rules}
 %{?with_usb:%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/62-nut-usbups.rules}
-%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/52-nut-ipmipsu.rules
 
 %files common
 %defattr(644,root,root,755)
@@ -508,5 +527,19 @@ fi
 %{_pkgconfigdir}/libnutclient.pc
 %{_pkgconfigdir}/libnutscan.pc
 %{_pkgconfigdir}/libupsclient.pc
-%{_includedir}/*.h
-%{_mandir}/man3/*.3*
+%{_includedir}/nut-scan.h
+%{_includedir}/nutclient.h
+%{_includedir}/nutscan-*.h
+%{_includedir}/parseconf.h
+%{_includedir}/upsclient.h
+%{_mandir}/man3/libnutclient*.3*
+%{_mandir}/man3/nutclient_*.3*
+%{_mandir}/man3/nutscan*.3*
+%{_mandir}/man3/upscli_*.3*
+%{_mandir}/man3/upsclient.3*
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libnutclient.a
+%{_libdir}/libnutscan.a
+%{_libdir}/libupsclient.a
