@@ -1,5 +1,4 @@
 # TODO:
-#	- --with-powerman (BR: libpowerman)
 #	- --with-linux-i2c (requires i2c-dev.h header with i2c_smbus_* inline functions)
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
 #
@@ -7,6 +6,7 @@
 %bcond_without	cgi		# CGI support
 %bcond_without	freeipmi	# IPMI support
 %bcond_without	neon		# neon based XML/HTTP driver
+%bcond_without	powerman	# PowerMan support
 %bcond_without	snmp		# SNMP driver
 %bcond_without	usb		# USB drivers
 #
@@ -14,7 +14,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.7.4
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.7/%{name}-%{version}.tar.gz
@@ -49,6 +49,7 @@ BuildRequires:	libxslt-progs
 %{?with_snmp:BuildRequires:	net-snmp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pkgconfig
+%{?with_powerman:BuildRequires:	powerman-devel}
 BuildRequires:	rpmbuild(macros) >= 1.647
 Requires:	systemd-units >= 38
 Requires(post,preun):	/sbin/chkconfig
@@ -228,6 +229,7 @@ Statyczne biblioteki NUT-a.
 	--with-ipmi%{!?with_freeipmi:=no} \
 	--with-neon%{!?with_neon:=no} \
 	--with-openssl \
+	--with-powerman%{!?with_powerman:=no} \
 	--with-serial \
 	--with-snmp%{!?with_snmp:=no} \
 	--with-ssl \
@@ -251,10 +253,10 @@ ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/ups.service
 ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/upsmon.service
 
 for i in $RPM_BUILD_ROOT%{_sysconfdir}/*.sample; do
-	mv -f $i ${i%.sample}
+	%{__mv} $i ${i%.sample}
 done
 
-%{!?with_usb:rm -f $RPM_BUILD_ROOT%{_udevrulesdir}/62-nut-usbups.rules}
+%{!?with_usb:%{__rm} $RPM_BUILD_ROOT%{_udevrulesdir}/62-nut-usbups.rules}
 
 cat > $RPM_BUILD_ROOT/sbin/poweroff-ups << EOF
 #!/bin/sh
@@ -403,6 +405,7 @@ fi
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
 %attr(755,root,root) /lib/nut/powercom
+%{?with_powerman:%attr(755,root,root) /lib/nut/powerman-pdu}
 %attr(755,root,root) /lib/nut/powerpanel
 %attr(755,root,root) /lib/nut/rhino
 %{?with_usb:%attr(755,root,root) /lib/nut/richcomm_usb}
@@ -459,6 +462,7 @@ fi
 %{_mandir}/man8/oneac.8*
 %{_mandir}/man8/optiups.8*
 %{_mandir}/man8/powercom.8*
+%{?with_powerman:%{_mandir}/man8/powerman-pdu.8*}
 %{_mandir}/man8/powerpanel.8*
 %{_mandir}/man8/rhino.8*
 %{?with_usb:%{_mandir}/man8/richcomm_usb.8*}
