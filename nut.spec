@@ -1,10 +1,10 @@
 # TODO:
-#	- --with-linux-i2c (requires i2c-dev.h header with i2c_smbus_* inline functions)
 #	- upsdrvctl (used by ups.init) doesn't recognize status and reload commands
 #
 # Conditional build:
 %bcond_without	cgi		# CGI support
 %bcond_without	freeipmi	# IPMI support
+%bcond_without	i2c		# I2C support
 %bcond_without	neon		# neon based XML/HTTP driver
 %bcond_without	powerman	# PowerMan support
 %bcond_without	snmp		# SNMP driver
@@ -31,6 +31,7 @@ Patch4:		%{name}-matrix.patch
 Patch5:		systemd-sysconfig.patch
 Patch6:		bcmxcp-off-by-one.patch
 Patch7:		%{name}-build.patch
+Patch8:		%{name}-i2c.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	asciidoc >= 8.6.3
 BuildRequires:	autoconf >= 2.60
@@ -38,6 +39,7 @@ BuildRequires:	automake
 BuildRequires:	avahi-devel >= 0.6.30
 %{?with_freeipmi:BuildRequires:	freeipmi-devel}
 %{?with_cgi:BuildRequires:	gd-devel >= 2.0.15}
+%{?with_i2c:BuildRequires:	libi2c-devel}
 BuildRequires:	libltdl-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
@@ -206,6 +208,7 @@ Statyczne biblioteki NUT-a.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %build
 %{__libtoolize}
@@ -227,6 +230,7 @@ Statyczne biblioteki NUT-a.
 	--with-cgi%{!?with_cgi:=no} \
 	--with-dev \
 	--with-ipmi%{!?with_freeipmi:=no} \
+	--with-linux-i2c%{!?with_i2c:=no} \
 	--with-neon%{!?with_neon:=no} \
 	--with-openssl \
 	--with-powerman%{!?with_powerman:=no} \
@@ -371,6 +375,7 @@ fi
 %attr(755,root,root) /lib/nut/apcsmart
 %attr(755,root,root) /lib/nut/apcsmart-old
 %attr(755,root,root) /lib/nut/apcupsd-ups
+%{?with_i2c:%attr(755,root,root) /lib/nut/asem}
 %attr(755,root,root) /lib/nut/bcmxcp
 %{?with_usb:%attr(755,root,root) /lib/nut/bcmxcp_usb}
 %attr(755,root,root) /lib/nut/belkin
