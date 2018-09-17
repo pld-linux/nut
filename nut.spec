@@ -14,7 +14,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.7.4
-Release:	6
+Release:	7
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.7/%{name}-%{version}.tar.gz
