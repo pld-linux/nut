@@ -14,7 +14,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.7.4
-Release:	8
+Release:	9
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.7/%{name}-%{version}.tar.gz
@@ -32,6 +32,7 @@ Patch5:		systemd-sysconfig.patch
 Patch6:		bcmxcp-off-by-one.patch
 Patch7:		%{name}-build.patch
 Patch8:		%{name}-i2c.patch
+Patch9:		openssl.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	asciidoc >= 8.6.3
 BuildRequires:	autoconf >= 2.60
@@ -209,6 +210,7 @@ Statyczne biblioteki NUT-a.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %build
 %{__libtoolize}
