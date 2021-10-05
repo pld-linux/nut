@@ -1,48 +1,22 @@
-diff -Nuard nut-2.0.1.orig/conf/upssched.conf nut-2.0.1/conf/upssched.conf
---- nut-2.0.1.orig/conf/upssched.conf	2004-10-26 11:50:12.410074640 +0200
-+++ nut-2.0.1/conf/upssched.conf.sample.in	2004-10-26 11:50:23.295419816 +0200
-@@ -14,7 +14,7 @@
- # A shell script with a big case..esac construct should work nicely for this.
- # An example has been provided to help you get started.
- 
--CMDSCRIPT @BINDIR@/upssched-cmd
-+CMDSCRIPT /usr/sbin/upssched-cmd
- 
- # ============================================================================
- #
-@@ -41,7 +41,7 @@
- # This is commented out by default to make you visit this file and think
- # about how your system works before potentially opening a hole.
- #
--# PIPEFN @STATEPATH@/upssched/upssched.pipe
-+# PIPEFN /var/lib/ups/upssched.pipe
- 
- # ============================================================================
- #
-@@ -56,7 +56,7 @@
- #
- # You should put this in the same directory as PIPEFN.
- #
--# LOCKFN @STATEPATH@/upssched/upssched.lock
-+# LOCKFN /var/lib/ups/upssched.lock
- 
- # ============================================================================
- #
-@@ -111,3 +111,10 @@
- #   'ups-back-on-line' via CMDSCRIPT.
- #
- #   AT ONLINE * EXECUTE ups-back-on-line
-+# 
-+# ============================================================================
-+#
-+# AT ONBATT * START-TIMER EarlyShutdown 30
-+# AT ONLINE * CANCEL-TIMER EarlyShutdown
-+# AT COMMBAD * START-TIMER upsgone 10
-+# AT COMMOK * CANCEL-TIMER upsgone
---- nut-2.2.0/conf/upsmon.conf.sample.orig	2007-07-26 11:15:08.152047877 +0000
-+++ nut-2.2.0/conf/upsmon.conf.sample.in	2007-07-26 11:17:20.131913520 +0000
-@@ -126,7 +126,7 @@
- # information and ideas, see pager.txt in the docs directory.
+diff -urNp -x '*.orig' nut-2.7.4.org/clients/upssched-cmd nut-2.7.4/clients/upssched-cmd
+--- nut-2.7.4.org/clients/upssched-cmd	2015-12-29 09:42:34.000000000 +0100
++++ nut-2.7.4/clients/upssched-cmd	2021-10-05 21:27:40.107312172 +0200
+@@ -14,6 +14,10 @@ case $1 in
+ 	upsgone)
+ 		logger -t upssched-cmd "The UPS has been gone for awhile"
+ 		;;
++#	EarlyShutdown)
++#		logger -t upssched-cmd "The UPS is being shutdown by the master"
++#		/usr/sbin/upsmon -c fsd
++#		;;
+ 	*)
+ 		logger -t upssched-cmd "Unrecognized command: $1"
+ 		;;
+diff -urNp -x '*.orig' nut-2.7.4.org/conf/upsmon.conf.sample.in nut-2.7.4/conf/upsmon.conf.sample.in
+--- nut-2.7.4.org/conf/upsmon.conf.sample.in	2015-12-29 13:08:34.000000000 +0100
++++ nut-2.7.4/conf/upsmon.conf.sample.in	2021-10-05 21:27:40.107312172 +0200
+@@ -126,7 +126,7 @@ SHUTDOWNCMD "/sbin/shutdown -h +0"
+ # information and ideas, see docs/scheduling.txt
  #
  # Example:
 -# NOTIFYCMD @BINDIR@/notifyme
@@ -50,7 +24,7 @@ diff -Nuard nut-2.0.1.orig/conf/upssched.conf nut-2.0.1/conf/upssched.conf
  
  # --------------------------------------------------------------------------
  # POLLFREQ <n> 
-@@ -241,6 +241,12 @@
+@@ -261,6 +261,12 @@ POWERDOWNFLAG /etc/killpower
  # IGNORE - Don't do anything
  #
  # If you use IGNORE, don't use any other flags on the same line.
@@ -63,16 +37,44 @@ diff -Nuard nut-2.0.1.orig/conf/upssched.conf nut-2.0.1/conf/upssched.conf
  
  # --------------------------------------------------------------------------
  # RBWARNTIME - replace battery warning time in seconds
---- nut-2.2.0/clients/upssched-cmd.orig	2007-07-26 11:21:16.595839465 +0000
-+++ nut-2.2.0/clients/upssched-cmd	2007-07-26 11:23:45.573112047 +0000
-@@ -14,6 +14,10 @@
- 	upsgone)
- 		logger -t upssched-cmd "The UPS has been gone for awhile"
- 		;;
-+#	EarlyShutdown)
-+#		logger -t upssched-cmd "The UPS is being shutdown by the master"
-+#		/usr/sbin/upsmon -c fsd
-+#		;;
- 	*)
- 		logger -t upssched-cmd "Unrecognized command: $1"
- 		;;
+diff -urNp -x '*.orig' nut-2.7.4.org/conf/upssched.conf.sample.in nut-2.7.4/conf/upssched.conf.sample.in
+--- nut-2.7.4.org/conf/upssched.conf.sample.in	2015-12-29 09:42:34.000000000 +0100
++++ nut-2.7.4/conf/upssched.conf.sample.in	2021-10-05 21:27:40.107312172 +0200
+@@ -14,7 +14,7 @@
+ # A shell script with a big case..esac construct should work nicely for this.
+ # An example has been provided to help you get started.
+ 
+-CMDSCRIPT @BINDIR@/upssched-cmd
++CMDSCRIPT /usr/sbin/upssched-cmd
+ 
+ # ============================================================================
+ #
+@@ -41,7 +41,7 @@ CMDSCRIPT @BINDIR@/upssched-cmd
+ # This is commented out by default to make you visit this file and think
+ # about how your system works before potentially opening a hole.
+ #
+-# PIPEFN @STATEPATH@/upssched/upssched.pipe
++# PIPEFN /var/lib/ups/upssched.pipe
+ 
+ # ============================================================================
+ #
+@@ -56,7 +56,7 @@ CMDSCRIPT @BINDIR@/upssched-cmd
+ #
+ # You should put this in the same directory as PIPEFN.
+ #
+-# LOCKFN @STATEPATH@/upssched/upssched.lock
++# LOCKFN /var/lib/ups/upssched.lock
+ 
+ # ============================================================================
+ #
+@@ -111,3 +111,10 @@ CMDSCRIPT @BINDIR@/upssched-cmd
+ #   'ups-back-on-line' via CMDSCRIPT.
+ #
+ #   AT ONLINE * EXECUTE ups-back-on-line
++# 
++# ============================================================================
++#
++# AT ONBATT * START-TIMER EarlyShutdown 30
++# AT ONLINE * CANCEL-TIMER EarlyShutdown
++# AT COMMBAD * START-TIMER upsgone 10
++# AT COMMOK * CANCEL-TIMER upsgone

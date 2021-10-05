@@ -14,7 +14,7 @@ Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
 Version:	2.7.4
-Release:	10
+Release:	11
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.networkupstools.org/source/2.7/%{name}-%{version}.tar.gz
@@ -218,6 +218,7 @@ Statyczne biblioteki NUT-a.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 %configure \
 	--datadir=%{_datadir}/%{name} \
 	--with-cgipath=/home/services/httpd/cgi-bin \
