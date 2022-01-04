@@ -295,10 +295,7 @@ fi
 %systemd_reload
 
 %triggerpostun -- nut < 2.6.4-2
-[ -f /etc/sysconfig/rpm ] && . /etc/sysconfig/rpm
-[ ${RPM_ENABLE_SYSTEMD_SERVICE:-yes} = no ] && exit 0
-[ "$(echo /etc/rc.d/rc[0-6].d/S[0-9][0-9]ups)" != "/etc/rc.d/rc[0-6].d/S[0-9][0-9]ups" ] || exit 0
-%systemd_service_enable nut-driver.service nut-server.service
+%systemd_trigger nut-driver.service nut-server.service
 
 %pre common
 # move to trigger?
@@ -335,11 +332,7 @@ fi
 %systemd_reload
 
 %triggerpostun client -- nut-client < 2.6.4-2
-[ -f /etc/sysconfig/rpm ] && . /etc/sysconfig/rpm
-[ ${RPM_ENABLE_SYSTEMD_SERVICE:-yes} = no ] && exit 0
-/sbin/chkconfig --list upsmon 2>/dev/null | grep -qsv "[0-6]:on" && exit 0
-[ "$(echo /etc/rc.d/rc[0-6].d/S[0-9][0-9]upsmon)" != "/etc/rc.d/rc[0-6].d/S[0-9][0-9]upsmon" ] || exit 0
-%systemd_service_enable nut-monitor.service
+%systemd_trigger nut-monitor.service
 
 %files
 %defattr(644,root,root,755)
