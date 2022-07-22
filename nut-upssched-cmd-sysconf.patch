@@ -1,15 +1,14 @@
-diff -urNp -x '*.orig' nut-2.7.4.org/clients/Makefile.am nut-2.7.4/clients/Makefile.am
---- nut-2.7.4.org/clients/Makefile.am	2021-10-05 21:27:40.403980432 +0200
-+++ nut-2.7.4/clients/Makefile.am	2021-10-05 21:27:40.473980806 +0200
-@@ -18,7 +18,7 @@ if WITH_CGI
+--- nut-2.8.0/clients/Makefile.am~	2022-04-27 00:03:35.000000000 +0200
++++ nut-2.8.0/clients/Makefile.am	2022-07-22 12:29:47.429989350 +0200
+@@ -30,7 +30,7 @@ if WITH_CGI
  endif
  
  bin_PROGRAMS = upsc upslog upsrw upscmd
--dist_sbin_SCRIPTS = upssched-cmd
+-dist_bin_SCRIPTS = upssched-cmd
 +dist_sysconf_DATA = upssched-cmd
  sbin_PROGRAMS = upsmon upssched
- lib_LTLIBRARIES = libupsclient.la libnutclient.la
- if WITH_DEV
+ lib_LTLIBRARIES = libupsclient.la
+ if HAVE_CXX11
 diff -urNp -x '*.orig' nut-2.7.4.org/conf/upssched.conf.sample.in nut-2.7.4/conf/upssched.conf.sample.in
 --- nut-2.7.4.org/conf/upssched.conf.sample.in	2021-10-05 21:27:40.403980432 +0200
 +++ nut-2.7.4/conf/upssched.conf.sample.in	2021-10-05 21:27:40.473980806 +0200

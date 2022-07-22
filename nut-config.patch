@@ -1,29 +1,29 @@
 diff -urNp -x '*.orig' nut-2.7.4.org/clients/upssched-cmd nut-2.7.4/clients/upssched-cmd
 --- nut-2.7.4.org/clients/upssched-cmd	2015-12-29 09:42:34.000000000 +0100
 +++ nut-2.7.4/clients/upssched-cmd	2021-10-05 21:27:40.107312172 +0200
-@@ -14,6 +14,10 @@ case $1 in
+@@ -25,6 +25,10 @@ case $1 in
  	upsgone)
- 		logger -t upssched-cmd "The UPS has been gone for awhile"
+ 		logger -t upssched-cmd "The communication with UPS has been gone for awhile"
  		;;
-+#	EarlyShutdown)
-+#		logger -t upssched-cmd "The UPS is being shutdown by the master"
-+#		/usr/sbin/upsmon -c fsd
-+#		;;
++#      EarlyShutdown)
++#              logger -t upssched-cmd "The UPS is being shutdown by the master"
++#              /usr/sbin/upsmon -c fsd
++#              ;;
  	*)
  		logger -t upssched-cmd "Unrecognized command: $1"
  		;;
 diff -urNp -x '*.orig' nut-2.7.4.org/conf/upsmon.conf.sample.in nut-2.7.4/conf/upsmon.conf.sample.in
 --- nut-2.7.4.org/conf/upsmon.conf.sample.in	2015-12-29 13:08:34.000000000 +0100
 +++ nut-2.7.4/conf/upsmon.conf.sample.in	2021-10-05 21:27:40.107312172 +0200
-@@ -126,7 +126,7 @@ SHUTDOWNCMD "/sbin/shutdown -h +0"
- # information and ideas, see docs/scheduling.txt
+@@ -174,7 +174,7 @@ SHUTDOWNCMD "/sbin/shutdown -h +0"
+ # For more information and ideas, see docs/scheduling.txt
  #
  # Example:
 -# NOTIFYCMD @BINDIR@/notifyme
 +# NOTIFYCMD /usr/sbin/upssched
  
  # --------------------------------------------------------------------------
- # POLLFREQ <n> 
+ # POLLFREQ <n>
 @@ -261,6 +261,12 @@ POWERDOWNFLAG /etc/killpower
  # IGNORE - Don't do anything
  #

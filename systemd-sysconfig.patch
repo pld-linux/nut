@@ -1,36 +1,28 @@
---- nut-2.6.4/scripts/systemd/nut-server.service.in.orig	2012-06-23 23:05:33.638939671 +0200
-+++ nut-2.6.4/scripts/systemd/nut-server.service.in	2012-06-23 23:13:37.038936168 +0200
-@@ -5,7 +5,8 @@
- Before=nut-monitor.service
+--- nut-2.8.0/scripts/systemd/nut-server.service.in~	2022-04-23 13:56:07.000000000 +0200
++++ nut-2.8.0/scripts/systemd/nut-server.service.in	2022-07-22 12:36:28.363322701 +0200
+@@ -19,10 +19,11 @@ PartOf=nut.target
  
  [Service]
--ExecStart=@SBINDIR@/upsd 
-+EnvironmentFile=-/etc/sysconfig/ups
-+ExecStart=@SBINDIR@/upsd $UPSD_OPTIONS
- Type=forking
+ EnvironmentFile=-@CONFPATH@/nut.conf
++EnvironmentFile=-/etc/sysconfig/upsmon
+ SyslogIdentifier=%N
+ # Note: foreground mode by default skips writing a PID file (and
+ # needs Type=simple); can use "-FF" here to create one anyway:
+-ExecStart=@SBINDIR@/upsd -F
++ExecStart=@SBINDIR@/upsd -F $UPSD_OPTIONS
+ ExecReload=@SBINDIR@/upsd -c reload -P $MAINPID
  
  [Install]
---- nut-2.6.4/scripts/systemd/nut-monitor.service.in.orig	2012-05-02 23:35:36.000000000 +0200
-+++ nut-2.6.4/scripts/systemd/nut-monitor.service.in	2012-06-23 23:14:10.582269261 +0200
-@@ -3,7 +3,8 @@
- After=local-fs.target network.target nut-server.service
+--- nut-2.8.0/scripts/systemd/nut-monitor.service.in~	2022-04-23 13:56:07.000000000 +0200
++++ nut-2.8.0/scripts/systemd/nut-monitor.service.in	2022-07-22 12:37:09.636656034 +0200
+@@ -17,8 +17,9 @@ PartOf=nut.target
  
  [Service]
--ExecStart=@SBINDIR@/upsmon
+ EnvironmentFile=-@CONFPATH@/nut.conf
 +EnvironmentFile=-/etc/sysconfig/upsmon
-+ExecStart=@SBINDIR@/upsmon $PROGRAM_ARGS
+ SyslogIdentifier=%N
+-ExecStart=@SBINDIR@/upsmon -F
++ExecStart=@SBINDIR@/upsmon -F $PROGRAM_ARGS
+ ExecReload=@SBINDIR@/upsmon -c reload
  PIDFile=@PIDPATH@/upsmon.pid
- Type=forking
  
---- nut-2.6.5/configure.ac~	2012-08-06 14:37:36.000000000 +0200
-+++ nut-2.6.5/configure.ac	2013-01-13 12:42:30.807862312 +0100
-@@ -1066,7 +1066,7 @@ dnl Override installation directory, wit
- dnl prefix. This is needed for 'distcheck*' targets, otherwise
- dnl files will try to get intalled to the actual system directories
- if test -n "${systemdsystemunitdir}"; then
--	systemdsystemshutdowndir="${libdir}/systemd/system-shutdown"
-+	systemdsystemshutdowndir="/lib/systemd/system-shutdown"
- 	AC_MSG_RESULT(using ${systemdsystemunitdir})
- else
- 	AC_MSG_RESULT(no)
-

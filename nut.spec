@@ -13,26 +13,23 @@
 Summary:	Network UPS Tools
 Summary(pl.UTF-8):	Sieciowe narzędzie do UPS-ów
 Name:		nut
-Version:	2.7.4
-Release:	11
+Version:	2.8.0
+Release:	1
 License:	GPL v2+
 Group:		Applications/System
-Source0:	http://www.networkupstools.org/source/2.7/%{name}-%{version}.tar.gz
-# Source0-md5:	3ba53656933d7471f95140b32a5b8d5c
+Source0:	http://www.networkupstools.org/source/2.8/%{name}-%{version}.tar.gz
+# Source0-md5:	7500dd088676bf0913318a87c36e89cd
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}-upsmon.init
 Source4:	%{name}.sysconfig.upsmon
-Patch0:		%{name}-client.patch
+
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-smartdp-load.patch
 Patch3:		%{name}-upssched-cmd-sysconf.patch
 Patch4:		%{name}-matrix.patch
 Patch5:		systemd-sysconfig.patch
 Patch6:		bcmxcp-off-by-one.patch
-Patch7:		%{name}-build.patch
-Patch8:		%{name}-i2c.patch
-Patch9:		openssl.patch
 URL:		http://www.networkupstools.org/
 BuildRequires:	asciidoc >= 8.6.3
 BuildRequires:	autoconf >= 2.60
@@ -44,7 +41,7 @@ BuildRequires:	avahi-devel >= 0.6.30
 BuildRequires:	libltdl-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
-%{?with_usb:BuildRequires:	libusb-compat-devel}
+%{?with_usb:BuildRequires:	libusb-devel}
 BuildRequires:	libwrap-devel
 BuildRequires:	libxml2-progs >= 2
 BuildRequires:	libxslt-progs
@@ -201,16 +198,13 @@ Statyczne biblioteki NUT-a.
 
 %prep
 %setup -q
-%patch0 -p1
+
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
 
 %build
 %{__libtoolize}
@@ -226,6 +220,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	--with-htmlpath=%{_datadir}/%{name}/html \
 	--with-statepath=%{_var}/lib/ups \
 	--with-systemdsystemunitdir=%{systemdunitdir} \
+	--with-systemdshutdowndir=%{systemdunitdir}-shutdown \
 	%{?with_usb:--with-udev-dir=/etc/udev} \
 	--with-group=ups \
 	--with-user=ups \
@@ -342,8 +337,9 @@ fi
 %attr(755,root,root) %{_bindir}/upsrw
 %attr(755,root,root) %{_sbindir}/upsd
 %attr(755,root,root) %{_sbindir}/upsdrvctl
+%attr(755,root,root) %{_sbindir}/upsdrvsvcctl
 %attr(755,root,root) /sbin/poweroff-ups
-%attr(755,root,root) %ghost %{_libdir}/libnutscan.so.1
+%attr(755,root,root) %ghost %{_libdir}/libnutscan.so.2
 %attr(755,root,root) %{_libdir}/libnutscan.so.*.*.*
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ups
 %attr(754,root,root) /etc/rc.d/init.d/ups
@@ -351,18 +347,24 @@ fi
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ups.conf
 %attr(640,root,ups) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/upsd.users
-%{systemdunitdir}/nut-driver.service
+%{systemdunitdir}/nut-driver*.service
 %{systemdunitdir}/nut-server.service
+%{systemdunitdir}/nut.target
 %{systemdunitdir}/ups.service
+%{systemdunitdir}/nut-driver-enumerator.path
+%{systemdunitdir}/nut-driver.target
+%attr(755,root,root) %{_prefix}/libexec/nut-driver-enumerator.sh
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
+%{_mandir}/man8/nut-driver-enumerator.8*
 %{_mandir}/man8/nut-recorder.8*
 %{_mandir}/man8/nut-scanner.8*
 %{_mandir}/man8/upscmd.8*
 %{_mandir}/man8/upscode2.8*
 %{_mandir}/man8/upsd.8*
 %{_mandir}/man8/upsdrvctl.8*
+%{_mandir}/man8/upsdrvsvcctl.8.*
 %{_mandir}/man8/upslog.8*
 %{_mandir}/man8/upsrw.8*
 %dir %attr(770,root,ups) /var/lib/ups
@@ -398,13 +400,15 @@ fi
 %attr(755,root,root) /lib/nut/mge-shut
 %attr(755,root,root) /lib/nut/mge-utalk
 %attr(755,root,root) /lib/nut/microdowell
+%attr(755,root,root) /lib/nut/microsol-apc
 %{?with_neon:%attr(755,root,root) /lib/nut/netxml-ups}
-%{?with_ipmi:%attr(755,root,root) /lib/nut/nut-ipmipsu}
+%{?with_freeipmi:%attr(755,root,root) /lib/nut/nut-ipmipsu}
+%attr(755,root,root) /lib/nut/nutdrv_siemens-sitop
 %{?with_usb:%attr(755,root,root) /lib/nut/nutdrv_atcl_usb}
 %attr(755,root,root) /lib/nut/nutdrv_qx
-%attr(755,root,root) /lib/nut/oldmge-shut
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
+%attr(755,root,root) /lib/nut/pijuice
 %attr(755,root,root) /lib/nut/powercom
 %{?with_powerman:%attr(755,root,root) /lib/nut/powerman-pdu}
 %attr(755,root,root) /lib/nut/powerpanel
@@ -423,6 +427,8 @@ fi
 %{?with_usb:%attr(755,root,root) /lib/nut/usbhid-ups}
 %attr(755,root,root) /lib/nut/victronups
 %dir %{_datadir}/nut
+%{systemdtmpfilesdir}/nut-common.tmpfiles
+%{_datadir}/augeas/lenses/nut*.aug
 %{_datadir}/nut/cmdvartab
 %{_datadir}/nut/driver.list
 %{_mandir}/man5/nut.conf.5*
@@ -430,6 +436,7 @@ fi
 %{_mandir}/man8/apcsmart.8*
 %{_mandir}/man8/apcsmart-old.8*
 %{_mandir}/man8/apcupsd-ups.8*
+%{_mandir}/man8/asem.8*
 %{_mandir}/man8/bcmxcp.8*
 %{?with_usb:%{_mandir}/man8/bcmxcp_usb.8*}
 %{_mandir}/man8/belkin.8*
@@ -455,13 +462,16 @@ fi
 %{_mandir}/man8/mge-shut.8*
 %{_mandir}/man8/mge-utalk.8*
 %{_mandir}/man8/microdowell.8*
+%{_mandir}/man8/microsol-apc.8*
 %{?with_neon:%{_mandir}/man8/netxml-ups.8*}
-%{?with_ipmi:%{_mandir}/man8/nut-ipmipsu.8*}
+%{?with_freeipmi:%{_mandir}/man8/nut-ipmipsu.8*}
 %{?with_usb:%{_mandir}/man8/nutdrv_atcl_usb.8*}
 %{_mandir}/man8/nutdrv_qx.8*
+%{_mandir}/man8/nutdrv_siemens_sitop.8*
 %{_mandir}/man8/nutupsdrv.8*
 %{_mandir}/man8/oneac.8*
 %{_mandir}/man8/optiups.8*
+%{_mandir}/man8/pijuice.8*
 %{_mandir}/man8/powercom.8*
 %{?with_powerman:%{_mandir}/man8/powerman-pdu.8*}
 %{_mandir}/man8/powerpanel.8*
@@ -477,16 +487,18 @@ fi
 %{?with_usb:%{_mandir}/man8/tripplite_usb.8*}
 %{?with_usb:%{_mandir}/man8/usbhid-ups.8*}
 %{_mandir}/man8/victronups.8*
-%{?with_ipmi:%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/52-nut-ipmipsu.rules}
+%{?with_freeipmi:%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/52-nut-ipmipsu.rules}
 %{?with_usb:%config(noreplace) %verify(not md5 mtime size) %{_udevrulesdir}/62-nut-usbups.rules}
 
 %files common
 %defattr(644,root,root,755)
 %doc AUTHORS MAINTAINERS NEWS README UPGRADING ChangeLog docs
 %dir %{_sysconfdir}
-%attr(755,root,root) %ghost %{_libdir}/libnutclient.so.0
+%attr(755,root,root) %ghost %{_libdir}/libnutclient.so.2
 %attr(755,root,root) %{_libdir}/libnutclient.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libupsclient.so.4
+%attr(755,root,root) %ghost %{_libdir}/libnutclientstub.so.1
+%attr(755,root,root) %{_libdir}/libnutclientstub.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libupsclient.so.6
 %attr(755,root,root) %{_libdir}/libupsclient.so.*.*.*
 
 %files client
@@ -527,13 +539,16 @@ fi
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libnutclient.so
+%attr(755,root,root) %{_libdir}/libnutclientstub.so
 %attr(755,root,root) %{_libdir}/libupsclient.so
 %attr(755,root,root) %{_libdir}/libnutscan.so
 %{_pkgconfigdir}/libnutclient.pc
+%{_pkgconfigdir}/libnutclientstub.pc
 %{_pkgconfigdir}/libnutscan.pc
 %{_pkgconfigdir}/libupsclient.pc
 %{_includedir}/nut-scan.h
 %{_includedir}/nutclient.h
+%{_includedir}/nutclientmem.h
 %{_includedir}/nutscan-*.h
 %{_includedir}/parseconf.h
 %{_includedir}/upsclient.h
@@ -546,5 +561,6 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libnutclient.a
+%{_libdir}/libnutclientstub.a
 %{_libdir}/libnutscan.a
 %{_libdir}/libupsclient.a
