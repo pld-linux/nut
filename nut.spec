@@ -217,6 +217,7 @@ Statyczne biblioteki NUT-a.
 export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 %configure \
 	--datadir=%{_datadir}/%{name} \
+	--with-augeas-lenses-dir=%{_datadir}/augeas/lenses/dist \
 	--with-cgipath=/home/services/httpd/cgi-bin \
 	--with-drvpath=/lib/nut \
 	--with-htmlpath=%{_datadir}/%{name}/html \
@@ -438,7 +439,7 @@ fi
 %attr(755,root,root) /lib/nut/victronups
 %dir %{_datadir}/nut
 %{systemdtmpfilesdir}/nut-common.tmpfiles
-%{_datadir}/augeas/lenses/nut*.aug
+%{_datadir}/augeas/lenses/dist/nut*.aug
 %{_datadir}/nut/cmdvartab
 %{_datadir}/nut/driver.list
 %{_mandir}/man5/nut.conf.5*
