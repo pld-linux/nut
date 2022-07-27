@@ -5,6 +5,7 @@
 %bcond_without	cgi		# CGI support
 %bcond_without	freeipmi	# IPMI support
 %bcond_without	i2c		# I2C support
+%bcond_without	modbus		# modbus support
 %bcond_without	neon		# neon based XML/HTTP driver
 %bcond_without	powerman	# PowerMan support
 %bcond_without	snmp		# SNMP driver
@@ -39,6 +40,7 @@ BuildRequires:	avahi-devel >= 0.6.30
 %{?with_cgi:BuildRequires:	gd-devel >= 2.0.15}
 %{?with_i2c:BuildRequires:	libi2c-devel}
 BuildRequires:	libltdl-devel
+%{?with_modbus:BuildRequires:	libmodbus-devel}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 %{?with_usb:BuildRequires:	libusb-devel}
@@ -229,6 +231,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	--with-dev \
 	--with-ipmi%{!?with_freeipmi:=no} \
 	--with-linux-i2c%{!?with_i2c:=no} \
+	--with-modbus%{!?with_modbus:=no} \
 	--with-neon%{!?with_neon:=no} \
 	--with-openssl \
 	--with-powerman%{!?with_powerman:=no} \
@@ -245,6 +248,8 @@ install -d $RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d},/var/lib/ups,/lib/nut,/s
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/nut/solaris-init
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ups
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ups
@@ -353,7 +358,7 @@ fi
 %{systemdunitdir}/ups.service
 %{systemdunitdir}/nut-driver-enumerator.path
 %{systemdunitdir}/nut-driver.target
-%attr(755,root,root) %{_prefix}/libexec/nut-driver-enumerator.sh
+%attr(755,root,root) %{_libexecdir}/nut-driver-enumerator.sh
 %{_mandir}/man5/ups.conf.5*
 %{_mandir}/man5/upsd.conf.5*
 %{_mandir}/man5/upsd.users.5*
@@ -369,6 +374,7 @@ fi
 %{_mandir}/man8/upsrw.8*
 %dir %attr(770,root,ups) /var/lib/ups
 %dir /lib/nut
+%{?with_modbus:%attr(755,root,root) /lib/nut/adelsystem_cbi}
 %attr(755,root,root) /lib/nut/al175
 %attr(755,root,root) /lib/nut/apcsmart
 %attr(755,root,root) /lib/nut/apcsmart-old
@@ -390,7 +396,9 @@ fi
 %attr(755,root,root) /lib/nut/etapro
 %attr(755,root,root) /lib/nut/everups
 %attr(755,root,root) /lib/nut/gamatronic
+%{?with_modbus:%attr(755,root,root) /lib/nut/generic_modbus}
 %attr(755,root,root) /lib/nut/genericups
+%{?with_modbus:%attr(755,root,root) /lib/nut/huawei-ups2000}
 %attr(755,root,root) /lib/nut/isbmex
 %attr(755,root,root) /lib/nut/ivtscd
 %attr(755,root,root) /lib/nut/liebert
@@ -408,6 +416,7 @@ fi
 %attr(755,root,root) /lib/nut/nutdrv_qx
 %attr(755,root,root) /lib/nut/oneac
 %attr(755,root,root) /lib/nut/optiups
+%{?with_modbus:%attr(755,root,root) /lib/nut/phoenixcontact_modbus}
 %attr(755,root,root) /lib/nut/pijuice
 %attr(755,root,root) /lib/nut/powercom
 %{?with_powerman:%attr(755,root,root) /lib/nut/powerman-pdu}
@@ -419,6 +428,7 @@ fi
 %attr(755,root,root) /lib/nut/safenet
 %attr(755,root,root) /lib/nut/skel
 %{?with_snmp:%attr(755,root,root) /lib/nut/snmp-ups}
+%{?with_modbus:%attr(755,root,root) /lib/nut/socomec_jbus}
 %attr(755,root,root) /lib/nut/solis
 %attr(755,root,root) /lib/nut/tripplite
 %attr(755,root,root) /lib/nut/tripplitesu
@@ -432,6 +442,7 @@ fi
 %{_datadir}/nut/cmdvartab
 %{_datadir}/nut/driver.list
 %{_mandir}/man5/nut.conf.5*
+%{?with_modbus:%{_mandir}/man8/adelsystem_cbi.8*}
 %{_mandir}/man8/al175.8*
 %{_mandir}/man8/apcsmart.8*
 %{_mandir}/man8/apcsmart-old.8*
@@ -452,7 +463,9 @@ fi
 %{_mandir}/man8/etapro.8*
 %{_mandir}/man8/everups.8*
 %{_mandir}/man8/gamatronic.8*
+%{?with_modbus:%{_mandir}/man8/generic_modbus.8*}
 %{_mandir}/man8/genericups.8*
+%{?with_modbus:%{_mandir}/man8/huawei-ups2000.8*}
 %{_mandir}/man8/isbmex.8*
 %{_mandir}/man8/ivtscd.8*
 %{_mandir}/man8/liebert.8*
@@ -471,6 +484,7 @@ fi
 %{_mandir}/man8/nutupsdrv.8*
 %{_mandir}/man8/oneac.8*
 %{_mandir}/man8/optiups.8*
+%{?with_modbus:%{_mandir}/man8/phoenixcontact_modbus.8*}
 %{_mandir}/man8/pijuice.8*
 %{_mandir}/man8/powercom.8*
 %{?with_powerman:%{_mandir}/man8/powerman-pdu.8*}
@@ -481,6 +495,7 @@ fi
 %{?with_usb:%{_mandir}/man8/riello_usb.8*}
 %{_mandir}/man8/safenet.8*
 %{?with_snmp:%{_mandir}/man8/snmp-ups.8*}
+%{?with_modbus:%{_mandir}/man8/socomec_jbus.8*}
 %{_mandir}/man8/solis.8*
 %{_mandir}/man8/tripplite.8*
 %{_mandir}/man8/tripplitesu.8*
